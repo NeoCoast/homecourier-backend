@@ -1,13 +1,10 @@
-# README
+# homecourier-backend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+* Ruby 2.6.6
 
-Things you may want to cover:
+* Rails 5.2.4.3
 
-* Ruby version
-
-* System dependencies
+...
 
 * Configuration
 
@@ -20,6 +17,3 @@ Things you may want to cover:
 * Services (job queues, cache servers, search engines, etc.)
 
 * Deployment instructions
-
-* ...
-# homecourier-backend
