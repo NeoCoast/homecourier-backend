@@ -22,6 +22,16 @@ y luego crear la base de datos
 rails db:create
 ```
 
+*Como trabajar sobre el repositorio:
+
+Cada vez que se empiece a trabajar con algo nuevo se debe crear una rama siguiendo la nomenclatura especificada en el roadmap de gestion de la configuración:
+```
+git checkout -b nombre_rama
+```
+Mientras que uno esté trabajando sobre este artefacto debe hacer commits solo a esa rama, cuando esta listo se debe crear una pull request desde la pagina de github, se debe ir a la rama y hay un boton especifico para eso.
+
+Una vez que fue revisado por las personas correspondientes se hace el merge.
+
 * How to run the test suite
 
 * Services (job queues, cache servers, search engines, etc.)
