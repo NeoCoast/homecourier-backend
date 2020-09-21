@@ -4,13 +4,23 @@
 
 * Rails 5.2.4.3
 
-...
+* Configuración:
+Antes que nada realizar bundle install en el directorio base.
 
-* Configuration
+* Iniciar postgres
+sudo /etc/init.d/postgresql start
 
-* Database creation
-
-* Database initialization
+* Creación base de datos
+Se debe tener el usuario postgres configurado con contraseña "postgres":
+```
+sudo -u postgres psql
+\password postgres
+\q
+```
+y luego crear la base de datos
+```
+rails db:create
+```
 
 * How to run the test suite
 

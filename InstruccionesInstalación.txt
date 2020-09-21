@@ -1,0 +1,39 @@
+rails new posts_api --api -d postgresql
+
+descomentar del gemfile:
+	gem 'jbuilder', '~> 2.5'
+	gem 'rack-cors'
+	
+agregar en linea 34:
+	gem 'rspec-rails', '~> 4.0.1'
+	
+En cors.rb, descomentar y poner '*':
+
+Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins '*'
+
+    resource '*',
+      headers: :any,
+      methods: [:get, :post, :put, :patch, :delete, :options, :head]
+  end
+end
+
+bundle install (en el directorio base)
+
+En database.yml:
+	host: localhost
+	port: 5432
+	username: postgres
+	password: postgres
+	
+iniciar postgres: sudo /etc/init.d/postgresql start
+
+luego ejecutar el comando:
+	sudo -u postgres psql
+	y escribir:
+		\password postgres
+		\q
+
+rails db:create
+
