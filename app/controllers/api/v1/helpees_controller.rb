@@ -1,7 +1,13 @@
 class Api::V1::HelpeesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, :helpee?
 
   def index
-    @volunteers = Helpee.all
+    @helpees = Helpee.all
+  end
+
+  private
+
+  def helpee?
+    render json: {}, status: :unauthorized unless current_user.type == 'Helpee'
   end
 end

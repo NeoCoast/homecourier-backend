@@ -50,7 +50,8 @@ class Api::V1::Devise::Volunteers::RegistrationsController < Devise::Registratio
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[email password username name
-                                                         lastname birth_date address type])
+                                                         lastname birth_date address type
+                                                         document_number])
   end
 
   # If you have extra params to permit, append them to the sanitizer.
