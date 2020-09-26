@@ -7,3 +7,4 @@ json.name volunteer.name
 json.lastname volunteer.lastname
 json.birth_date volunteer.birth_date
 json.address volunteer.address
+json.document_number volunteer.document_number
