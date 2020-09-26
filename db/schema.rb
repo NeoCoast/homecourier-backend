@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_25_195715) do
+ActiveRecord::Schema.define(version: 2020_09_26_204645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "categories", force: :cascade do |t|
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+# Could not dump table "orders" because of following StandardError
+#   Unknown type 'order_status' for column 'status'
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
