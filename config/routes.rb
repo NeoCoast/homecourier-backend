@@ -21,6 +21,7 @@ Rails.application.routes.draw do
         resources :users, only: %i[index]
         resources :volunteers, only: %i[index]
         resources :helpees, only: %i[index]
+        resources :document_types, only: %i[index]
       end
     end
   end
