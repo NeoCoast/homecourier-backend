@@ -1,0 +1,2 @@
+class Helpee < User
+end

@@ -10,4 +10,5 @@ class User < ApplicationRecord
   validates :lastname, presence: true
   validates :birth_date, presence: true
   validates :address, presence: true
+  validates :type, presence: true
 end
