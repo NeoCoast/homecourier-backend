@@ -3,11 +3,16 @@ Rails.application.routes.draw do
   devise_for :helpee, :volunteer, skip: %i[registrations sessions passwords]
 
   defaults formats: :json do
+    # devise_scoupe :user do
+    #   match '/confirm/:confirmation_token', to: 'devise/helpees/confirmations#show', as: 'user_confirm'
+    # end
+
     namespace :api do
       namespace :v1 do
         devise_scope :user do
           post '/users/login', to: 'devise/sessions#create'
           delete '/users/logout', to: 'devise/sessions#destroy'
+          get '/users/confirmation', to: 'devise/confirmations#show'
         end
 
         devise_scope :helpee do

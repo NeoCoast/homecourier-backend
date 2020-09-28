@@ -17,7 +17,7 @@ class Api::V1::Devise::Volunteers::RegistrationsController < Devise::Registratio
     if resource.persisted?
       render json: resource, status: :created
     else
-      render json: {}, status: :bad_request
+      head :bad_request
     end
   end
 
