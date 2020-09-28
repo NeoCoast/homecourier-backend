@@ -1,17 +1,14 @@
 class Api::V1::CategoriesController < ApplicationController
-    include Response
     include ExceptionHandler
 
     #before_action :load_category, only: [:destroy]
 
     def create
         @category = Category.create!(category_params)
-        #json_response(@categories, :created) 
     end
 
     def index
         @categories = Category.all 
-        #json_response(@categories)
     end
 
     def show
