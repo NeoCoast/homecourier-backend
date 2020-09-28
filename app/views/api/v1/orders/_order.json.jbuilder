@@ -4,6 +4,7 @@ json.id order.id
 json.title order.title
 json.description order.description
 json.status order.status
+json.helpee_id order.helpee_id
 
 json.categories order.categories do |category|
     json.(category, :description)

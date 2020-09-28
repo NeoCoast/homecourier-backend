@@ -1,42 +1,39 @@
 class Api::V1::OrdersController < ApplicationController
   include ExceptionHandler
 
-  before_action :load_helpee, only: [:create, :index, :show]
+  before_action :load_helpee, only: [:create]
 
-      def create
-        @category_ids = []
-        params.extract!(:categories)["categories"].each do |category|
-          @category_ids.push category["id"]
-        end
-        
-        @order = @helpee.order.create! order_params
-        #@order = Order.create!(order_params)        
-        
-        @categories = Category.where(:id => @category_ids)        
-        @order.categories << @categories        
-      end
+  def create
+    @category_ids = []
+    params.extract!(:categories)["categories"].each do |category|
+      @category_ids.push category["id"]
+    end
+    
+    @order = @helpee.orders.create! order_params
+    @order.categories << Category.where(:id => @category_ids)        
+  end
 
-      def index 
-        @orders = Order.all
-      end
+  def index 
+    @orders = Order.all
+  end
 
-      def show
-        @order = Order.find(params[:id])
-      end
+  def show
+    @order = Order.find(params[:id])
+  end
 
-      def destroy 
-        @order = Order.find(params[:id])
-        @order.destroy
-        head :ok
-      end
+  def destroy 
+    @order = Order.find(params[:id])
+    @order.destroy
+    head :ok
+  end
 
-      private
+  private
 
-      def order_params
-        params.permit(:title, :description)
-      end
+  def order_params
+    params.permit(:title, :description)
+  end
 
-      def load_helpee
-        @helpee = User.find(params[:helpee_id])
-      end
+  def load_helpee
+    @helpee = Helpee.find(params[:helpee_id])
+  end
 end
