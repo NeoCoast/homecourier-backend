@@ -37,7 +37,5 @@ jobs:
       with:
           github_token: ${{ secrets.github_token }}
       uses: reviewdog/action-reek@v1
-    - name: Run tests
-      run: bundle exec rake
-    - name: Run tests
-      run: bundle exec rake
+    #- name: Run tests
+    #  run: bundle exec rake
