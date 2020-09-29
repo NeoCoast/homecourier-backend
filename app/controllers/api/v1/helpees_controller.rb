@@ -8,6 +8,6 @@ class Api::V1::HelpeesController < ApplicationController
   private
 
   def helpee?
-    render json: {}, status: :unauthorized unless current_user.type == 'Helpee'
+    header :unauthorized unless current_user.type == 'Helpee'
   end
 end
