@@ -1,5 +1,4 @@
 class Api::V1::OrdersController < ApplicationController
-  include ExceptionHandler
 
   before_action :load_helpee, only: [:create]
 

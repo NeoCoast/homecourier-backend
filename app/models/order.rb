@@ -4,6 +4,6 @@ class Order < ApplicationRecord
 
     validates :title, presence: true, length: {minimum: 5}
     validates :description, presence:true, length: {minimum: 5}
-    enum status: { created: "created", accepted: "accepted", in_process: "inProcess", finished: "finished", cancelled: "cancelled" }
+    enum status: %i(created accepted inProcess finished cancelled)
 
 end

@@ -1,7 +1,5 @@
 class Api::V1::CategoriesController < ApplicationController
-    include ExceptionHandler
-
-    #before_action :load_category, only: [:destroy]
+    before_action :load_category, only: [:show, :destroy]
 
     def create
         @category = Category.create!(category_params)
@@ -12,11 +10,10 @@ class Api::V1::CategoriesController < ApplicationController
     end
 
     def show
-        @category = Category.find(params[:id])
+        @category
     end
 
     def destroy
-        @category = Category.find(params[:id])
         @category.destroy
         head :no_content
     end

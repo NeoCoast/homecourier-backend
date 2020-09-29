@@ -34,8 +34,15 @@ ActiveRecord::Schema.define(version: 2020_09_26_204645) do
     t.datetime "updated_at", null: false
   end
 
-# Could not dump table "orders" because of following StandardError
-#   Unknown type 'status' for column 'status'
+  create_table "orders", force: :cascade do |t|
+    t.bigint "helpee_id"
+    t.string "title"
+    t.string "description"
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["helpee_id"], name: "index_orders_on_helpee_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
