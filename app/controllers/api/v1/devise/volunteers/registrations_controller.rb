@@ -52,7 +52,7 @@ class Api::V1::Devise::Volunteers::RegistrationsController < Devise::Registratio
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[email password username name
                                                          lastname birth_date address type
                                                          document_number document_type_id
-                                                         avatar])
+                                                         avatar document_face_pic document_back_pic])
   end
 
   # If you have extra params to permit, append them to the sanitizer.
