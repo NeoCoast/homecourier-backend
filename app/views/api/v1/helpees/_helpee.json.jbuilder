@@ -7,3 +7,4 @@ json.name helpee.name
 json.lastname helpee.lastname
 json.birth_date helpee.birth_date
 json.address helpee.address
+json.avatar url_for(helpee.avatar) if helpee.avatar.attached?

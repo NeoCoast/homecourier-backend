@@ -8,6 +8,6 @@ class Api::V1::VolunteersController < ApplicationController
   private
 
   def volunteer?
-    header :unauthorized unless current_user.type == 'Volunteer'
+    head :unauthorized unless current_user.type == 'Volunteer'
   end
 end

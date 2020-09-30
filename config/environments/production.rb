@@ -92,4 +92,7 @@ Rails.application.configure do
     port: 25,
     domain: 'yourdomain.com'
   }
+
+  # Active Storage
+  # config.active_storage.service = :amazon
 end
