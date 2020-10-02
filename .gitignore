@@ -24,3 +24,6 @@
 
 # Ignore Visual Studio Code config files.
 .vscode/
+
+# Ignore SimpleCov files.
+coverage/
