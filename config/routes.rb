@@ -1,12 +1,4 @@
 Rails.application.routes.draw do
-  defaults formats: :json do
-    namespace :api do
-      namespace :v1 do
-        resources :orders, only: [:create, :index, :show, :destroy]
-          resources :categories, only: [:create, :index, :show, :destroy], shallow: true
-      end
-    end
-  end
 
   devise_for :users, skip: %i[registrations sessions passwords]
   devise_for :helpee, :volunteer, skip: %i[registrations sessions passwords]
@@ -31,6 +23,9 @@ Rails.application.routes.draw do
         resources :volunteers, only: %i[index]
         resources :helpees, only: %i[index]
         resources :document_types, only: %i[index]
+        resources :orders, only: %i[create index show destroy]  
+        resources :categories, only: %i[create index show destroy]
+        get '/orders/show/all', to: 'orders#show_status'
       end
     end
   end

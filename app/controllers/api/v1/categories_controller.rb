@@ -15,7 +15,7 @@ class Api::V1::CategoriesController < ApplicationController
 
     def destroy
         @category.destroy
-        head :no_content
+        head :ok
     end
 
     private 
@@ -25,6 +25,6 @@ class Api::V1::CategoriesController < ApplicationController
     end
 
     def load_category
-        @category = Category.find.(params[:id])
+        @category = Category.find(params[:id])
     end
 end

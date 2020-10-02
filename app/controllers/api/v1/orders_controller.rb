@@ -20,6 +20,10 @@ class Api::V1::OrdersController < ApplicationController
     @order = Order.find(params[:id])
   end
 
+  def show_status
+    @orders = Order.where(status: Order.statuses[params[:status]])
+  end
+
   def destroy 
     @order = Order.find(params[:id])
     @order.destroy
