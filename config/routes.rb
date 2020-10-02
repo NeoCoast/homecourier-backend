@@ -23,8 +23,8 @@ Rails.application.routes.draw do
         resources :volunteers, only: %i[index]
         resources :helpees, only: %i[index]
         resources :document_types, only: %i[index]
-        resources :orders, only: %i[create index show destroy]  
         resources :categories, only: %i[create index show destroy]
+        resources :orders, only: %i[create index show destroy]
         get '/orders/show/all', to: 'orders#show_status'
       end
     end

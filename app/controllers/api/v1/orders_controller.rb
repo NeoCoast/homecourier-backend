@@ -21,7 +21,7 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def show_status
-    @orders = Order.where(status: Order.statuses[params[:status]])
+    @orders = Order.where(status: Order.statuses[params[:status]]).order("created_at DESC")
   end
 
   def destroy 
