@@ -94,5 +94,5 @@ Rails.application.configure do
   }
 
   # Active Storage
-  # config.active_storage.service = :amazon
+  config.active_storage.service = :local
 end
