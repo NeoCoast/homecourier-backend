@@ -4,14 +4,16 @@ RSpec.describe "Api::V1::Orders", type: :request do
 
   describe "POST /api/v1/orders" do
     let!(:headers) { { 'ACCEPT' => 'application/json' } }
+    let!(:helpee_params) do
+      { email: 'helpee@mail.com', password: '123456', username: 'helpee',
+      name: 'name', lastname: 'lastname', birth_date: '1/1/2000',
+      address: '1st Street', confirmed_at: '1900-01-01 01:01:01:000001' }
+    end
 
     before do
+      Helpee.create(helpee_params)
+
       post '/api/v1/categories', params: { description: 'Farmacias' }, headers: headers
-
-      post '/api/v1/helpees/signup', params: { helpee: { email: 'helpee@mail.com', password: '123456', username: 'helpee',
-        name: 'name', lastname: 'lastname', birth_date: '1/1/2000',
-        address: '1st Street' } }, headers: headers
-
       post '/api/v1/users/login', params: { user: {email: 'helpee@mail.com', password: '123456'}}, headers: headers
       
       @helpee_id = JSON.parse(response.body)['id']
@@ -21,6 +23,7 @@ RSpec.describe "Api::V1::Orders", type: :request do
        headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
                                                          
     end
+    
     it "returns http success" do
       expect(response).to have_http_status(:success)
     end
