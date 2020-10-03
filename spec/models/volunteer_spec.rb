@@ -1,25 +1,106 @@
 require 'rails_helper'
 
 RSpec.describe Volunteer, type: :model do
-  let!(:volunteer_params) do
-    { email: 'test@test.com', password: '123456', username: 'test',
-      name: 'name', lastname: 'lastname', birth_date: '1/1/2000', address: '1st Street',
-      document_number: '1.234.567-8', document_type_id: '1' }
+
+  let(:user) { build :user }
+  let(:document_type) { create :document_type }
+  let(:document_number) { Faker::Number.number(digits: 8) }
+
+  subject do
+    described_class.new(
+        email: user.email,
+        password: user.password,
+        username: user.username,
+        name: user.name,
+        lastname: user.lastname,
+        birth_date: user.birth_date,
+        address: user.address,
+        document_type: document_type,
+        document_number: document_number
+    )
   end
 
   describe 'Volunteer creation' do
-    it 'succeeds' do
-      Volunteer.create(volunteer_params)
-      expect(Volunteer.count).to eq 1
+    context 'succeeds' do
+      it { is_expected.to be_valid }
+
+      context 'after save' do
+        before(:each) { subject.save }
+
+        it { is_expected.to be_persisted }
+        it { expect(described_class.count).to eq 1 }
+
+        it 'has a id' do
+          expect(subject.id).to be_present
+        end
+        it 'has a creation date' do
+          expect(subject.created_at).to be_present
+        end
+      end
     end
 
     context 'fails' do
-      before do
-        Volunteer.create(volunteer_params)
+      context 'email is empty' do
+        before(:each) { subject.email = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
       end
 
-      it 'due to validations' do
-        expect { Volunteer.create!(volunteer_params) }.to raise_error(ActiveRecord::RecordInvalid)
+      context 'password is empty' do
+        before(:each) { subject.password = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'username is empty' do
+        before(:each) { subject.username = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'name is empty' do
+        before(:each) { subject.name = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'lastname is empty' do
+        before(:each) { subject.lastname = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'birth date is empty' do
+        before(:each) { subject.birth_date = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'address is empty' do
+        before(:each) { subject.address = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'document type is empty' do
+        before(:each) { subject.document_type = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'document number is empty' do
+        before(:each) { subject.document_number = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
       end
     end
   end
