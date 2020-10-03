@@ -1,6 +1,7 @@
 class Api::V1::OrdersController < ApplicationController
 
   before_action :load_helpee, only: [:create]
+  #before_action :authenticate_user!
 
   def create
     @category_ids = []
@@ -20,14 +21,19 @@ class Api::V1::OrdersController < ApplicationController
     @order = Order.find(params[:id])
   end
 
-  def show_status
-    @orders = Order.where(status: Order.statuses[params[:status]]).order("created_at DESC")
-  end
-
   def destroy 
     @order = Order.find(params[:id])
     @order.destroy
     head :ok
+  end
+
+  def show_status
+    @orders = Order.where(status: Order.statuses[params[:status]]).order("created_at DESC")
+  end
+
+  def take_order
+    @order = Order.find(params[:order_id])
+    @order.volunteers << Volunteer.find(params[:volunteer_id])
   end
 
   private

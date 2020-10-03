@@ -26,6 +26,7 @@ Rails.application.routes.draw do
         resources :categories, only: %i[create index show destroy]
         resources :orders, only: %i[create index show destroy]
         get '/orders/show/all', to: 'orders#show_status'
+        post '/orders/take', to: 'orders#take_order'
       end
     end
   end
