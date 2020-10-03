@@ -1,7 +1,7 @@
 class Api::V1::OrdersController < ApplicationController
 
-  before_action :load_helpee, only: [:create]
   before_action :authenticate_user!
+  before_action :load_helpee, only: [:create]
 
   def create
     @category_ids = []
