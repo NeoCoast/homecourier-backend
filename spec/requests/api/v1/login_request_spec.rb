@@ -1,23 +1,70 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
+
+  let!(:user_vol) { create(:user, type: 'Volunteer', confirmed_at: '2020-10-03') }
+  let!(:user_helpee) { create(:user, type: 'Volunteer', confirmed_at: '2020-10-03') }
+  let!(:user_fail) { build(:user, type: 'Helpee') }
+
   describe 'POST /api/v1/users/login' do
     let!(:headers) { { 'ACCEPT' => 'application/json' } }
-    let!(:volunteer_params) do
-      { email: 'test@test.com', password: '123456', username: 'test',
-        name: 'name', lastname: 'lastname', birth_date: '1/1/2000', address: '1st Street',
-        document_number: '1.234.567-8', document_type_id: '1', confirmed_at: '1900-01-02 01:01:01.000001' }
-    end
 
-    before do
-      Volunteer.create(volunteer_params)
-    end
+    context 'succeeds' do
+      context 'Volunteer' do
+        subject do
+          {
+              email: user_vol.email,
+              password: user_vol.password
+          }
+        end
 
-    it 'returns http success' do
-      post '/api/v1/users/login', params: { user: { email: 'test@test.com', password: '123456' } }, headers: headers
-      expect(response).to have_http_status(:ok)
+        before(:each) { post api_v1_users_path + "/login", params: { user: subject }, headers: headers }
+
+        it 'returns http success' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns authorization token' do
+          expect(response.headers["Authorization"]).to include("Bearer")
+        end
+      end
+      context 'Helpee' do
+        subject do
+          {
+              email: user_helpee.email,
+              password: user_helpee.password
+          }
+        end
+
+        before(:each) { post api_v1_users_path + "/login", params: { user: subject }, headers: headers }
+
+        it 'returns http success' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns authorization token' do
+          expect(response.headers["Authorization"]).to include("Bearer")
+        end
+      end
+    end
+    context 'fails' do
+      subject do
+        {
+            email: user_fail.email,
+            password: user_fail.password
+        }
+      end
+
+      before(:each) { post api_v1_users_path + "/login", params: { user: subject }, headers: headers }
+
+      it 'returns http bad_request' do
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'returns error message' do
+        expect(response.body).to include("error")
+        expect(response.body).to include("Invalid Email or password")
+      end
     end
   end
 end
