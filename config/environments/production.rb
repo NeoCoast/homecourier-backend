@@ -85,15 +85,18 @@ Rails.application.configure do
 
   # Devise
   # assuming you have a SMTP server on localhost:25
-  =begin 
+=begin 
   config.action_mailer.default_url_options = { host: 'yourdomain.com' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: '127.0.0.1',
-    port: 25,
-    domain: 'yourdomain.com'
+    address: ENV['MAILGUN_SMTP_SERVER'],
+    port: ENV['MAILGUN_SMTP_PORT'],
+    domain: 'test-homecourier-backend.heroku.com',
+    user_name: ENV['MAILGUN_SMTP_LOGIN'],
+    password: ENV['MAILGUN_SMTP_PASSWORD'],
+    authentication = :plain
   } 
-  =end
+=end
   ActionMailer::Base.smtp_settings = {
   :port           => ENV['MAILGUN_SMTP_PORT'],
   :address        => ENV['MAILGUN_SMTP_SERVER'],
