@@ -1,5 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Category, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let!(:category_params) { { description: 'Farmacias' } }
+
+  describe 'Category creation' do
+    it 'succeeds' do
+      Category.create(category_params)
+      expect(Category.count).to eq 1
+    end
+  end
 end
