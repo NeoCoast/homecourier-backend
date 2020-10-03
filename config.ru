@@ -8,7 +8,7 @@ require 'rack/cors'
 use Rack::Cors do
   # allow all origins in development
   allow do
-    origins 'localhost:8080'
+    origins '*'
     resource '*',
              headers: :any,
              expose: ['Authorization'],
