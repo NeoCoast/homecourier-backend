@@ -9,7 +9,7 @@ json.helpee do
     json.id order.helpee.id
     json.username order.helpee.username
     json.name order.helpee.name
-    json.lastname order.helpee.name
+    json.lastname order.helpee.lastname
     json.email order.helpee.email
     json.address order.helpee.address
     json.created_at order.helpee.created_at
