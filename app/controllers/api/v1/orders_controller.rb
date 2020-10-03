@@ -1,7 +1,7 @@
 class Api::V1::OrdersController < ApplicationController
 
   before_action :load_helpee, only: [:create]
-  #before_action :authenticate_user!
+  before_action :authenticate_user!
 
   def create
     @category_ids = []
@@ -34,6 +34,7 @@ class Api::V1::OrdersController < ApplicationController
   def take_order
     @order = Order.find(params[:order_id])
     @order.volunteers << Volunteer.find(params[:volunteer_id])
+    head :ok
   end
 
   private
