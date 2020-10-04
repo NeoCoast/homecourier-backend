@@ -1,0 +1,13 @@
+helpee_id,title,description,status,category
+1,Necesito paracetamol,Paracetamol,1,Farmacia
+2,Pedido del super,Precisaría los siguientes productos: \n Coca cola \n Pan,1,Supermercado
+3,Facturas UTE y mutualista,Pagar facturas de UTE mes de agosto y septiembre \nAbonar mututalista ,2,Cobranzas
+4,Aspirinas,2 blister de asprina,1,Farmacia
+4,necesito comida del super,-Leche \n -Pan 1\n -Manteca,1,Supermercado
+5,Facturas,Pagar facturas de OSE mes de agosto y septiembre,2,Cobranzas
+5,pedido farmacia,Preciso un par de cosas de la farmacia mas cercana \n Bio Grip y dolex. \ Comuniquese y coordinamos horarios,3,Farmacia
+1,pedido para hoy al mediodia,Arroz- 1/2k de carne picada - 3 papas - Refresco de su preferencia,3,Supermercado
+7,Pago de cuenta,Pagar cuota de socio en el redpagos de su conveniencia,4,Cobranzas
+8,necesito pan y queso,Baguette - Queso rockefort ,3,Supermercado
+9,necesito agua del supermercado,preciso 2 listros de agua con o sin gas muchas gracias,0,Supermercado
+9,preciso articulos de limpieza,preciso: 1 jabon liquido 500cc y una esponja para platos,0,Supermercado
