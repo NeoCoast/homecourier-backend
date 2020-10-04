@@ -14,6 +14,7 @@ json.helpee do
     json.address order.helpee.address
     json.created_at order.helpee.created_at
     json.updated_at order.helpee.updated_at
+    json.avatar url_for(order.helpee.avatar) if order.helpee.avatar.attached?
 end
 
 json.categories order.categories do |category|
