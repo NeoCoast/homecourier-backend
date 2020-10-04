@@ -25,5 +25,8 @@
 # Ignore Visual Studio Code config files.
 .vscode/
 
+# Ignore Ruby Mine config files.
+.idea/
+
 # Ignore SimpleCov files.
 coverage/
