@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2020_10_02_202215) do
     t.index ["category_id"], name: "index_categories_orders_on_category_id"
     t.index ["order_id"], name: "index_categories_orders_on_order_id"
   end
-  
+
   create_table "document_types", force: :cascade do |t|
     t.string "description"
     t.datetime "created_at", null: false
