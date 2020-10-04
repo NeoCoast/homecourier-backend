@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe DocumentType, type: :model do
-
   let!(:document_type_params) { attributes_for(:document_type) }
 
   subject do
