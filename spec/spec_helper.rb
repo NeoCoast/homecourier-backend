@@ -16,7 +16,7 @@
 require 'simplecov'
 
 RSpec.configure do |config|
-  SimpleCov.start
+  SimpleCov.start 'rails'
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -54,7 +54,7 @@ RSpec.configure do |config|
   #   # is tagged with `:focus`, all examples get run. RSpec also provides
   #   # aliases for `it`, `describe`, and `context` that include `:focus`
   #   # metadata: `fit`, `fdescribe` and `fcontext`, respectively.
-  #   config.filter_run_when_matching :focus
+  config.filter_run_when_matching :focus
   #
   #   # Allows RSpec to persist some state between runs in order to support
   #   # the `--only-failures` and `--next-failure` CLI options. We recommend
@@ -75,7 +75,7 @@ RSpec.configure do |config|
   #     # Use the documentation formatter for detailed output,
   #     # unless a formatter has already been configured
   #     # (e.g. via a command-line flag).
-  #     config.default_formatter = "doc"
+        config.default_formatter = "doc"
   #   end
   #
   #   # Print the 10 slowest examples and example groups at the
