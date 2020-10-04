@@ -99,15 +99,15 @@ Rails.application.configure do
     authentication = :plain
   } 
 =end
-  ActionMailer::Base.smtp_settings = {
-  :port           => ENV['MAILGUN_SMTP_PORT'],
-  :address        => ENV['MAILGUN_SMTP_SERVER'],
-  :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
-  :password       => ENV['MAILGUN_SMTP_PASSWORD'],
-  :domain         => 'test-homecourier-backend.herokuapp.com',
-  :authentication => :plain,
-}
-ActionMailer::Base.delivery_method = :smtp
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               'test-homecourier-backend.herokuapp.com',
+    user_name:            'homecourierfing@gmail.com',
+    password:             'homecourier123',
+    authentication:       'plain',
+    enable_starttls_auto: true }
 
   # Active Storage
   config.active_storage.service = :local
