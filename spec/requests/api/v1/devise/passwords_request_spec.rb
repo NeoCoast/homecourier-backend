@@ -84,4 +84,36 @@ RSpec.describe 'Api::V1::Devise::PasswordsController', type: :request do
       end
     end
   end
+
+  describe 'PUT /api/v1/users/password' do
+
+    let!(:password) { Faker::Internet.password(min_length: 8) }
+
+    subject do
+      {
+          reset_password_token: Faker::Internet.password(min_length: 20),
+          password: password,
+          password_confirmation: password
+      }
+    end
+
+    context 'fails' do
+      context 'reset_password_token is empty' do
+
+        before(:each) do
+          subject['reset_password_token'] = nil
+          put api_v1_users_path + "/password", params: { user: subject }, headers: headers
+        end
+
+        it 'returns http unprocessable_entity' do
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it "returns error message: reset_password_token can't be blank" do
+          body = JSON.parse(response.body)
+          expect(body['reset_password_token']).to eq ["can't be blank"]
+        end
+      end
+    end
+  end
 end
