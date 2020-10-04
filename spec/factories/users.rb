@@ -7,5 +7,6 @@ FactoryBot.define do
     lastname { Faker::Name.last_name }
     birth_date { Faker::Date.birthday(min_age: 18, max_age: 100) }
     address { Faker::Address.street_address }
+    confirmation_token { Faker::Internet.password(min_length: 20) }
   end
 end

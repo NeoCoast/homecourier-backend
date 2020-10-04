@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
 
-  let!(:user_vol) { create(:user, type: 'Volunteer', confirmed_at: '2020-10-03') }
-  let!(:user_helpee) { create(:user, type: 'Volunteer', confirmed_at: '2020-10-03') }
-  let!(:user_fail) { build(:user, type: 'Helpee') }
+  let!(:user_vol) { create(:user, type: 'Volunteer', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+  let!(:user_helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+  let!(:unregistered_user) { build(:user, type: 'Helpee') }
 
   describe 'POST /api/v1/users/login' do
     let!(:headers) { { 'ACCEPT' => 'application/json' } }
@@ -50,8 +50,8 @@ RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
     context 'fails' do
       subject do
         {
-            email: user_fail.email,
-            password: user_fail.password
+            email: unregistered_user.email,
+            password: unregistered_user.password
         }
       end
 
