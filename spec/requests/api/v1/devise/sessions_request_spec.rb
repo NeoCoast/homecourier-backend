@@ -1,8 +1,3 @@
-# frozen_string_literal: true
-
-require 'rails_helper'
-
-RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
@@ -69,6 +64,62 @@ RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
       it 'returns error message' do
         expect(response.body).to include("error")
         expect(response.body).to include("Invalid Email or password")
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/users/logout' do
+    let!(:headers) { { 'ACCEPT' => 'application/json' } }
+
+    context 'succeeds' do
+      context 'Volunteer' do
+        subject do
+          {
+              email: user_vol.email,
+              password: user_vol.password
+          }
+        end
+
+        before(:each) do
+          post api_v1_users_path + "/login", params: { user: subject }, headers: headers
+          @token = response.headers['Authorization']
+        end
+
+        it 'returns http success' do
+          delete api_v1_users_path + "/logout", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'session expired' do
+          delete api_v1_users_path + "/logout", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          get api_v1_users_path, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
+
+      context 'Helpee' do
+        subject do
+          {
+              email: user_helpee.email,
+              password: user_helpee.password
+          }
+        end
+
+        before(:each) do
+          post api_v1_users_path + "/login", params: { user: subject }, headers: headers
+          @token = response.headers['Authorization']
+        end
+
+        it 'returns http success' do
+          delete api_v1_users_path + "/logout", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'session expired' do
+          delete api_v1_users_path + "/logout", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          get api_v1_users_path, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          expect(response).to have_http_status(:unauthorized)
+        end
       end
     end
   end
