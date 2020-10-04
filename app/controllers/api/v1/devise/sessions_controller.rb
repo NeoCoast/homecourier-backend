@@ -8,6 +8,6 @@ class Api::V1::Devise::SessionsController < Devise::SessionsController
   end
 
   def respond_to_on_destroy
-    render json: resource
+    head :ok
   end
 end
