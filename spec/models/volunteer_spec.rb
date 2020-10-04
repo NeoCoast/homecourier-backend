@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Volunteer, type: :model do
-
   let(:user) { build :user }
   let(:document_type) { create :document_type }
   let(:document_number) { Faker::Number.number(digits: 8) }

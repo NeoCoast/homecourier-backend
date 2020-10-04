@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :request do
-
   let!(:user) { build :user }
 
   describe 'POST /api/v1/helpees/signup' do

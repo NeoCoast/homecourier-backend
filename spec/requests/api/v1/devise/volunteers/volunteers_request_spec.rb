@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Devise::Volunteers::RegistrationsController', type: :request do
-
   let!(:user) { build :user }
   let(:document_type) { create :document_type }
   let(:document_number) { Faker::Number.number(digits: 8) }

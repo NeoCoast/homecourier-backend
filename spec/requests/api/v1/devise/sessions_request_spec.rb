@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do

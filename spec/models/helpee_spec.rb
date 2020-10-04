@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Helpee, type: :model do
-
   let(:user) { build :user }
 
   subject do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_29_215711) do
+ActiveRecord::Schema.define(version: 2020_10_02_202215) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,10 +36,43 @@ ActiveRecord::Schema.define(version: 2020_09_29_215711) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "categories", force: :cascade do |t|
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "categories_orders", id: false, force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.integer "category_id", null: false
+    t.index ["category_id"], name: "index_categories_orders_on_category_id"
+    t.index ["order_id"], name: "index_categories_orders_on_order_id"
+  end
+  
   create_table "document_types", force: :cascade do |t|
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "order_requests", force: :cascade do |t|
+    t.bigint "order_id"
+    t.bigint "volunteer_id"
+    t.integer "order_request_status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_requests_on_order_id"
+    t.index ["volunteer_id"], name: "index_order_requests_on_volunteer_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.bigint "helpee_id"
+    t.string "title"
+    t.string "description"
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["helpee_id"], name: "index_orders_on_helpee_id"
   end
 
   create_table "users", force: :cascade do |t|

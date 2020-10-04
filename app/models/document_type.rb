@@ -1,5 +1,4 @@
 class DocumentType < ApplicationRecord
   validates :description, presence: true
-
-  has_many :volunteer
+  belongs_to :volunteers
 end
