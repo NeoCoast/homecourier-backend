@@ -1,20 +1,20 @@
 require 'rails_helper'
 
-RSpec.describe Order, type: :model do
-  let!(:category) { create(:category) }
+RSpec.describe OrderRequest, type: :model do
+
   let!(:helpee) { create(:user, type: 'Helpee') }
-  let!(:order_params) { build(:order) }
+  let!(:order) { create(:order, helpee_id: helpee.id) }
+  let!(:volunteer) { create(:user, type: 'Volunteer') }
 
   subject do
     described_class.new(
-        title: order_params.title,
-        description: order_params.description,
-        status: order_params.status,
-        helpee_id: helpee.id
+        order_id: order.id,
+        volunteer_id: volunteer.id,
+        order_request_status: 0,
     )
   end
 
-  describe 'Order creation' do
+  describe 'Order request creation' do
     context 'succeeds' do
       it { is_expected.to be_valid }
 
@@ -34,22 +34,15 @@ RSpec.describe Order, type: :model do
     end
 
     context 'fails' do
-      context 'title is empty' do
-        before(:each) { subject.title = nil }
+      context 'order is empty' do
+        before(:each) { subject.order_id = nil }
 
         it { is_expected.to_not be_valid }
         it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
       end
 
-      context 'description is empty' do
-        before(:each) { subject.description = nil }
-
-        it { is_expected.to_not be_valid }
-        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
-      end
-
-      context 'helpee is empty' do
-        before(:each) { subject.helpee_id = nil }
+      context 'volunteer is empty' do
+        before(:each) { subject.volunteer_id = nil }
 
         it { is_expected.to_not be_valid }
         it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }

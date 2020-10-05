@@ -1,143 +1,39 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
-RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :request do
-  let!(:user) { build :user }
+RSpec.describe "Api::V1::Helpees", type: :request do
 
-  describe 'POST /api/v1/helpees/signup' do
+  let!(:helpees) { create_list(:user, 10, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+
+  describe "GET /api/v1/helpees" do
     let!(:headers) { { 'ACCEPT' => 'application/json' } }
 
-    subject do
-      {
-        email: user.email,
-        password: user.password,
-        username: user.username,
-        name: user.name,
-        lastname: user.lastname,
-        birth_date: user.birth_date,
-        address: user.address
-      }
+    before(:each) do
+      post api_v1_users_path + "/login", params: { user: {
+          email: helpees[0].email, password: helpees[0].password
+      } }, headers: headers
+      @token = response.headers['Authorization']
+      get api_v1_helpees_path, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
     end
 
-    context 'succeeds' do
-      before do
-        post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
-      end
-
-      it 'returns http success' do
-        expect(response).to have_http_status(:created)
-      end
-
-      it 'creates an user' do
-        expect(User.count).to eq 1
-      end
+    it 'returns http success' do
+      expect(response).to have_http_status(:ok)
     end
 
-    context 'fails' do
-      context 'email is empty' do
-        before do
-          subject['email'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
-        end
+    context 'the answer matches db' do
 
-        it 'returns http bad_request' do
-          expect(response).to have_http_status(:bad_request)
-        end
+      before(:each) { @body = JSON.parse(response.body) }
 
-        it 'is not created' do
-          expect(User.count).to_not eq 1
-        end
+      it 'number of records' do
+        expect(@body.length).to eq helpees.length
       end
 
-      context 'password is empty' do
-        before do
-          subject['password'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+      it 'content of records' do
+        helpees_array = []
+        helpees.each do |helpee|
+          helpees_array << helpee.attributes.slice(
+              "id", "email", "username", "name", "lastname", "birth_date", "address")
         end
-
-        it 'returns http bad_request' do
-          expect(response).to have_http_status(:bad_request)
-        end
-
-        it 'is not created' do
-          expect(User.count).to_not eq 1
-        end
-      end
-
-      context 'username is empty' do
-        before do
-          subject['username'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
-        end
-
-        it 'returns http bad_request' do
-          expect(response).to have_http_status(:bad_request)
-        end
-
-        it 'is not created' do
-          expect(User.count).to_not eq 1
-        end
-      end
-
-      context 'name is empty' do
-        before do
-          subject['name'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
-        end
-
-        it 'returns http bad_request' do
-          expect(response).to have_http_status(:bad_request)
-        end
-
-        it 'is not created' do
-          expect(User.count).to_not eq 1
-        end
-      end
-
-      context 'lastname is empty' do
-        before do
-          subject['lastname'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
-        end
-
-        it 'returns http bad_request' do
-          expect(response).to have_http_status(:bad_request)
-        end
-
-        it 'is not created' do
-          expect(User.count).to_not eq 1
-        end
-      end
-
-      context 'birth date is empty' do
-        before do
-          subject['birth_date'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
-        end
-
-        it 'returns http bad_request' do
-          expect(response).to have_http_status(:bad_request)
-        end
-
-        it 'is not created' do
-          expect(User.count).to_not eq 1
-        end
-      end
-
-      context 'address is empty' do
-        before do
-          subject['address'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
-        end
-
-        it 'returns http bad_request' do
-          expect(response).to have_http_status(:bad_request)
-        end
-
-        it 'is not created' do
-          expect(User.count).to_not eq 1
-        end
+        expect(@body).to match_array(helpees_array)
       end
     end
   end
