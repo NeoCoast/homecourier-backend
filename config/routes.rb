@@ -28,9 +28,10 @@ Rails.application.routes.draw do
         resources :document_types, only: %i[index]
         resources :categories, only: %i[create index show destroy]
         resources :orders, only: %i[create index show destroy]
-        get '/notifications/seen', to: 'notifications#seen'
         get '/orders/show/all', to: 'orders#show_status'
         post '/orders/take', to: 'orders#take_order'
+        resources :notifications, only: %i[index]
+        get '/notifications/seen', to: 'notifications#seen'
       end
     end
   end
