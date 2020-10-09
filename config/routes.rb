@@ -30,6 +30,7 @@ Rails.application.routes.draw do
         resources :orders, only: %i[create index show destroy]
         get '/orders/show/all', to: 'orders#show_status'
         post '/orders/take', to: 'orders#take_order'
+        post '/status', to: 'orders#update_status'
       end
     end
   end

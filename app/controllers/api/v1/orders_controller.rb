@@ -37,6 +37,10 @@ class Api::V1::OrdersController < ApplicationController
     head :ok
   end
 
+  def update_status
+    @order = Order.update(params[:order_id], status: params[:status])
+  end
+
   private
 
   def order_params
