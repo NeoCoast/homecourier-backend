@@ -47,7 +47,7 @@ class Api::V1::OrdersController < ApplicationController
     when "finished"
       @order.finish!
     when "cancelled"
-      @order.descancel!
+      @order.cancel!
     end
   end
 
