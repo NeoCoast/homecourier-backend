@@ -1,0 +1,33 @@
+Layout/LineLength:
+  Max: 120
+Metrics/MethodLength:
+  CountComments: false
+  Max: 35
+Metrics/BlockLength:
+  Max: 30
+  Exclude:
+    - 'spec/**/*'
+Style/ClassAndModuleChildren:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Max: 8
+Metrics/PerceivedComplexity:
+  Max: 8
+Metrics/ClassLength:
+  Max: 200
+Metrics/ModuleLength:
+  Max: 140
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 2.6
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'bin/**'
+    - 'spec/rails_helper.rb'
+    - 'spec/spec_helper.rb'
+    - 'Gemfile'
+    - 'lib/**/*'
+    - 'config.ru'
