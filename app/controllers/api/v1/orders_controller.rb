@@ -38,7 +38,17 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def update_status
-    @order = Order.update(params[:order_id], status: params[:status])
+    @order = Order.find(params[:order_id])
+    case params[:status]
+    when "accepted"
+      @order.accept!
+    when "in_process"
+      @order.start!
+    when "finished"
+      @order.finish!
+    when "cancelled"
+      @order.descancel!
+    end
   end
 
   private
