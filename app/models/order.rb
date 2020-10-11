@@ -1,6 +1,7 @@
 class Order < ApplicationRecord            
     validates :title, presence: true, length: {minimum: 5}
     validates :description, presence: true, length: {minimum: 5}
+    validates :categories, presence: true
     enum status: %i(created accepted in_process finished cancelled)
 
     has_many :order_requests, dependent: :destroy

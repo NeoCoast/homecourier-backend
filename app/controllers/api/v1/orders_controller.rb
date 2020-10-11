@@ -8,9 +8,12 @@ class Api::V1::OrdersController < ApplicationController
     params.extract!(:categories)["categories"].each do |category|
       @category_ids.push category["id"]
     end
-    
-    @order = @helpee.orders.create! order_params
+    @order = Order.new
+    @order.helpee_id = @helpee.id
+    @order.title = params[:title]
+    @order.description = params[:description]
     @order.categories << Category.where(:id => @category_ids)        
+    @order.save!
   end
 
   def index 
