@@ -38,6 +38,10 @@ class Api::V1::OrdersController < ApplicationController
     @orders = Order.where(helpee_id: params[:helpee_id]).order("created_at ASC")
   end
 
+  def order_volunteers
+    @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id]).order("users.name ASC")
+  end
+
   def take_order
     @order = Order.find(params[:order_id])
     @order.volunteers << Volunteer.find(params[:volunteer_id])
