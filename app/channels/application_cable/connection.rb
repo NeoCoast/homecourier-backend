@@ -1,4 +1,17 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
+    identified_by :current_user
+
+    def connect
+      find_verified_user request.headers['Authorization']
+    end
+
+    private
+
+    def find_verified_user(token)
+      self.current_user = Warden::JWTAuth::UserDecoder.new.call(token, :user, nil)
+    rescue StandardError
+      reject_unauthorized_connection
+    end
   end
 end
