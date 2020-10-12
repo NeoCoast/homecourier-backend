@@ -35,6 +35,7 @@ group :development, :test do
   gem 'simplecov', '~> 0.19.0'
   gem 'simplecov-html', '~> 0.12.3'
   gem 'factory_bot_rails', '~> 6.1.0'
+  gem 'aasm', '~> 4.12'
 end
 
 group :development do
@@ -42,7 +43,6 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'aasm'
 end
 
 group :test do
