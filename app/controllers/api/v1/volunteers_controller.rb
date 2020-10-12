@@ -5,6 +5,10 @@ class Api::V1::VolunteersController < ApplicationController
     @volunteers = Volunteer.all
   end
 
+  def show
+    @volunteer = Volunteer.find(params[:id])
+  end
+
   private
 
   def volunteer?

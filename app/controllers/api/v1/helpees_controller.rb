@@ -5,6 +5,10 @@ class Api::V1::HelpeesController < ApplicationController
     @helpees = Helpee.all
   end
 
+  def show
+    @helpee = Helpee.find(params[:id])
+  end
+
   private
 
   def helpee?
