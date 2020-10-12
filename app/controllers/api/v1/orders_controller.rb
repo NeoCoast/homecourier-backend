@@ -51,6 +51,10 @@ class Api::V1::OrdersController < ApplicationController
     end
   end
 
+  def orders_volunteers
+    @orders = Order.joins(:volunteers).where(users: { id: params[:volunteer_id]})
+  end
+
   private
 
   def order_params
