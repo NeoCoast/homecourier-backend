@@ -31,7 +31,11 @@ Rails.application.routes.draw do
         get '/orders/show/all', to: 'orders#show_status'
         post '/orders/take', to: 'orders#take_order'
         post '/status', to: 'orders#update_status'
+        resources :notifications, only: %i[index]
+        post '/notifications/seen', to: 'notifications#seen'
       end
     end
   end
+
+  mount ActionCable.server => '/cable'
 end
