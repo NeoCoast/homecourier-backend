@@ -13,4 +13,6 @@ class User < ApplicationRecord
   validates :type, presence: true
 
   has_one_attached :avatar
+
+  has_many :notifications
 end

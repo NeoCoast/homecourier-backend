@@ -23,8 +23,8 @@ Rails.application.routes.draw do
         end
 
         resources :users, only: %i[index]
-        resources :volunteers, only: %i[index]
-        resources :helpees, only: %i[index]
+        resources :volunteers, only: %i[index show]
+        resources :helpees, only: %i[index show]
         resources :document_types, only: %i[index]
         resources :categories, only: %i[create index show destroy]
         resources :orders, only: %i[create index show destroy]
@@ -33,7 +33,11 @@ Rails.application.routes.draw do
         get '/orders/show/volunteers', to: 'orders#order_volunteers'
         post '/orders/accept', to: 'orders#accept_volunteer'
         post '/orders/take', to: 'orders#take_order'
+        resources :notifications, only: %i[index]
+        post '/notifications/seen', to: 'notifications#seen'
       end
     end
   end
+
+  mount ActionCable.server => '/cable'
 end
