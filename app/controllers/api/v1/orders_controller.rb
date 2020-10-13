@@ -42,6 +42,26 @@ class Api::V1::OrdersController < ApplicationController
     @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id]).order("users.name ASC")
   end
 
+  def accept_volunteer
+    # the order must be in the state created
+    # the order_request must exist and the status must be waiting
+    # delete all the other requests
+    @order = Order.find(params[:order_id])
+    if @order.status === "created"
+      @order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
+      if @order_request.order_request_status === "waiting"
+        OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?', params[:order_id], params[:volunteer_id]))
+        OrderRequest.update(@order_request.id, :order_request_status => "accepted")
+        Order.update(@order.id, :status => "accepted")
+        head :ok 
+      else
+        head 403
+      end
+    else
+      head 404
+    end
+  end
+
   def take_order
     @order = Order.find(params[:order_id])
     @order.volunteers << Volunteer.find(params[:volunteer_id])
