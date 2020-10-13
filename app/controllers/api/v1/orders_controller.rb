@@ -2,6 +2,7 @@ class Api::V1::OrdersController < ApplicationController
 
   before_action :authenticate_user!
   before_action :load_helpee, only: [:create]
+  before_action :load_params, only: [:update_status]
 
   def create
     @category_ids = []
@@ -38,16 +39,17 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def update_status
-    @order = Order.find(params[:order_id])
     case params[:status]
     when "accepted"
       @order.accept!
     when "in_process"
       @order.start!
+      @helpee.notifications.create!(title: "En proceso", body: "Su pedido " +  @title + " ya se encuentra en camino")
     when "finished"
       @order.finish!
     when "cancelled"
       @order.cancel!
+      @helpee.notifications.create!(title: "Cancelado", body: "El pedido " + @title + " ha sido cancelado")
     end
   end
 
@@ -63,5 +65,11 @@ class Api::V1::OrdersController < ApplicationController
 
   def load_helpee
     @helpee = Helpee.find(params[:helpee_id])
+  end
+
+  def load_params
+    @order = Order.find(params[:order_id])
+    @helpee = Helpee.find(Order.find(params[:order_id]).helpee.id)
+    @title = @order.title
   end
 end
