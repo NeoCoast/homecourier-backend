@@ -31,7 +31,11 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
 
     context 'notification marked as seen' do
       before do
-        post api_v1_notifications_path + '/seen', params: { id: notifications[0].id },
+        ids = []
+        notifications.each do |notification|
+          ids << notification.id
+        end
+        post api_v1_notifications_path + '/seen', params: { notifications_id: ids },
                                                   headers: { 'ACCEPT' => 'application/json',
                                                              'HTTP_AUTHORIZATION' => @token }
       end
@@ -41,7 +45,9 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
       end
 
       it 'is marked as seen' do
-        expect(helpee.notifications[0].status).to eq 'seen'
+        helpee.notifications.each do |notification|
+          expect(notification.status).to eq 'seen'
+        end
       end
     end
 

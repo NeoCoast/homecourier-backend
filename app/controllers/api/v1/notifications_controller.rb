@@ -11,7 +11,7 @@ class Api::V1::NotificationsController < ApplicationController
   end
 
   def seen
-    @notification.seen!
+    @mark_as_seen.each(&:seen!)
     head :ok
   end
 
@@ -25,7 +25,7 @@ class Api::V1::NotificationsController < ApplicationController
   end
 
   def load_notification
-    @notification = current_user.notifications.find(params[:id])
+    @mark_as_seen = current_user.notifications.find(params[:notifications_id])
   rescue ActiveRecord::RecordNotFound
     render json: { 'error': 'Notification ID does not belong to user' }, status: :bad_request
   end
