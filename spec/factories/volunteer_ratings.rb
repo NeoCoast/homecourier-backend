@@ -1,7 +1,6 @@
 FactoryBot.define do
-    factory :volunteer_rating do
-        score { Faker::Number.number(digits: 1) }
-        comment { Faker::Lorem.sentence }
-    end
+  factory :volunteer_rating do
+    score { 4 }
+    comment { Faker::Lorem.sentence }
+  end
 end
-  

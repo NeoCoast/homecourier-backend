@@ -32,37 +32,34 @@ RSpec.describe HelpeeRating, type: :model do
       end
     end
 
-    # context 'fails' do
-    #   context 'low score and comment empty' do
-    #     before(:each) { subject.score = 2, subject.comment = nil }
+    context 'fails' do
+      # context 'low score and comment empty' do
+      #   before(:each) { subject.score = 2, subject.comment = nil }
 
-    #     it { is_expected.to_not be_valid }
-    #     it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
-    #   end
+      #   it { is_expected.to_not be_valid }
+      #   it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      # end
 
-    #   context 'Order is empty' do
-    #     before(:each) { subject.order_id = nil }
+      context 'Order is empty' do
+        before(:each) { subject.order_id = nil }
 
-    #     it { is_expected.to_not be_valid }
-    #     it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
-    #   end
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
 
-    #   context 'Qualifier user is empty' do
-    #     before(:each) { subject.qualifier_id = nil }
+      context 'Qualifier user is empty' do
+        before(:each) { subject.qualifier_id = nil }
 
-    #     it { is_expected.to_not be_valid }
-    #     it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
-    #   end
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
 
-    #   context 'Qualified user is empty' do
-    #     before(:each) { subject.qualified_id = nil }
+      context 'Qualified user is empty' do
+        before(:each) { subject.qualified_id = nil }
 
-    #     it { is_expected.to_not be_valid }
-    #     it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
-    #   end
-    # end
-
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+    end
   end
-
-
 end
