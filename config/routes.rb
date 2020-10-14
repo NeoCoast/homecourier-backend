@@ -23,9 +23,9 @@ Rails.application.routes.draw do
         end
 
         resources :users, only: %i[index]
-        resources :volunteers, only: %i[index]
+        resources :volunteers, only: %i[index show]
         get '/volunteers/orders', to: 'volunteers#orders_volunteers'
-        resources :helpees, only: %i[index]
+        resources :helpees, only: %i[index show]
         resources :document_types, only: %i[index]
         resources :categories, only: %i[create index show destroy]
         resources :orders, only: %i[create index show destroy]
