@@ -40,21 +40,17 @@ class Api::V1::OrdersController < ApplicationController
 
   def update_status
     case params[:status]
-    when "accepted"
+    when 'accepted'
       @order.accept!
-    when "in_process"
+    when 'in_process'
       @order.start!
-      @helpee.notifications.create!(title: "En proceso", body: "Su pedido " +  @title + " ya se encuentra en camino")
-    when "finished"
+      @helpee.notifications.create!(title: 'En proceso', body: "Su pedido #{@title} ya se encuentra en camino")
+    when 'finished'
       @order.finish!
-    when "cancelled"
+    when 'cancelled'
       @order.cancel!
-      @helpee.notifications.create!(title: "Cancelado", body: "El pedido " + @title + " ha sido cancelado")
+      @helpee.notifications.create!(title: 'Cancelado', body: "El pedido #{@title} ha sido cancelado")
     end
-  end
-
-  def orders_volunteers
-    @orders = Order.joins(:volunteers).where(users: { id: params[:volunteer_id]})
   end
 
   private
