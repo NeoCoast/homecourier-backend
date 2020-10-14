@@ -48,19 +48,13 @@ class Api::V1::OrdersController < ApplicationController
     # the order_request must exist and the status must be waiting
     # delete all the other requests
     @order = Order.find(params[:order_id])
-    if @order.status === "created"
-      @order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
-      if @order_request.order_request_status === "waiting"
-        OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?', params[:order_id], params[:volunteer_id]))
-        OrderRequest.update(@order_request.id, :order_request_status => "accepted")
-        Order.update(@order.id, :status => "accepted")
-        head :ok 
-      else
-        head 403
-      end
-    else
-      head 404
-    end
+    @order.accept!
+    @order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
+    @order_request.accept!
+    OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?', params[:order_id], params[:volunteer_id]))
+    @volunteer = Volunteer.find(params[:volunteer_id])
+    @volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{@title} ha sido aceptado")
+    head :ok 
   end
 
   def take_order
@@ -73,14 +67,17 @@ class Api::V1::OrdersController < ApplicationController
     case params[:status]
     when 'accepted'
       @order.accept!
+      @volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{@title} ha sido aceptado")
     when 'in_process'
       @order.start!
       @helpee.notifications.create!(title: 'En proceso', body: "Su pedido #{@title} ya se encuentra en camino")
     when 'finished'
       @order.finish!
+      @volunteer.notifications.create!(title: 'Finalizado', body: "El pedido #{@title} ha sido finalizado")
     when 'cancelled'
       @order.cancel!
       @helpee.notifications.create!(title: 'Cancelado', body: "El pedido #{@title} ha sido cancelado")
+      @volunteer.notifications.create!(title: 'Cancelado', body: "El pedido #{@title} ha sido cancelado")
     end
   end
 
@@ -97,6 +94,7 @@ class Api::V1::OrdersController < ApplicationController
   def load_params
     @order = Order.find(params[:order_id])
     @helpee = Helpee.find(Order.find(params[:order_id]).helpee.id)
+    @volunteer = Volunteer.find(OrderRequest.find_by!(order_id: params[:order_id]).volunteer.id)
     @title = @order.title
   end
 end

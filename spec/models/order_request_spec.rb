@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe OrderRequest, type: :model do
 
   let!(:helpee) { create(:user, type: 'Helpee') }
-  let!(:order) { create(:order, helpee_id: helpee.id) }
+  let!(:categories) { create_list(:category, 3) }
+  let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
   let!(:volunteer) { create(:user, type: 'Volunteer') }
 
   subject do
@@ -49,4 +50,35 @@ RSpec.describe OrderRequest, type: :model do
       end
     end
   end
+
+  describe 'Order_request transitions' do
+    context 'succeeds' do
+
+      it 'has default state' do
+        expect(subject.order_request_status).to eq "waiting"
+      end
+
+      it 'valid transitions' do
+        subject.accept!
+        expect(subject.order_request_status).to eq "accepted"
+      end
+      
+    end
+
+    context 'fails' do
+
+      context 'rejected -> accepted' do
+        before() { subject.reject! }
+        it { expect { subject.accept! }.to raise_error(AASM::InvalidTransition) }
+      end
+
+      context 'accepted -> rejected' do
+        before() { subject.accept! }
+        it { expect { subject.reject! }.to raise_error(AASM::InvalidTransition) }
+      end
+      
+    end
+
+  end
+
 end
