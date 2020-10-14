@@ -22,3 +22,5 @@ end
 
 json.created_at order.created_at
 json.updated_at order.updated_at
+
+json.volunteers order.volunteers

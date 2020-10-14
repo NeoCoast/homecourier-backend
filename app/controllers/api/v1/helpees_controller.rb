@@ -28,6 +28,10 @@ class Api::V1::HelpeesController < ApplicationController
     @rating = HelpeeRating.where("order_id = ? and qualifier_id = ?", @order.id, @helpee_id).first
   end
 
+  def show
+    @helpee = Helpee.find(params[:id])
+  end
+
   private
 
   def helpee?
