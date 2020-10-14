@@ -1,4 +1,5 @@
-class Order < ApplicationRecord            
+class Order < ApplicationRecord 
+    include AASM           
     validates :title, presence: true, length: {minimum: 5}
     validates :description, presence: true, length: {minimum: 5}
     validates :categories, presence: true
@@ -9,4 +10,29 @@ class Order < ApplicationRecord
     
     belongs_to :helpee
     has_and_belongs_to_many :categories
+
+    #states management
+    aasm column: 'status' do 
+        state :created, initial: true
+        state :accepted
+        state :in_process
+        state :finished
+        state :cancelled
+
+        event :accept do
+            transitions from: :created, to: :accepted
+        end
+    
+        event :start do
+            transitions from: :accepted, to: :in_process
+        end
+    
+        event :finish do
+            transitions from: :in_process, to: :finished
+        end
+
+        event :cancel do
+            transitions from: [:created, :accepted, :in_process], to: :cancelled
+        end
+    end
 end

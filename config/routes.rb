@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
         resources :users, only: %i[index]
         resources :volunteers, only: %i[index show]
+        get '/volunteers/orders', to: 'volunteers#orders_volunteers'
         resources :helpees, only: %i[index show]
         resources :document_types, only: %i[index]
         resources :categories, only: %i[create index show destroy]
@@ -33,6 +34,7 @@ Rails.application.routes.draw do
         get '/orders/show/volunteers', to: 'orders#order_volunteers'
         post '/orders/accept', to: 'orders#accept_volunteer'
         post '/orders/take', to: 'orders#take_order'
+        post '/orders/status', to: 'orders#update_status'
         resources :notifications, only: %i[index]
         post '/notifications/seen', to: 'notifications#seen'
       end

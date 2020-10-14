@@ -286,4 +286,50 @@ RSpec.describe "Api::V1::Orders", type: :request do
       end
     end
   end
+
+  describe 'POST /api/v1/orders/status' do
+    let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+    let!(:order) { create(:order, helpee_id: helpee.id) }
+    let!(:volunteer) { create(:user, type: 'Volunteer') }
+
+    subject do
+      {
+          order_id: order.id,
+          status: "accepted"
+      }
+    end
+
+    context 'succeeds' do
+      before(:each) do
+        post api_v1_users_path + "/login", params: { user: {
+            email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        post api_v1_orders_path + "/status", params: subject, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      end
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'update status' do
+        expect(Order.find(order.id).status).to eq "accepted"
+      end
+    end
+
+    context 'fails' do
+      before(:each) do
+        post api_v1_users_path + "/login", params: { user: {
+            email: volunteer.email, password: volunteer.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        subject['status'] = "finish"
+        post api_v1_orders_path + "/status", params: subject, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      end
+
+      it 'invalid transition' do
+        expect(Order.find(order.id).status).to eq "created"
+      end
+    end
+  end
 end

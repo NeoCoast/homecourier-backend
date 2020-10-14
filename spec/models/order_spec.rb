@@ -56,4 +56,35 @@ RSpec.describe Order, type: :model do
       end
     end
   end
+
+  describe 'Order transitions' do
+    context 'succeeds' do
+
+      it 'has default state' do
+        expect(subject.status).to eq "created"
+      end
+
+      it 'valid transitions' do
+        subject.accept!
+        subject.start!
+        subject.finish!
+        expect(subject.status).to eq "finished"
+      end
+      
+    end
+
+    context 'fails' do
+
+      context 'created -> finished' do
+        it { expect { subject.finish! }.to raise_error(AASM::InvalidTransition) }
+      end
+
+      context 'accepted -> finished' do
+        before() { subject.accept!}
+        it { expect { subject.finish! }.to raise_error(AASM::InvalidTransition) }
+      end
+      
+    end
+
+  end
 end

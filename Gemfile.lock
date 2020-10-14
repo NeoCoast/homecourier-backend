@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    aasm (4.12.3)
+      concurrent-ruby (~> 1.0)
     action-cable-testing (0.6.1)
       actioncable (>= 5.0)
     actioncable (5.2.4.4)
@@ -200,6 +202,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm (~> 4.12)
   action-cable-testing (~> 0.6.1)
   bootsnap (>= 1.1.0)
   byebug
