@@ -31,6 +31,10 @@ Rails.application.routes.draw do
         resources :ratings, only: %i[create]
         get '/orders/show/all', to: 'orders#show_status'
         post '/orders/take', to: 'orders#take_order'
+        post '/helpees/ratingPending', to: 'helpees#rating_pending'
+        post '/helpees/rating', to: 'helpees#rating'
+        post '/volunteers/ratingPending', to: 'volunteers#rating_pending'
+        post '/volunteers/rating', to: 'volunteers#rating'
       end
     end
   end
