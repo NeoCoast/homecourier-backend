@@ -23,6 +23,9 @@ class Api::V1::VolunteersController < ApplicationController
       @rating.score = params[:score]
       @rating.comment = params[:comment]
       @rating.save!
+
+      @order_request.order.updated_at = Time.now
+      @order_request.order.save
       head :ok
     else
       head :bad_request
@@ -31,15 +34,8 @@ class Api::V1::VolunteersController < ApplicationController
 
   def rating_pending
     @volunteer_id = params[:user_id]
-    @orders = OrderRequest.select("order_id").where("volunteer_id = ? AND order_request_status = ?", @volunteer_id, OrderRequest.order_request_statuses[:accepted])
-    
-    @orders_ids = []
-    @orders.each do |order|
-      @orders_ids.push order["order_id"]
-    end
-
-    @order = Order.find_by("id = ? AND status = ?", @orders_ids, Order.statuses[:finished])
-    @rating = VolunteerRating.where("order_id = ? and qualifier_id = ?", @order.id, @volunteer_id).first()
+    @order = Order.joins(:order_requests).select("*").where('orders.status' => Order.statuses[:finished], 'order_requests.volunteer_id' => @volunteer_id, 'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]).order("orders.updated_at").first
+    @rating = VolunteerRating.where("order_id = ? and qualifier_id = ?", @order.id, @volunteer_id).first
   end
 
   private
