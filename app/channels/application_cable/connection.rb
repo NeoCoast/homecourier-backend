@@ -3,7 +3,7 @@ module ApplicationCable
     identified_by :current_user
 
     def connect
-      find_verified_user request.headers['Authorization']
+      find_verified_user request.params[:token]
     end
 
     private
