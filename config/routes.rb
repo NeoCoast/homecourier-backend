@@ -32,6 +32,7 @@ Rails.application.routes.draw do
         get '/orders/show/all', to: 'orders#show_status'
         get '/orders/show/helpee', to: 'orders#orders_helpee'
         get '/orders/show/volunteers', to: 'orders#order_volunteers'
+        get '/orders/show/volunteer', to: 'orders#volunteer_orders'
         post '/orders/accept', to: 'orders#accept_volunteer'
         post '/orders/take', to: 'orders#take_order'
         post '/orders/status', to: 'orders#update_status'

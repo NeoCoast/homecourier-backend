@@ -43,6 +43,10 @@ class Api::V1::OrdersController < ApplicationController
     @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id]).order("users.name ASC")
   end
 
+  def volunteer_orders 
+    @orders = Order.joins(:order_requests).where('volunteer_id = ?', params[:volunteer_id]).order("created_at DESC")
+  end
+
   def accept_volunteer
     # the order must be in the state created
     # the order_request must exist and the status must be waiting
