@@ -33,7 +33,7 @@ class Api::V1::VolunteersController < ApplicationController
   end
 
   def rating_pending
-    @volunteer_id = params[:user_id]
+    @volunteer_id = params[:volunteer_id]
     @order = Order.joins(:order_requests).select("*").where('orders.status' => Order.statuses[:finished], 'order_requests.volunteer_id' => @volunteer_id, 'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]).order("orders.updated_at").first
     @rating = VolunteerRating.where("order_id = ? and qualifier_id = ?", @order.id, @volunteer_id).first
   end
