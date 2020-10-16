@@ -6,7 +6,8 @@ RSpec.describe "Api::V1::Orders", type: :request do
 
   describe "GET /api/v1/orders" do
     let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-    let!(:orders) { create_list(:order, 10, helpee_id: helpee.id) }
+    let!(:categories) { create_list(:category, 3) }
+    let!(:orders) { create_list(:order, 10, helpee_id: helpee.id, categories: categories) }
 
     before(:each) do
       post api_v1_users_path + "/login", params: { user: {
@@ -46,7 +47,9 @@ RSpec.describe "Api::V1::Orders", type: :request do
 
   describe 'POST /api/v1/orders' do
     let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-    let!(:order) { build(:order) }
+    let!(:category) { create(:category) }
+    let!(:categories) { create_list(:category, 3) }
+    let!(:order) { build(:order, categories: categories) }
 
     subject do
       {
@@ -54,7 +57,7 @@ RSpec.describe "Api::V1::Orders", type: :request do
           description: order.description,
           status: order.status,
           helpee_id: helpee.id,
-          categories: []
+          categories: [ { "id": category.id } ]
       }
     end
 
@@ -109,7 +112,8 @@ RSpec.describe "Api::V1::Orders", type: :request do
 
   describe 'GET /api/v1/orders/:id' do
     let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-    let!(:order) { create(:order, helpee_id: helpee.id) }
+    let!(:categories) { create_list(:category, 3) }
+    let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
 
     context 'succeeds' do
       before(:each) do
@@ -153,7 +157,8 @@ RSpec.describe "Api::V1::Orders", type: :request do
 
   describe 'DELETE /api/v1/orders/:id' do
     let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-    let!(:order) { create(:order, helpee_id: helpee.id) }
+    let!(:categories) { create_list(:category, 3) }
+    let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
 
     context 'succeeds' do
       before(:each) do
@@ -193,7 +198,8 @@ RSpec.describe "Api::V1::Orders", type: :request do
 
   describe "GET /api/v1/show/all" do
     let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-    let!(:orders) { create_list(:order, 10, helpee_id: helpee.id, status: 0) }
+    let!(:categories) { create_list(:category, 3) }
+    let!(:orders) { create_list(:order, 10, helpee_id: helpee.id, status: 0, categories: categories) }
 
     before(:each) do
       post api_v1_users_path + "/login", params: { user: {
@@ -235,7 +241,8 @@ RSpec.describe "Api::V1::Orders", type: :request do
 
   describe 'POST /api/v1/orders/take' do
     let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-    let!(:order) { create(:order, helpee_id: helpee.id) }
+    let!(:categories) { create_list(:category, 3) }
+    let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
     let!(:volunteer) { create(:user, type: 'Volunteer') }
 
     subject do
@@ -289,7 +296,8 @@ RSpec.describe "Api::V1::Orders", type: :request do
 
   describe 'POST /api/v1/orders/status' do
     let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-    let!(:order) { create(:order, helpee_id: helpee.id) }
+    let!(:categories) { create_list(:category, 3) }
+    let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
     let!(:volunteer) { create(:user, type: 'Volunteer') }
 
     subject do
@@ -305,6 +313,7 @@ RSpec.describe "Api::V1::Orders", type: :request do
             email: helpee.email, password: helpee.password
         } }, headers: headers
         @token = response.headers['Authorization']
+        post api_v1_orders_path + "/take", params: { order_id: order.id, volunteer_id: volunteer.id }, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
         post api_v1_orders_path + "/status", params: subject, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       end
 
