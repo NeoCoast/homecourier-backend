@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'localhost:8080'
+    origins 'localhost:8080', 'test-homecourier-backend.herokuapp.com', 'demo-homecourier-backend.herokuapp.com'
 
     resource '*',
              headers: :any,
