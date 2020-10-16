@@ -84,13 +84,16 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Devise
-  # assuming you have a SMTP server on localhost:25
-  config.action_mailer.default_url_options = { host: 'yourdomain.com' }
+  config.action_mailer.default_url_options = { host: 'test-homecourier-backend.herokuapp.com' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: '127.0.0.1',
-    port: 25,
-    domain: 'yourdomain.com'
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               'test-homecourier-backend.herokuapp.com',
+    user_name:            'homecourierfing@gmail.com',
+    password:             'homecourier123',
+    authentication:       'plain',
+    enable_starttls_auto: true 
   }
 
   # Active Storage
