@@ -20,7 +20,7 @@ class Api::V1::NotificationsController < ApplicationController
   def index_settings
     @user_id = current_user.id
     @page_size = PAGE_SIZE
-    @page = params[:page] || 0
+    @page = params[:page].to_i || 0
     @offset = @page * @page_size
   end
 

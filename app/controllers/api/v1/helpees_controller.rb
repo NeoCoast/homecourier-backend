@@ -32,6 +32,10 @@ class Api::V1::HelpeesController < ApplicationController
     @helpee = Helpee.find(params[:id])
   end
 
+  def show
+    @helpee = Helpee.find(params[:id])
+  end
+
   private
 
   def helpee?

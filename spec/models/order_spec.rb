@@ -7,10 +7,12 @@ RSpec.describe Order, type: :model do
 
   subject do
     described_class.new(
+        id: 1,
         title: order_params.title,
         description: order_params.description,
         status: order_params.status,
-        helpee_id: helpee.id
+        helpee_id: helpee.id,
+        categories: [category]
     )
   end
 

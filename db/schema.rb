@@ -55,16 +55,6 @@ ActiveRecord::Schema.define(version: 2020_10_11_184705) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "notifications", force: :cascade do |t|
-    t.string "title"
-    t.string "body"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "status", default: 0
-    t.index ["user_id"], name: "index_notifications_on_user_id"
-  end
-  
   create_table "helpee_ratings", primary_key: ["order_id", "qualifier_id", "qualified_id"], force: :cascade do |t|
     t.integer "order_id", null: false
     t.integer "qualifier_id", null: false
@@ -73,6 +63,16 @@ ActiveRecord::Schema.define(version: 2020_10_11_184705) do
     t.string "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "title"
+    t.string "body"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "status", default: 0
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "order_requests", force: :cascade do |t|
