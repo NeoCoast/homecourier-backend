@@ -56,3 +56,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # Manage users  
 gem 'devise', '~> 4.7.3'
 gem 'devise-jwt', '~> 0.8.0'
+
+gem 'rails_admin', '~> 2.0.2'
