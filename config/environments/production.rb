@@ -98,4 +98,6 @@ Rails.application.configure do
 
   # Active Storage
   config.active_storage.service = :local
+
+  config.allowed_cors_origins = '*'
 end
