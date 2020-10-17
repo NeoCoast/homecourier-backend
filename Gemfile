@@ -57,6 +57,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'devise', '~> 4.7.3'
 gem 'devise-jwt', '~> 0.8.0'
 
+gem 'rails_admin', '~> 2.0.2'
+
 gem 'aasm', '~> 4.12'
 
 group :production do

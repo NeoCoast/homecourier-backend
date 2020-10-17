@@ -48,4 +48,5 @@ Rails.application.routes.draw do
   end
 
   mount ActionCable.server => '/cable'
+  mount RailsAdmin::Engine => '/home_courier_admin', as: 'rails_admin'
 end
