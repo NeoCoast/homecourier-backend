@@ -1,23 +1,25 @@
-class Api::V1::OrdersController < ApplicationController
+# frozen_string_literal: true
 
+# OrdersController
+class Api::V1::OrdersController < ApplicationController
   before_action :authenticate_user!
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
 
   def create
     @category_ids = []
-    params.extract!(:categories)["categories"].each do |category|
-      @category_ids.push category["id"]
+    params.extract!(:categories)['categories'].each do |category|
+      @category_ids.push category['id']
     end
     @order = Order.new
     @order.helpee_id = @helpee.id
     @order.title = params[:title]
     @order.description = params[:description]
-    @order.categories << Category.where(:id => @category_ids)        
+    @order.categories << Category.where(id: @category_ids)
     @order.save!
   end
 
-  def index 
+  def index
     @orders = Order.all
   end
 
@@ -25,26 +27,29 @@ class Api::V1::OrdersController < ApplicationController
     @order = Order.find(params[:id])
   end
 
-  def destroy 
+  def destroy
     @order = Order.find(params[:id])
     @order.destroy
     head :ok
   end
 
   def show_status
-    @orders = Order.where(status: Order.statuses[params[:status]]).order("created_at DESC")
+    @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC')
   end
 
   def orders_helpee
-    @orders = Order.where(helpee_id: params[:helpee_id]).order("created_at ASC")
+    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at ASC')
   end
 
   def order_volunteers
-    @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id]).order("users.name ASC")
+    @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id]).order('users.name ASC')
   end
 
-  def volunteer_orders 
-    @orders = Order.joins(:order_requests).where('volunteer_id = ?', params[:volunteer_id]).order("created_at DESC")
+  def volunteer_orders
+    @volunteer = Volunteer.find(params[:volunteer_id])
+    puts @volunteer.helpee_ratings
+    @orders = @volunteer.orders
+    # @orders = Order.joins(:order_requests).where('volunteer_id = ?', params[:volunteer_id]).order('created_at DESC')
   end
 
   def accept_volunteer
@@ -55,10 +60,11 @@ class Api::V1::OrdersController < ApplicationController
     @order.accept!
     @order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
     @order_request.accept!
-    OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?', params[:order_id], params[:volunteer_id]))
+    OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?',
+                                           params[:order_id], params[:volunteer_id]))
     @volunteer = Volunteer.find(params[:volunteer_id])
     @volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{@title} ha sido aceptado")
-    head :ok 
+    head :ok
   end
 
   def take_order
