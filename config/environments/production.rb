@@ -101,5 +101,5 @@ Rails.application.configure do
 
   config.allowed_cors_origins = '*'
 
-  config.action_cable.allowed_request_origins = ['https://test-homecourier.herokuapp.com']
+  config.action_cable.allowed_request_origins = ['https://test-homecourier-backend.herokuapp.com', 'https://test-homecourier.herokuapp.com']
 end
