@@ -34,7 +34,7 @@ module HomecourierApi
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'https://test-homecourier-backend.herokuapp.com'
+        origins ['https://test-homecourier-backend.herokuapp.com', 'https://test-homecourier.herokuapp.com']
         resource '*', :headers => :any, :methods => :any # also tried [:get, :post, etc]
       end
     end
