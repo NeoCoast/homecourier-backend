@@ -100,4 +100,6 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   config.allowed_cors_origins = '*'
+
+  config.action_cable.allowed_request_origins = ['https://test-homecourier.herokuapp.com']
 end

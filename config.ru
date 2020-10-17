@@ -8,7 +8,7 @@ require 'rack/cors'
 use Rack::Cors do
 
   allow do
-    origins 'https://test-homecourier.herokuapp.com/'
+    origins 'https://test-homecourier.herokuapp.com'
     
     resource '*',
              headers: :any,
