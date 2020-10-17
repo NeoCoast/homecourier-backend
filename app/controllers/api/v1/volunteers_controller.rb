@@ -14,18 +14,18 @@ class Api::V1::VolunteersController < ApplicationController
   end
 
   def rating
-    @order_request = OrderRequest.find_by("order_id = ? AND order_request_status = ?", params[:order_id], OrderRequest.order_request_statuses[:accepted])
-    if @order_request != nil then 
-      @rating = VolunteerRating.new
-      @rating.order_id = params[:order_id]
-      @rating.qualifier_id = @order_request.volunteer.id
-      @rating.qualified_id = @order_request.order.helpee.id
-      @rating.score = params[:score]
-      @rating.comment = params[:comment]
-      @rating.save!
+    order_request = OrderRequest.find_by("order_id = ? AND order_request_status = ?", params[:order_id], OrderRequest.order_request_statuses[:accepted])
+    if order_request != nil then 
+      rating = VolunteerRating.new
+      rating.order_id = params[:order_id]
+      rating.qualifier_id = order_request.volunteer.id
+      rating.qualified_id = order_request.order.helpee.id
+      rating.score = params[:score]
+      rating.comment = params[:comment]
+      rating.save!
 
-      @order_request.order.updated_at = Time.now
-      @order_request.order.save
+      order_request.order.updated_at = Time.now
+      order_request.order.save
       head :ok
     else
       head :bad_request
@@ -33,9 +33,9 @@ class Api::V1::VolunteersController < ApplicationController
   end
 
   def rating_pending
-    @volunteer_id = params[:volunteer_id]
-    @order = Order.joins(:order_requests).select("*").where('orders.status' => Order.statuses[:finished], 'order_requests.volunteer_id' => @volunteer_id, 'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]).order("orders.updated_at").first
-    @rating = VolunteerRating.where("order_id = ? and qualifier_id = ?", @order.id, @volunteer_id).first
+    volunteer_id = params[:volunteer_id]
+    @order = Order.joins(:order_requests).select("*").where('orders.status' => Order.statuses[:finished], 'order_requests.volunteer_id' => volunteer_id, 'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]).order("orders.updated_at").first
+    @rating = VolunteerRating.where("order_id = ? and qualifier_id = ?", @order.id, volunteer_id).first
   end
 
   private
