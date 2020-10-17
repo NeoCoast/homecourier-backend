@@ -8,11 +8,12 @@ require 'rack/cors'
 use Rack::Cors do
 
   allow do
-    origins '*'
+    origins 'https://test-homecourier.herokuapp.com/'
     
     resource '*',
              headers: :any,
              expose: ['Authorization'],
-             methods: %i[get post put patch delete options head]
+             methods: %i[get post put patch delete options head],
+             credentials: true
   end
 end
