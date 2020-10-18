@@ -1,10 +1,24 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Orders', type: :request do
   let!(:categories) { create_list(:category, 3) }
   let!(:headers) { { 'ACCEPT' => 'application/json' } }
-  let!(:volunteer) { create(:user, type: 'Volunteer', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-  let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+  let!(:volunteer) do
+    create(
+      :user,
+      type: 'Volunteer',
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+    )
+  end
+  let!(:helpee) do
+    create(
+      :user,
+      type: 'Helpee',
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+    )
+  end
   let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
   let!(:order_delete) { create(:order, helpee_id: helpee.id, categories: categories) }
   let!(:order_created) { create(:order, helpee_id: helpee.id, categories: categories, status: :created) }
@@ -38,7 +52,8 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         email: volunteer.email, password: volunteer.password
       } }, headers: headers
       @token = response.headers['Authorization']
-      get api_v1_orders_path + "/#{order.id}", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      get api_v1_orders_path + "/#{order.id}",
+          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
     end
 
     it 'returns http success' do
@@ -63,7 +78,8 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         email: volunteer.email, password: volunteer.password
       } }, headers: headers
       @token = response.headers['Authorization']
-      delete api_v1_orders_path + "/#{order_delete.id}", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      delete api_v1_orders_path + "/#{order_delete.id}",
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
     end
 
     it 'returns http success' do
@@ -91,7 +107,9 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     end
 
     it 'returns all orders with the status accepted' do
-      get api_v1_orders_path + '/show/all', params: { status: 'accepted' }, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      get api_v1_orders_path + '/show/all',
+          params: { status: 'accepted' },
+          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       orders = JSON.parse(response.body)
       orders.each do |order_aux|
         expect(order_aux['id']).to eq(order_accepted.id)
@@ -111,7 +129,9 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         email: helpee.email, password: helpee.password
       } }, headers: headers
       @token = response.headers['Authorization']
-      get api_v1_orders_path + '/show/helpee', params: { helpee_id: helpee.id }, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      get api_v1_orders_path + '/show/helpee',
+          params: { helpee_id: helpee.id },
+          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
     end
 
     it 'returns http success' do
@@ -133,7 +153,9 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     end
 
     it 'returns http success' do
-      get api_v1_orders_path + '/show/volunteers', params: { volunteer_id: volunteer.id, order_id: order.id }, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      get api_v1_orders_path + '/show/volunteers',
+          params: { volunteer_id: volunteer.id, order_id: order.id },
+          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       expect(response).to have_http_status(:ok)
     end
   end
@@ -144,10 +166,12 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         email: volunteer.email, password: volunteer.password
       } }, headers: headers
       @token = response.headers['Authorization']
-      post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
-                                         headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-      post api_v1_orders_path + '/accept', params: { order_id: order.id, volunteer_id: volunteer.id },
-                                           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      post api_v1_orders_path + '/take',
+           params: { order_id: order.id, volunteer_id: volunteer.id },
+           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      post api_v1_orders_path + '/accept',
+           params: { order_id: order.id, volunteer_id: volunteer.id },
+           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
     end
 
     it 'returns http success' do
@@ -155,7 +179,8 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     end
 
     it 'returns all orders associated to the helpee' do
-      get api_v1_orders_path + "/#{order.id}", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      get api_v1_orders_path + "/#{order.id}",
+          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       json = JSON.parse(response.body)
       expect(json['status']).to eq('accepted')
     end

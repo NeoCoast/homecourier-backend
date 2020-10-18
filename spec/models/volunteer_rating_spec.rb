@@ -1,18 +1,21 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe VolunteerRating, type: :model do
   # let!(:helpee_rating_params) { attributes_for(:helpee_rating) }
+  let!(:categories) { create_list(:category, 3) }
   let!(:helpee) { create(:user, type: 'Helpee') }
-  let!(:order) { create(:order, helpee_id: helpee.id) }
+  let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
   let!(:volunteer) { create(:user, type: 'Volunteer') }
 
   subject do
     described_class.new(
-        score: 4,
-        comment: "Muy bien",
-        order_id: order.id,  
-        qualifier_id: volunteer.id,
-        qualified_id: helpee.id
+      score: 4,
+      comment: 'Muy bien',
+      order_id: order.id,
+      qualifier_id: volunteer.id,
+      qualified_id: helpee.id
     )
   end
 
@@ -33,12 +36,12 @@ RSpec.describe VolunteerRating, type: :model do
     end
 
     context 'fails' do
-    #   context 'low score and comment empty' do
-    #     before(:each) { subject.score = 2, subject.comment = nil }
+      #   context 'low score and comment empty' do
+      #     before(:each) { subject.score = 2, subject.comment = nil }
 
-    #     it { is_expected.to_not be_valid }
-    #     it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
-    #   end
+      #     it { is_expected.to_not be_valid }
+      #     it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      #   end
 
       context 'Order is empty' do
         before(:each) { subject.order_id = nil }

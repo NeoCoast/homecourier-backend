@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe OrderRequest, type: :model do
-
   let!(:helpee) { create(:user, type: 'Helpee') }
   let!(:categories) { create_list(:category, 3) }
   let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
@@ -9,9 +10,9 @@ RSpec.describe OrderRequest, type: :model do
 
   subject do
     described_class.new(
-        order_id: order.id,
-        volunteer_id: volunteer.id,
-        order_request_status: 0,
+      order_id: order.id,
+      volunteer_id: volunteer.id,
+      order_request_status: 0
     )
   end
 
@@ -53,32 +54,26 @@ RSpec.describe OrderRequest, type: :model do
 
   describe 'Order_request transitions' do
     context 'succeeds' do
-
       it 'has default state' do
-        expect(subject.order_request_status).to eq "waiting"
+        expect(subject.order_request_status).to eq 'waiting'
       end
 
       it 'valid transitions' do
         subject.accept!
-        expect(subject.order_request_status).to eq "accepted"
+        expect(subject.order_request_status).to eq 'accepted'
       end
-      
     end
 
     context 'fails' do
-
       context 'rejected -> accepted' do
-        before() { subject.reject! }
+        before { subject.reject! }
         it { expect { subject.accept! }.to raise_error(AASM::InvalidTransition) }
       end
 
       context 'accepted -> rejected' do
-        before() { subject.accept! }
+        before { subject.accept! }
         it { expect { subject.reject! }.to raise_error(AASM::InvalidTransition) }
       end
-      
     end
-
   end
-
 end
