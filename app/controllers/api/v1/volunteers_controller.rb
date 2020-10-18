@@ -4,11 +4,11 @@ class Api::V1::VolunteersController < ApplicationController
   def index
     @volunteers = Volunteer.all
   end
-  
+
   def show
     @volunteer = Volunteer.find(params[:id])
   end
-  
+
   def orders_volunteers
     @orders = Volunteer.find(params[:id]).orders
   end
@@ -47,5 +47,4 @@ class Api::V1::VolunteersController < ApplicationController
   def volunteer_params
     params.permit(:id)
   end
-
 end

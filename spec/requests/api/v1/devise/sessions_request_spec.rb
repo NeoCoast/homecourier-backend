@@ -1,9 +1,22 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
-
-  let!(:user_vol) { create(:user, type: 'Volunteer', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
-  let!(:user_helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+  let!(:user_vol) do
+    create(
+      :user,
+      type: 'Volunteer',
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+    )
+  end
+  let!(:user_helpee) do
+    create(
+      :user,
+      type: 'Helpee',
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+    )
+  end
   let!(:unregistered_user) { build(:user, type: 'Helpee') }
 
   describe 'POST /api/v1/users/login' do
@@ -13,57 +26,69 @@ RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
       context 'Volunteer' do
         subject do
           {
-              email: user_vol.email,
-              password: user_vol.password
+            email: user_vol.email,
+            password: user_vol.password
           }
         end
 
-        before(:each) { post api_v1_users_path + "/login", params: { user: subject }, headers: headers }
+        before(:each) do
+          post api_v1_users_path + '/login',
+               params: { user: subject },
+               headers: headers
+        end
 
         it 'returns http success' do
           expect(response).to have_http_status(:ok)
         end
 
         it 'returns authorization token' do
-          expect(response.headers["Authorization"]).to include("Bearer")
+          expect(response.headers['Authorization']).to include('Bearer')
         end
       end
       context 'Helpee' do
         subject do
           {
-              email: user_helpee.email,
-              password: user_helpee.password
+            email: user_helpee.email,
+            password: user_helpee.password
           }
         end
 
-        before(:each) { post api_v1_users_path + "/login", params: { user: subject }, headers: headers }
+        before(:each) do
+          post api_v1_users_path + '/login',
+               params: { user: subject },
+               headers: headers
+        end
 
         it 'returns http success' do
           expect(response).to have_http_status(:ok)
         end
 
         it 'returns authorization token' do
-          expect(response.headers["Authorization"]).to include("Bearer")
+          expect(response.headers['Authorization']).to include('Bearer')
         end
       end
     end
     context 'fails' do
       subject do
         {
-            email: unregistered_user.email,
-            password: unregistered_user.password
+          email: unregistered_user.email,
+          password: unregistered_user.password
         }
       end
 
-      before(:each) { post api_v1_users_path + "/login", params: { user: subject }, headers: headers }
+      before(:each) do
+        post api_v1_users_path + '/login',
+             params: { user: subject },
+             headers: headers
+      end
 
       it 'returns http bad_request' do
         expect(response).to have_http_status(:unauthorized)
       end
 
       it 'returns error message' do
-        expect(response.body).to include("error")
-        expect(response.body).to include("Invalid Email or password")
+        expect(response.body).to include('error')
+        expect(response.body).to include('Invalid Email or password')
       end
     end
   end
@@ -75,24 +100,29 @@ RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
       context 'Volunteer' do
         subject do
           {
-              email: user_vol.email,
-              password: user_vol.password
+            email: user_vol.email,
+            password: user_vol.password
           }
         end
 
         before(:each) do
-          post api_v1_users_path + "/login", params: { user: subject }, headers: headers
+          post api_v1_users_path + '/login',
+               params: { user: subject },
+               headers: headers
           @token = response.headers['Authorization']
         end
 
         it 'returns http success' do
-          delete api_v1_users_path + "/logout", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
           expect(response).to have_http_status(:ok)
         end
 
         it 'session expired' do
-          delete api_v1_users_path + "/logout", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-          get api_v1_users_path, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          get api_v1_users_path,
+              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
           expect(response).to have_http_status(:unauthorized)
         end
       end
@@ -100,24 +130,29 @@ RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
       context 'Helpee' do
         subject do
           {
-              email: user_helpee.email,
-              password: user_helpee.password
+            email: user_helpee.email,
+            password: user_helpee.password
           }
         end
 
         before(:each) do
-          post api_v1_users_path + "/login", params: { user: subject }, headers: headers
+          post api_v1_users_path + '/login',
+               params: { user: subject },
+               headers: headers
           @token = response.headers['Authorization']
         end
 
         it 'returns http success' do
-          delete api_v1_users_path + "/logout", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
           expect(response).to have_http_status(:ok)
         end
 
         it 'session expired' do
-          delete api_v1_users_path + "/logout", headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-          get api_v1_users_path, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          get api_v1_users_path,
+              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
           expect(response).to have_http_status(:unauthorized)
         end
       end

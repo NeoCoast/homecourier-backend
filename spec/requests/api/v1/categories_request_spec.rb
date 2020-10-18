@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Api::V1::Categories", type: :request do
-
+# CategoriesController
+RSpec.describe 'Api::V1::Categories', type: :request do
   let!(:headers) { { 'ACCEPT' => 'application/json' } }
 
-  describe "GET /api/v1/categories" do
+  describe 'GET /api/v1/categories' do
     let!(:helpee) { create(:user, type: 'Helpee') }
     let!(:categories) { create_list(:category, 10) }
 
     before(:each) do
-      post api_v1_users_path + "/login", params: { user: {
-          email: helpee.email, password: helpee.password
+      post api_v1_users_path + '/login', params: { user: {
+        email: helpee.email, password: helpee.password
       } }, headers: headers
       @token = response.headers['Authorization']
       get api_v1_categories_path, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
@@ -21,7 +23,6 @@ RSpec.describe "Api::V1::Categories", type: :request do
     end
 
     context 'the answer matches db' do
-
       before(:each) { @body = JSON.parse(response.body) }
 
       it 'number of records' do
@@ -31,7 +32,7 @@ RSpec.describe "Api::V1::Categories", type: :request do
       it 'content of records' do
         categories_array = []
         categories.each do |category|
-          categories_array << category.attributes.slice("id", "description")
+          categories_array << category.attributes.slice('id', 'description')
         end
         expect(@body).to match_array(categories_array)
       end
@@ -56,9 +57,13 @@ RSpec.describe "Api::V1::Categories", type: :request do
     end
 
     context 'fails' do
-      it { expect { post api_v1_categories_path, params: {
-          description: nil
-      }, headers: headers }.to raise_error(ActiveRecord::RecordInvalid) }
+      it {
+        expect do
+          post api_v1_categories_path, params: {
+            description: nil
+          }, headers: headers
+        end .to raise_error(ActiveRecord::RecordInvalid)
+      }
     end
   end
 
@@ -67,7 +72,7 @@ RSpec.describe "Api::V1::Categories", type: :request do
       let!(:category) { create(:category) }
 
       before(:each) do
-        get api_v1_categories_path + "/" + category.id.to_s, headers: headers
+        get api_v1_categories_path + '/' + category.id.to_s, headers: headers
       end
 
       it 'returns http success' do
@@ -82,7 +87,7 @@ RSpec.describe "Api::V1::Categories", type: :request do
 
     context 'fails' do
       before(:each) do
-        get api_v1_categories_path "/" + Faker::Number.number(digits: 55).to_s, headers: headers
+        get api_v1_categories_path '/' + Faker::Number.number(digits: 55).to_s, headers: headers
       end
 
       it 'returns http success' do
@@ -101,7 +106,7 @@ RSpec.describe "Api::V1::Categories", type: :request do
       let!(:category) { create(:category) }
 
       before(:each) do
-        delete api_v1_categories_path + "/" + category.id.to_s, headers: headers
+        delete api_v1_categories_path + '/' + category.id.to_s, headers: headers
       end
 
       it 'returns http success' do
@@ -114,10 +119,11 @@ RSpec.describe "Api::V1::Categories", type: :request do
     end
 
     context 'fails' do
-
-      it { expect {
-        delete api_v1_categories_path + "/" + Faker::Number.number(digits: 10).to_s, headers: headers
-      }.to raise_error(ActiveRecord::RecordNotFound) }
+      it {
+        expect do
+          delete api_v1_categories_path + '/' + Faker::Number.number(digits: 10).to_s, headers: headers
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      }
     end
   end
 end

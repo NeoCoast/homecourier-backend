@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Helpee, type: :model do
@@ -5,13 +7,13 @@ RSpec.describe Helpee, type: :model do
 
   subject do
     described_class.new(
-        email: user.email,
-        password: user.password,
-        username: user.username,
-        name: user.name,
-        lastname: user.lastname,
-        birth_date: user.birth_date,
-        address: user.address
+      email: user.email,
+      password: user.password,
+      username: user.username,
+      name: user.name,
+      lastname: user.lastname,
+      birth_date: user.birth_date,
+      address: user.address
     )
   end
 

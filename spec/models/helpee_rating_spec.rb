@@ -1,18 +1,21 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe HelpeeRating, type: :model do
   # let!(:helpee_rating_params) { attributes_for(:helpee_rating) }
+  let!(:categories) { create_list(:category, 3) }
   let!(:helpee) { create(:user, type: 'Helpee') }
-  let!(:order) { create(:order, helpee_id: helpee.id) }
+  let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
   let!(:volunteer) { create(:user, type: 'Volunteer') }
 
   subject do
     described_class.new(
-        score: 5,
-        comment: "Excelente",
-        order_id: order.id,  
-        qualifier_id: helpee.id,
-        qualified_id: volunteer.id
+      score: 5,
+      comment: 'Excelente',
+      order_id: order.id,
+      qualifier_id: helpee.id,
+      qualified_id: volunteer.id
     )
   end
 
@@ -25,7 +28,7 @@ RSpec.describe HelpeeRating, type: :model do
 
         it { is_expected.to be_persisted }
         it { expect(described_class.count).to eq 1 }
-        
+
         it 'has a creation date' do
           expect(subject.created_at).to be_present
         end
