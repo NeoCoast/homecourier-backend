@@ -66,9 +66,15 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def take_order
-    @order = Order.find(params[:order_id])
-    @order.volunteers << Volunteer.find(params[:volunteer_id])
-    head :ok
+    order = Order.find(params[:order_id])
+    volunteer_id = params[:volunteer_id]
+
+    if order.created? and !order.volunteers.exists?(volunteer_id) then
+      order.volunteers << Volunteer.find(volunteer_id)
+      head :ok
+    else
+      head :not_acceptable
+    end
   end
 
   def update_status
