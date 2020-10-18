@@ -6,9 +6,9 @@ run Rails.application
 
 require 'rack/cors'
 use Rack::Cors do
-  # allow all origins in development
+
   allow do
-    origins 'localhost:8080'
+    origins 'localhost:8080', 'https://test-homecourier.herokuapp.com', 'https://demo-homecourier.herokuapp.com'
     resource '*',
              headers: :any,
              expose: ['Authorization'],
