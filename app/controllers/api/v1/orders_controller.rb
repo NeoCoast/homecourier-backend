@@ -38,7 +38,7 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def orders_helpee
-    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at ASC')
+    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC')
   end
 
   def order_volunteers
