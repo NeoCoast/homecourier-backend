@@ -61,7 +61,7 @@ class Api::V1::OrdersController < ApplicationController
     OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?',
                                            params[:order_id], params[:volunteer_id]))
     @volunteer = Volunteer.find(params[:volunteer_id])
-    @volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{@title} ha sido aceptado")
+    @volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{@order.title} ha sido aceptado")
     head :ok
   end
 
