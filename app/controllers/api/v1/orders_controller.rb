@@ -67,10 +67,11 @@ class Api::V1::OrdersController < ApplicationController
 
   def take_order
     order = Order.find(params[:order_id])
-    volunteer_id = params[:volunteer_id]
-
-    if order.created? and !order.volunteers.exists?(volunteer_id) then
-      order.volunteers << Volunteer.find(volunteer_id)
+    volunteer = Volunteer.find(params[:volunteer_id])
+    
+    if order.created? and !order.volunteers.exists?(volunteer.id) then
+      order.volunteers << volunteer
+      order.helpee.notifications.create!(title: 'Postulacion', body: "El voluntario #{volunteer.username} se ha postulado al pedido #{order.title}")
       head :ok
     else
       head :not_acceptable
