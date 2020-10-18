@@ -7,12 +7,11 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins ['https://test-homecourier-backend.herokuapp.com', 'https://test-homecourier.herokuapp.com']
+    origins 'localhost:8080', 'https://test-homecourier.herokuapp.com', 'https://demo-homecourier.herokuapp.com'
 
     resource '*',
              headers: :any,
              expose: ['Authorization'],
-             methods: %i[get post put patch delete options head],
-             credentials: true
+             methods: %i[get post put patch delete options head]
   end
 end
