@@ -124,18 +124,53 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     end
   end
 
-  describe 'GET /api/v1/orders/show/volunteers' do
-    before(:each) do
-      post api_v1_users_path + '/login', params: { user: {
-        email: volunteer.email, password: volunteer.password
-      } }, headers: headers
-      @token = response.headers['Authorization']
-    end
+  describe 'GET /api/v1/orders/show/volunteer' do
+    describe 'success' do
+      before(:each) do
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer.email, password: volunteer.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
+                          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        get api_v1_orders_path + '/show/volunteer', params: { volunteer_id: volunteer.id },
+                              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      
+      end
 
-    it 'returns http success' do
-      get api_v1_orders_path + '/show/volunteers', params: { volunteer_id: volunteer.id, order_id: order.id }, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-      expect(response).to have_http_status(:ok)
-    end
+      it 'returns http success' do
+        expect(response).to have_http_status(:ok)
+      end  
+
+      it 'the answer has correct volunteer' do
+        json = JSON.parse(response.body)
+        expect(json).not_to match_array([])
+      end
+	  end
+
+    describe 'empty' do
+      before(:each) do
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        get api_v1_orders_path + '/show/volunteer', params: { volunteer_id: volunteer.id },
+                              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      end
+    
+        it 'returns http success' do
+        expect(response).to have_http_status(:ok)
+        end
+
+        it 'ir returns no orders for the volunteer' do
+          json = JSON.parse(response.body)
+          expect(json).to match_array([])
+        end
+    	end
   end
 
   describe 'GET /api/v1/orders/accept' do
@@ -162,62 +197,84 @@ RSpec.describe 'Api::V1::Orders', type: :request do
   end
 
   describe 'GET /api/v1/orders/show/volunteers' do
-	
-	describe 'success' do
-		before(:each) do
-		post api_v1_users_path + '/login', params: { user: {
-			email: volunteer.email, password: volunteer.password
-		} }, headers: headers
-		@token = response.headers['Authorization']
-		post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
-											headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+    
+    describe 'success' do
+      before(:each) do
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer.email, password: volunteer.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
+                          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        get api_v1_orders_path + '/show/volunteers', params: { order_id: order.id },
+                              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      
+      end
 
-		post api_v1_users_path + '/login', params: { user: {
-			email: helpee.email, password: helpee.password
-		} }, headers: headers
-		@token = response.headers['Authorization']
-		get api_v1_orders_path + '/show/volunteers', params: { order_id: order.id },
-													headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-		end
+      it 'returns http success' do
+        expect(response).to have_http_status(:ok)
+      end  
 
-		it 'returns http success' do
-		expect(response).to have_http_status(:ok)
-		end
+      it 'the answer has correct volunteer' do
+        json = JSON.parse(response.body)
+        expect(json.first['id']).to eq(volunteer.id)
+        expect(json.first['username']).to eq(volunteer.username)
+        expect(json.first['email']).to eq(volunteer.email)
+      end
+      
+      it 'returns all volunteers associated to the order' do
+        json = JSON.parse(response.body)
+        expect(json.size).to eq(1)
+      end
+	  end
 
-		it 'the answer has correct volunteer id' do
-		json = JSON.parse(response.body)
-		expect(json.first['id']).to eq(volunteer.id)
-		end
+    describe 'empty' do
+      before(:each) do
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        get api_v1_orders_path + '/show/volunteers', params: { order_id: order.id },
+                              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      end
+    
+        it 'returns http success' do
+        expect(response).to have_http_status(:ok)
+        end
 
-		it 'the answer has correct volunteer email' do
-		json = JSON.parse(response.body)
-		expect(json.first['email']).to eq(volunteer.email)
-		end
-		
-		it 'returns all volunteers associated to the order' do
-			json = JSON.parse(response.body)
-			expect(json.size).to eq(1)
-		end
-	end
+        it 'returns all volunteers associated to the order' do
+          json = JSON.parse(response.body)
+          expect(json).to match_array([])
+        end
+      end
+      
+      describe 'only one of the same order' do
+        before(:each) do
+          post api_v1_users_path + '/login', params: { user: {
+            email: volunteer.email, password: volunteer.password
+          } }, headers: headers
+          @token = response.headers['Authorization']
+          post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
+                            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
+                            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+          post api_v1_users_path + '/login', params: { user: {
+            email: helpee.email, password: helpee.password
+          } }, headers: headers
+          @token = response.headers['Authorization']
+          get api_v1_orders_path + '/show/volunteers', params: { order_id: order.id },
+                                headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        
+        end
 
-	describe 'empty' do
-		before(:each) do
-			post api_v1_users_path + '/login', params: { user: {
-				email: helpee.email, password: helpee.password
-			} }, headers: headers
-			@token = response.headers['Authorization']
-			get api_v1_orders_path + '/show/volunteers', params: { order_id: order.id },
-														headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-			end
-	
-			it 'returns http success' do
-			expect(response).to have_http_status(:ok)
-			end
-
-			it 'returns http success' do
-				json = JSON.parse(response.body)
-				expect(json).to match_array([])
-			end
-	end
+        it 'returns all volunteers associated to the order' do
+          json = JSON.parse(response.body)
+          expect(json.size).to eq(1)
+        end
+      end
   end
 end
