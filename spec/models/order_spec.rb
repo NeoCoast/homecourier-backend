@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Order, type: :model do
@@ -7,12 +9,12 @@ RSpec.describe Order, type: :model do
 
   subject do
     described_class.new(
-        id: 1,
-        title: order_params.title,
-        description: order_params.description,
-        status: order_params.status,
-        helpee_id: helpee.id,
-        categories: [category]
+      id: 1,
+      title: order_params.title,
+      description: order_params.description,
+      status: order_params.status,
+      helpee_id: helpee.id,
+      categories: [category]
     )
   end
 
@@ -61,32 +63,27 @@ RSpec.describe Order, type: :model do
 
   describe 'Order transitions' do
     context 'succeeds' do
-
       it 'has default state' do
-        expect(subject.status).to eq "created"
+        expect(subject.status).to eq 'created'
       end
 
       it 'valid transitions' do
         subject.accept!
         subject.start!
         subject.finish!
-        expect(subject.status).to eq "finished"
+        expect(subject.status).to eq 'finished'
       end
-      
     end
 
     context 'fails' do
-
       context 'created -> finished' do
         it { expect { subject.finish! }.to raise_error(AASM::InvalidTransition) }
       end
 
       context 'accepted -> finished' do
-        before() { subject.accept!}
+        before { subject.accept! }
         it { expect { subject.finish! }.to raise_error(AASM::InvalidTransition) }
       end
-      
     end
-
   end
 end

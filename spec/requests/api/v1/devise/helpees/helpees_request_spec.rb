@@ -22,7 +22,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
 
     context 'succeeds' do
       before do
-        post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+        post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
       end
 
       it 'returns http success' do
@@ -38,7 +38,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
       context 'email is empty' do
         before do
           subject['email'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+          post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
         end
 
         it 'returns http bad_request' do
@@ -53,7 +53,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
       context 'password is empty' do
         before do
           subject['password'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+          post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
         end
 
         it 'returns http bad_request' do
@@ -68,7 +68,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
       context 'username is empty' do
         before do
           subject['username'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+          post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
         end
 
         it 'returns http bad_request' do
@@ -83,7 +83,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
       context 'name is empty' do
         before do
           subject['name'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+          post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
         end
 
         it 'returns http bad_request' do
@@ -98,7 +98,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
       context 'lastname is empty' do
         before do
           subject['lastname'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+          post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
         end
 
         it 'returns http bad_request' do
@@ -113,7 +113,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
       context 'birth date is empty' do
         before do
           subject['birth_date'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+          post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
         end
 
         it 'returns http bad_request' do
@@ -128,7 +128,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
       context 'address is empty' do
         before do
           subject['address'] = nil
-          post api_v1_helpees_path + "/signup", params: { helpee: subject }, headers: headers
+          post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
         end
 
         it 'returns http bad_request' do

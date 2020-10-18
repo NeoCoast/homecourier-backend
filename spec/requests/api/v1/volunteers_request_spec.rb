@@ -1,10 +1,19 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
+# VolunteersController
 RSpec.describe 'Api::V1::Volunteers', type: :request do
   let!(:headers) { { 'ACCEPT' => 'application/json' } }
 
   describe 'GET /api/v1/volunteers' do
-    let!(:volunteers) { create_list(:volunteer, 10, confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+    let!(:volunteers) do
+      create_list(
+        :volunteer,
+        10,
+        confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      )
+    end
 
     before(:each) do
       post api_v1_users_path + '/login', params: { user: {
@@ -28,9 +37,24 @@ RSpec.describe 'Api::V1::Volunteers', type: :request do
       it 'content of records' do
         volunteers_array = []
         volunteers.each do |volunteer|
-          volunteers_array << volunteer.attributes.slice(
-            'id', 'email', 'username', 'name', 'lastname', 'birth_date', 'address', 'document_type_id', 'document_number'
-          )
+          volunteer_tmp = {}
+          volunteer_tmp['id'] = volunteer.attributes['id']
+          volunteer_tmp['email'] = volunteer.attributes['email']
+          volunteer_tmp['username'] = volunteer.attributes['username']
+          volunteer_tmp['name'] = volunteer.attributes['name']
+          volunteer_tmp['lastname'] = volunteer.attributes['lastname']
+          volunteer_tmp['birth_date'] = volunteer.attributes['birth_date']
+          volunteer_tmp['address'] = volunteer.attributes['address']
+          volunteer_tmp['document_type_id'] = volunteer.attributes['document_type_id']
+          volunteer_tmp['document_number'] = volunteer.attributes['document_number']
+          volunteer_tmp['rating'] = volunteer.attributes['helpee_ratings']
+          if volunteer.attributes.key?('document_face_pic')
+            volunteer_tmp['document_face_pic'] = volunteer.attributes['document_face_pic']
+          end
+          if volunteer.attributes.key?('document_back_pic')
+            volunteer_tmp['document_back_pic'] = volunteer.attributes['document_back_pic']
+          end
+          volunteers_array.push(volunteer_tmp)
         end
         expect(@body).to match_array(volunteers_array)
       end
@@ -38,7 +62,13 @@ RSpec.describe 'Api::V1::Volunteers', type: :request do
   end
 
   describe 'GET /api/v1/helpees/:id' do
-    let!(:volunteer) { create(:user, type: 'Volunteer', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+    let!(:volunteer) do
+      create(
+        :user,
+        type: 'Volunteer',
+        confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      )
+    end
 
     context 'shows volunteer' do
       before do
