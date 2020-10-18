@@ -57,3 +57,7 @@ gem 'devise', '~> 4.7.3'
 gem 'devise-jwt', '~> 0.8.0'
 
 gem 'aasm', '~> 4.12'
+
+group :production do
+  gem 'redis'
+end
