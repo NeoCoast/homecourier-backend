@@ -54,14 +54,14 @@ class Api::V1::OrdersController < ApplicationController
     # the order must be in the state created
     # the order_request must exist and the status must be waiting
     # delete all the other requests
-    @order = Order.find(params[:order_id])
-    @order.accept!
-    @order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
-    @order_request.accept!
+    order = Order.find(params[:order_id])
+    order.accept!
+    order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
+    order_request.accept!
     OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?',
                                            params[:order_id], params[:volunteer_id]))
-    @volunteer = Volunteer.find(params[:volunteer_id])
-    @volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{@title} ha sido aceptado")
+    volunteer = Volunteer.find(params[:volunteer_id])
+    volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{order.title} ha sido aceptado")
     head :ok
   end
 
