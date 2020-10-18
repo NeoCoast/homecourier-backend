@@ -38,7 +38,7 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def orders_helpee
-    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at ASC')
+    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC')
   end
 
   def order_volunteers
@@ -54,21 +54,27 @@ class Api::V1::OrdersController < ApplicationController
     # the order must be in the state created
     # the order_request must exist and the status must be waiting
     # delete all the other requests
-    @order = Order.find(params[:order_id])
-    @order.accept!
-    @order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
-    @order_request.accept!
+    order = Order.find(params[:order_id])
+    order.accept!
+    order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
+    order_request.accept!
     OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?',
                                            params[:order_id], params[:volunteer_id]))
-    @volunteer = Volunteer.find(params[:volunteer_id])
-    @volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{@title} ha sido aceptado")
+    volunteer = Volunteer.find(params[:volunteer_id])
+    volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{order.title} ha sido aceptado")
     head :ok
   end
 
   def take_order
-    @order = Order.find(params[:order_id])
-    @order.volunteers << Volunteer.find(params[:volunteer_id])
-    head :ok
+    order = Order.find(params[:order_id])
+    volunteer_id = params[:volunteer_id]
+
+    if order.created? and !order.volunteers.exists?(volunteer_id) then
+      order.volunteers << Volunteer.find(volunteer_id)
+      head :ok
+    else
+      head :not_acceptable
+    end
   end
 
   def update_status
