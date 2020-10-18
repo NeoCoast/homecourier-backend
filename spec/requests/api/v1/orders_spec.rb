@@ -275,7 +275,6 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         end
       end
       
-=begin
       describe 'the same volunteer cannot take the same order twice' do
         before(:each) do
           post api_v1_users_path + '/login', params: { user: {
@@ -300,6 +299,5 @@ RSpec.describe 'Api::V1::Orders', type: :request do
           expect(json.size).to eq(1)
         end
       end
-=end
   end
 end
