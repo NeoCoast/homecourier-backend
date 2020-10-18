@@ -29,6 +29,7 @@ Rails.application.routes.draw do
         resources :document_types, only: %i[index]
         resources :categories, only: %i[create index show destroy]
         resources :orders, only: %i[create index show destroy]
+        resources :ratings, only: %i[create]
         get '/orders/show/all', to: 'orders#show_status'
         get '/orders/show/helpee', to: 'orders#orders_helpee'
         get '/orders/show/volunteers', to: 'orders#order_volunteers'
@@ -38,6 +39,10 @@ Rails.application.routes.draw do
         post '/orders/status', to: 'orders#update_status'
         resources :notifications, only: %i[index]
         post '/notifications/seen', to: 'notifications#seen'
+        post '/helpees/ratingPending', to: 'helpees#rating_pending'
+        post '/helpees/rating', to: 'helpees#rating'
+        post '/volunteers/ratingPending', to: 'volunteers#rating_pending'
+        post '/volunteers/rating', to: 'volunteers#rating'
       end
     end
   end

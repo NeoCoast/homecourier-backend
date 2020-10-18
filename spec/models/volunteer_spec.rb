@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Volunteer, type: :model do
@@ -7,15 +9,15 @@ RSpec.describe Volunteer, type: :model do
 
   subject do
     described_class.new(
-        email: user.email,
-        password: user.password,
-        username: user.username,
-        name: user.name,
-        lastname: user.lastname,
-        birth_date: user.birth_date,
-        address: user.address,
-        document_type: document_type,
-        document_number: document_number
+      email: user.email,
+      password: user.password,
+      username: user.username,
+      name: user.name,
+      lastname: user.lastname,
+      birth_date: user.birth_date,
+      address: user.address,
+      document_type: document_type,
+      document_number: document_number
     )
   end
 

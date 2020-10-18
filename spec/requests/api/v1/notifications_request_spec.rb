@@ -1,10 +1,25 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
+# NotificationsController
 RSpec.describe 'Api::V1::Notifications', type: :request do
-  let!(:helpee) { create(:user, type: 'Helpee', confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)) }
+  let!(:helpee) do
+    create(
+      :user,
+      type: 'Helpee',
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+    )
+  end
+
   let!(:notifications) do
-    create_list(:notification, 5, user_id: helpee.id, title: Faker::Lorem.sentence,
-                                  body: Faker::Lorem.paragraph)
+    create_list(
+      :notification,
+      5,
+      user_id: helpee.id,
+      title: Faker::Lorem.sentence,
+      body: Faker::Lorem.paragraph
+    )
   end
 
   describe 'GET /api/v1/notifications' do
