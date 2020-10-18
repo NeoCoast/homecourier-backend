@@ -6,8 +6,8 @@ class Api::V1::HelpeesController < ApplicationController
   end
 
   def rating
-    @order_request = OrderRequest.find_by('order_id = ? AND order_request_status = ?', params[:order_id], OrderRequest.order_request_statuses[:accepted])
-    if !@order_request.nil?
+    @order_request = OrderRequest.find(params[:order_request_id])
+    if @order_request.accepted?
       @rating = HelpeeRating.new
       @rating.order_id = @order_request.order.id
       @rating.qualifier_id = @order_request.order.helpee.id

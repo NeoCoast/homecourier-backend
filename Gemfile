@@ -16,6 +16,8 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem 'aasm', '~> 4.12'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
@@ -36,7 +38,6 @@ group :development, :test do
   gem 'simplecov', '~> 0.19.0'
   gem 'simplecov-html', '~> 0.12.3'
   gem 'factory_bot_rails', '~> 6.1.0'
-  gem 'aasm', '~> 4.12'
 end
 
 group :development do

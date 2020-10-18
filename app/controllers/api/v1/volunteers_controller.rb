@@ -4,20 +4,20 @@ class Api::V1::VolunteersController < ApplicationController
   def index
     @volunteers = Volunteer.all
   end
-  
+
   def show
     @volunteer = Volunteer.find(params[:id])
   end
-  
+
   def orders_volunteers
     @orders = Volunteer.find(params[:id]).orders
   end
 
   def rating
-    @order_request = OrderRequest.find_by("order_id = ? AND order_request_status = ?", params[:order_id], OrderRequest.order_request_statuses[:accepted])
-    if @order_request != nil then 
+    @order_request = OrderRequest.find(params[:order_request_id])
+    if @order_request.accepted?
       @rating = VolunteerRating.new
-      @rating.order_id = params[:order_id]
+      @rating.order_id = @order_request.order.id
       @rating.qualifier_id = @order_request.volunteer.id
       @rating.qualified_id = @order_request.order.helpee.id
       @rating.score = params[:score]
@@ -34,8 +34,8 @@ class Api::V1::VolunteersController < ApplicationController
 
   def rating_pending
     @volunteer_id = params[:volunteer_id]
-    @order = Order.joins(:order_requests).select("*").where('orders.status' => Order.statuses[:finished], 'order_requests.volunteer_id' => @volunteer_id, 'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]).order("orders.updated_at").first
-    @rating = VolunteerRating.where("order_id = ? and qualifier_id = ?", @order.id, @volunteer_id).first
+    @order = Order.joins(:order_requests).select('*').where('orders.status' => Order.statuses[:finished], 'order_requests.volunteer_id' => @volunteer_id, 'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]).order('orders.updated_at').first
+    @rating = VolunteerRating.where('order_id = ? and qualifier_id = ?', @order.id, @volunteer_id).first
   end
 
   private
@@ -47,5 +47,4 @@ class Api::V1::VolunteersController < ApplicationController
   def volunteer_params
     params.permit(:id)
   end
-
 end
