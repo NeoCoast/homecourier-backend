@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Controller for Helpees registrations
 class Api::V1::Devise::Helpees::RegistrationsController < Devise::RegistrationsController
   respond_to :json
   before_action :configure_sign_up_params, only: [:create]
@@ -7,11 +8,15 @@ class Api::V1::Devise::Helpees::RegistrationsController < Devise::RegistrationsC
   # POST /resource
   def create
     build_resource(sign_up_params)
-    resource.save
-    if resource.persisted?
-      render json: resource, status: :created
+    if !adult(resource.birth_date)
+      render json: { error: 'User must have 18 years old.' }, status: :bad_request
     else
-      head :bad_request
+      resource.save
+      if resource.persisted?
+        render json: resource, status: :created
+      else
+        render json: resource.errors, status: :bad_request
+      end
     end
   end
 
@@ -21,5 +26,18 @@ class Api::V1::Devise::Helpees::RegistrationsController < Devise::RegistrationsC
   def configure_sign_up_params
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[email password username name lastname
                                                          birth_date address type avatar])
+  end
+
+  private
+
+  def adult(date)
+    date_of_birth = Date.strptime(date, '%d/%m/%Y')
+    return true if Date.today.year - date_of_birth.year > 18
+    return false if Date.today.year - date_of_birth.year < 18
+
+    return false if Date.today.month < date_of_birth.month
+    return true if Date.today.month > date_of_birth.month
+
+    Date.today.day >= date_of_birth.day if Date.today.month == date_of_birth.month
   end
 end
