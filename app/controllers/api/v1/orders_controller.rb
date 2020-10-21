@@ -47,7 +47,7 @@ class Api::V1::OrdersController < ApplicationController
 
   def volunteer_orders
     @volunteer = Volunteer.find(params[:volunteer_id])
-    @orders = @volunteer.orders
+    @orders = @volunteer.orders.order('created_at DESC')
   end
 
   def accept_volunteer
@@ -68,10 +68,11 @@ class Api::V1::OrdersController < ApplicationController
   def take_order
     order = Order.find(params[:order_id])
     volunteer = Volunteer.find(params[:volunteer_id])
-    
-    if order.created? and !order.volunteers.exists?(volunteer.id) then
+    if order.created? && !order.volunteers.exists?(volunteer.id)
       order.volunteers << volunteer
-      order.helpee.notifications.create!(title: 'Postulacion', body: "El voluntario #{volunteer.username} se ha postulado al pedido #{order.title}")
+      order.helpee.notifications.create!(title: 'Postulacion',
+                                         body: "El voluntario #{volunteer.username}
+                                         se ha postulado al pedido #{order.title}")
       head :ok
     else
       head :not_acceptable
