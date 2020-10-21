@@ -47,7 +47,7 @@ class Api::V1::OrdersController < ApplicationController
 
   def volunteer_orders
     @volunteer = Volunteer.find(params[:volunteer_id])
-    @orders = @volunteer.orders
+    @orders = @volunteer.orders.order('created_at DESC')
   end
 
   def accept_volunteer
