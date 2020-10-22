@@ -7,7 +7,7 @@ class Api::V1::Devise::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     build_resource(sign_up_params)
-    if !adult(resource.birth_date)
+    if !resource.birth_date.nil? && !adult(resource.birth_date)
       render json: { error: 'User must have 18 years old.' }, status: :bad_request
     else
       resource.save
