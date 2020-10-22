@@ -173,6 +173,25 @@ RSpec.describe 'Api::V1::Devise::Volunteers::RegistrationsController', type: :re
           expect(User.count).to_not eq 1
         end
       end
+
+      context 'user is underaged' do
+        before do
+          day = Date.tomorrow.day
+          month = Date.today.month
+          year = Date.today.year
+
+          subject['birth_date'] = "#{day}/#{month}/#{year}"
+          post api_v1_volunteers_path + '/signup', params: { volunteer: subject }, headers: headers
+        end
+
+        it 'returns http bad_request' do
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'is not created' do
+          expect(User.count).to_not eq 1
+        end
+      end
     end
   end
 end
