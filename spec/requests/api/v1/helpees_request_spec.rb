@@ -9,7 +9,8 @@ RSpec.describe 'Api::V1::Helpees', type: :request do
   describe 'GET /api/v1/helpees' do
     let!(:helpees) do
       create_list(
-        :user, 10,
+        :user,
+        10,
         type: 'Helpee',
         confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
       )
