@@ -1,4 +1,12 @@
 helpee_id,title,description,status,category
+2,super,"250g de jamon y 300g de queso, un litro de coca",0,Supermercado
+1,Farmacia,"Necesito: 1 perifar 600, 1 Actron.",0,Farmacia
+1,Facturas,Pagar unas facturas. Tiene que ser esta semana,0,Cobranzas
+2,articulos varios,necesito 2 kilos de harina\n1kg de azucar\nUna docena de huevos\n1kg de bananas o manzanas\n1 leche entera  ,0,Supermercado
+3,super,"necesito 1kg de tomates y 2kg de arroz, atun 200g",0,Supermercado
+3,pedido almacen,pan y 200g de fiambre del amacen. Tambien pagarle al almacenero que le debo 50$,0,Supermercado
+3,pedido farmacia,"1 blister de aspirinas, perifar 900",0,Farmacia
+3,supermercado,"que alguien me traiga del super: una docena de huevos, 2 litros de leche descremada y pan sin sal. Gracias",0,Supermercado
 1,Necesito paracetamol,Paracetamol,1,Farmacia
 2,Pedido del super,Precisaría los siguientes productos: \n Coca cola \n Pan,1,Supermercado
 3,Facturas UTE y mutualista,Pagar facturas de UTE mes de agosto y septiembre \nAbonar mututalista ,2,Cobranzas

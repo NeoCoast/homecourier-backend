@@ -2,8 +2,8 @@ require 'csv'
 
 # to run use rake db:seed
 
-HELPEE_COUNT = 10
-VOLUNTEER_COUNT = 10
+VOLUNTEER_LIMIT = 50
+HELPEE_LIMIT = 50
 
 # DOCUMENT TYPES
 
@@ -33,7 +33,7 @@ volunteer_list = []
 csv_volunteer_file = File.read(Rails.root.join('lib', 'seeds', 'volunteer.csv'))
 csv_volunteer = CSV.parse(csv_volunteer_file, :headers => true, :encoding => 'ISO-8859-1')
 csv_volunteer.each_with_index do |volunteer_row, index|
-  if index < VOLUNTEER_COUNT
+  if index < VOLUNTEER_LIMIT
     volunteer = Volunteer.new
     volunteer.email = volunteer_row['email']
     volunteer.password = volunteer_row['password']
@@ -44,8 +44,9 @@ csv_volunteer.each_with_index do |volunteer_row, index|
     volunteer.address = volunteer_row['address']
     volunteer.document_number = volunteer_row['document_number']
     volunteer.document_type_id = '1'
-    volunteer_list << volunteer
     volunteer.save!
+    volunteer_list << volunteer
+    Volunteer.confirm_by_token(volunteer.confirmation_token)
     puts "created volunteer " + volunteer.name + " " + volunteer.lastname
   end
 end
@@ -57,7 +58,7 @@ helpee_list = []
 csv_helpee_file = File.read(Rails.root.join('lib', 'seeds', 'helpee.csv'))
 csv_helpee = CSV.parse(csv_helpee_file, :headers => true, :encoding => 'ISO-8859-1')
 csv_helpee.each_with_index do |helpee_row, index|
-  if index < HELPEE_COUNT
+  if index < HELPEE_LIMIT
     helpee = Helpee.new
     helpee.email = helpee_row['email']
     helpee.password = helpee_row['password']
@@ -68,6 +69,7 @@ csv_helpee.each_with_index do |helpee_row, index|
     helpee.address = helpee_row['address']
     helpee.save!
     helpee_list << helpee
+    Helpee.confirm_by_token(helpee.confirmation_token)
     puts "created helpee " + helpee.name + " " + helpee.lastname
   end
 end
