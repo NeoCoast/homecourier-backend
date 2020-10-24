@@ -189,7 +189,7 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'ir returns no orders for the volunteer' do
+      it 'returns no orders for the volunteer' do
         json = JSON.parse(response.body)
         expect(json).to match_array([])
       end
