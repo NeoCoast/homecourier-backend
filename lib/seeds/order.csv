@@ -17,5 +17,9 @@ helpee_id,title,description,status,category
 1,pedido para hoy al mediodia,Arroz- 1/2k de carne picada - 3 papas - Refresco de su preferencia,3,Supermercado
 7,Pago de cuenta,Pagar cuota de socio en el redpagos de su conveniencia,4,Cobranzas
 8,necesito pan y queso,Baguette - Queso roquefort ,3,Supermercado
-9,necesito agua del supermercado,preciso 2 listros de agua con o sin gas muchas gracias,0,Supermercado
+9,necesito agua del supermercado,preciso 2 litros de agua con o sin gas muchas gracias,0,Supermercado
 9,preciso articulos de limpieza,preciso: 1 jabon liquido 500cc y una esponja para platos,0,Supermercado
+9,papel higienico,6 rollos de papel higienico. es una urgencia,3,Supermercado
+1,pedido para hoy al mediodia,Un refresco cualquiera y 1kg de helado,3,Supermercado
+1,pedido para hoy de noche,Arroz- 1/2k de carne picada - 3 papas - Refresco de su preferencia,3,Supermercado
+2,pedido super,2 litros de leche descremada y manteca 200gr.,0,Supermercado

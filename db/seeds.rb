@@ -2,8 +2,9 @@ require 'csv'
 
 # to run use rake db:seed
 
-VOLUNTEER_LIMIT = 50
-HELPEE_LIMIT = 50
+VOLUNTEER_LIMIT = 10  # number of volunteers to create
+HELPEE_LIMIT = 10     # number of helpees to create
+rng = Random.new(333) # random seed
 
 # DOCUMENT TYPES
 
@@ -89,6 +90,25 @@ csv_order.each do |order_row|
   order.categories = [categories[order_row['category']]]
   order_list << order
   order.save!
+
+  # notifications for orders (helpee)
+  status = order_row['status'].to_i
+  case status
+  when 2
+      notification = Notification.new
+      notification.title = "En proceso"
+      notification.body = "Su pedido #{order.title} ya se encuentra en camino"
+      notification.status = 0
+      notification.user = order.helpee
+      notification.save!
+  when 4
+    notification = Notification.new
+      notification.title = "Cancelado"
+      notification.body = "El pedido #{order.title} ha sido cancelado"
+      notification.status = 0
+      notification.user = order.helpee
+      notification.save!
+  end
   puts "created order " + order.title
 end
 
@@ -102,6 +122,38 @@ csv_order_request.each do |order_request_row|
   order_request.order = order_list[order_request_row['order'].to_i]
   order_request.order_request_status = order_request_row['status'].to_i
   order_request.save!
+
+  # notifications for order (volunteer)
+  status = order_request.order.status
+  case status
+  when 'accepted'
+      notification = Notification.new
+      notification.title = "Aceptado"
+      notification.body = "El pedido #{order_request.order.title} ha sido aceptado"
+      notification.status = 0
+      notification.user = order_request.volunteer
+      notification.save!
+  when 'finished'
+    notification = Notification.new
+      notification.title = "Aceptado"
+      notification.body = "El pedido #{order_request.order.title} ha sido aceptado"
+      notification.status = 0
+      notification.user = order_request.volunteer
+      notification.save!
+    notification = Notification.new
+      notification.title = "Finalizado"
+      notification.body = "El pedido #{order_request.order.title} ha sido finalizado"
+      notification.status = 0
+      notification.user = order_request.volunteer
+      notification.save!
+  when 'cancelled'
+    notification = Notification.new
+      notification.title = "Cancelado"
+      notification.body = "El pedido #{order_request.order.title} ha sido cancelado"
+      notification.status = 0
+      notification.user = order_request.volunteer
+      notification.save!
+  end
   puts "created order request " + order_request.volunteer.username + " -> " + order_request.order.title
 end
 
@@ -117,5 +169,32 @@ notifications.each_with_index do |notification_row, index|
   notification.user = helpee_list[notification_row['user'].to_i]
   notification.save!
   print "saving notifications " + (index + 1).to_s + "/" + notifications.length.to_s + "\r"
+end
+puts
+
+# RATINGS
+
+order_requests = OrderRequest.where(order_request_status: OrderRequest.order_request_statuses[:accepted]).to_a
+order_requests.each_with_index do |ord_req, index|
+  helpee_rating = HelpeeRating.new
+  helpee_rating.order_id = ord_req.order.id
+  helpee_rating.qualifier_id = ord_req.order.helpee.id
+  helpee_rating.qualified_id = ord_req.volunteer.id
+  helpee_rating.score = rng.rand(1..5)
+  helpee_rating.comment = 'sample comment'
+  helpee_rating.save!
+
+  volunteer_rating = VolunteerRating.new
+  volunteer_rating.order_id = ord_req.order.id
+  volunteer_rating.qualifier_id = ord_req.volunteer.id
+  volunteer_rating.qualified_id = ord_req.order.helpee.id
+  volunteer_rating.score = rng.rand(1..5)
+  volunteer_rating.comment ='sample comment'
+  volunteer_rating.save!
+
+  ord_req.order.updated_at = Time.now
+  ord_req.order.save
+
+  print "saving ratings " + (index + 1).to_s + "/" + order_requests.length.to_s + "\r"
 end
 puts
