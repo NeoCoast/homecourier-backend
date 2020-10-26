@@ -1,5 +1,5 @@
 class Volunteer < User
-  validates :document_number, presence: true
+  validates :document_number, presence: true, uniqueness: { scope: [:document_type] }
   validates :document_type, presence: true
 
   belongs_to :document_type
