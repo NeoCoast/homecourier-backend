@@ -61,7 +61,8 @@ class Api::V1::OrdersController < ApplicationController
     OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?',
                                            params[:order_id], params[:volunteer_id]))
     volunteer = Volunteer.find(params[:volunteer_id])
-    volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{order.title} ha sido aceptado")
+    volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
+                                    body: "Ya puedes iniciar el pedido #{order.title}")
     head :ok
   end
 
@@ -70,9 +71,8 @@ class Api::V1::OrdersController < ApplicationController
     volunteer = Volunteer.find(params[:volunteer_id])
     if order.created? && !order.volunteers.exists?(volunteer.id)
       order.volunteers << volunteer
-      order.helpee.notifications.create!(title: 'Postulacion',
-                                         body: "El voluntario #{volunteer.username}
-                                         se ha postulado al pedido #{order.title}")
+      order.helpee.notifications.create!(title: 'Se han postulado a tu pedido',
+                                         body: "Tu pedido #{order.title} tiene una nueva postulación")
       head :ok
     else
       head :not_acceptable
@@ -83,17 +83,22 @@ class Api::V1::OrdersController < ApplicationController
     case params[:status]
     when 'accepted'
       @order.accept!
-      @volunteer.notifications.create!(title: 'Aceptado', body: "El pedido #{@title} ha sido aceptado")
+      @volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
+                                       body: "Ya puedes iniciar el pedido #{order.title}")
     when 'in_process'
       @order.start!
-      @helpee.notifications.create!(title: 'En proceso', body: "Su pedido #{@title} ya se encuentra en camino")
+      @helpee.notifications.create!(title: 'Ha iniciado tu pedido',
+                                    body: "Tu pedido #{@title} ya se encuentra en camino")
     when 'finished'
       @order.finish!
-      @volunteer.notifications.create!(title: 'Finalizado', body: "El pedido #{@title} ha sido finalizado")
+      @volunteer.notifications.create!(title: 'Pedido finalizado',
+                                       body: "El usuario #{@helpee.username} ha recibido el pedido #{@title}")
     when 'cancelled'
       @order.cancel!
-      @helpee.notifications.create!(title: 'Cancelado', body: "El pedido #{@title} ha sido cancelado")
-      @volunteer.notifications.create!(title: 'Cancelado', body: "El pedido #{@title} ha sido cancelado")
+      @helpee.notifications.create!(title: 'Pedido cancelado',
+                                    body: "El pedido #{@title} ha sido cancelado")
+      @volunteer.notifications.create!(title: 'Pedido cancelado',
+                                       body: "El pedido #{@title} ha sido cancelado")
     end
   end
 
