@@ -35,7 +35,8 @@ Rails.application.configure do
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
   # config.action_cable.url = 'wss://example.com/cable'
-  config.action_cable.allowed_request_origins = [ 'https://test-homecourier.herokuapp.com', 'https://demo-homecourier.herokuapp.com' ]
+  config.action_cable.allowed_request_origins = ['https://test-homecourier.herokuapp.com',
+                                                 'https://demo-homecourier.herokuapp.com']
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
@@ -87,15 +88,15 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'test-homecourier-backend.herokuapp.com' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address:              'smtp.gmail.com',
-    port:                 587,
-    domain:               'test-homecourier-backend.herokuapp.com',
-    user_name:            'homecourierfing@gmail.com',
-    password:             'homecourier123',
-    authentication:       'plain',
-    enable_starttls_auto: true 
+    address: 'smtp.gmail.com',
+    port: 587,
+    domain: 'test-homecourier-backend.herokuapp.com',
+    user_name: 'homecourierfing@gmail.com',
+    password: 'homecourier123',
+    authentication: 'plain',
+    enable_starttls_auto: true
   }
 
   # Active Storage
-  config.active_storage.service = :local
+  config.active_storage.service = :amazon
 end
