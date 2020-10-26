@@ -33,7 +33,8 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         email: volunteer.email, password: volunteer.password
       } }, headers: headers
       @token = response.headers['Authorization']
-      get api_v1_orders_path, headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      get api_v1_orders_path,
+          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
     end
 
     it 'returns http success' do
@@ -151,26 +152,27 @@ RSpec.describe 'Api::V1::Orders', type: :request do
           email: volunteer.email, password: volunteer.password
         } }, headers: headers
         @token = response.headers['Authorization']
-        post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
-                          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        post api_v1_orders_path + '/take',
+             params: { order_id: order.id, volunteer_id: volunteer.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
         post api_v1_users_path + '/login', params: { user: {
           email: helpee.email, password: helpee.password
         } }, headers: headers
         @token = response.headers['Authorization']
-        get api_v1_orders_path + '/show/volunteer', params: { volunteer_id: volunteer.id },
-                              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-      
+        get api_v1_orders_path + '/show/volunteer',
+            params: { volunteer_id: volunteer.id },
+            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       end
 
       it 'returns http success' do
         expect(response).to have_http_status(:ok)
-      end  
+      end
 
       it 'the answer has correct volunteer' do
         json = JSON.parse(response.body)
         expect(json).not_to match_array([])
       end
-	  end
+    end
 
     describe 'empty' do
       before(:each) do
@@ -178,19 +180,20 @@ RSpec.describe 'Api::V1::Orders', type: :request do
           email: helpee.email, password: helpee.password
         } }, headers: headers
         @token = response.headers['Authorization']
-        get api_v1_orders_path + '/show/volunteer', params: { volunteer_id: volunteer.id },
-                              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        get api_v1_orders_path + '/show/volunteer',
+            params: { volunteer_id: volunteer.id },
+            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       end
-    
-        it 'returns http success' do
-        expect(response).to have_http_status(:ok)
-        end
 
-        it 'ir returns no orders for the volunteer' do
-          json = JSON.parse(response.body)
-          expect(json).to match_array([])
-        end
-    	end
+      it 'returns http success' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns no orders for the volunteer' do
+        json = JSON.parse(response.body)
+        expect(json).to match_array([])
+      end
+    end
   end
 
   describe 'GET /api/v1/orders/accept' do
@@ -220,27 +223,27 @@ RSpec.describe 'Api::V1::Orders', type: :request do
   end
 
   describe 'GET /api/v1/orders/show/volunteers' do
-    
     describe 'success' do
       before(:each) do
         post api_v1_users_path + '/login', params: { user: {
           email: volunteer.email, password: volunteer.password
         } }, headers: headers
         @token = response.headers['Authorization']
-        post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
-                          headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        post api_v1_orders_path + '/take',
+             params: { order_id: order.id, volunteer_id: volunteer.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
         post api_v1_users_path + '/login', params: { user: {
           email: helpee.email, password: helpee.password
         } }, headers: headers
         @token = response.headers['Authorization']
-        get api_v1_orders_path + '/show/volunteers', params: { order_id: order.id },
-                              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-      
+        get api_v1_orders_path + '/show/volunteers',
+            params: { order_id: order.id },
+            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       end
 
       it 'returns http success' do
         expect(response).to have_http_status(:ok)
-      end  
+      end
 
       it 'the answer has correct volunteer' do
         json = JSON.parse(response.body)
@@ -248,12 +251,12 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         expect(json.first['username']).to eq(volunteer.username)
         expect(json.first['email']).to eq(volunteer.email)
       end
-      
+
       it 'returns all volunteers associated to the order' do
         json = JSON.parse(response.body)
         expect(json.size).to eq(1)
       end
-	  end
+    end
 
     describe 'empty' do
       before(:each) do
@@ -261,43 +264,46 @@ RSpec.describe 'Api::V1::Orders', type: :request do
           email: helpee.email, password: helpee.password
         } }, headers: headers
         @token = response.headers['Authorization']
-        get api_v1_orders_path + '/show/volunteers', params: { order_id: order.id },
-                              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        get api_v1_orders_path + '/show/volunteers',
+            params: { order_id: order.id },
+            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       end
-    
-        it 'returns http success' do
-          expect(response).to have_http_status(:ok)
-        end
 
-        it 'returns all volunteers associated to the order' do
-          json = JSON.parse(response.body)
-          expect(json).to match_array([])
-        end
+      it 'returns http success' do
+        expect(response).to have_http_status(:ok)
       end
-      
-      describe 'the same volunteer cannot take the same order twice' do
-        before(:each) do
-          post api_v1_users_path + '/login', params: { user: {
-            email: volunteer.email, password: volunteer.password
-          } }, headers: headers
-          @token = response.headers['Authorization']
-          post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
-                            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-          post api_v1_orders_path + '/take', params: { order_id: order.id, volunteer_id: volunteer.id },
-                            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-          post api_v1_users_path + '/login', params: { user: {
-            email: helpee.email, password: helpee.password
-          } }, headers: headers
-          @token = response.headers['Authorization']
-          get api_v1_orders_path + '/show/volunteers', params: { order_id: order.id },
-                                headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-        
-        end
 
-        it 'returns all volunteers associated to the order' do
-          json = JSON.parse(response.body)
-          expect(json.size).to eq(1)
-        end
+      it 'returns all volunteers associated to the order' do
+        json = JSON.parse(response.body)
+        expect(json).to match_array([])
       end
+    end
+
+    describe 'the same volunteer cannot take the same order twice' do
+      before(:each) do
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer.email, password: volunteer.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        post api_v1_orders_path + '/take',
+             params: { order_id: order.id, volunteer_id: volunteer.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        post api_v1_orders_path + '/take',
+             params: { order_id: order.id, volunteer_id: volunteer.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        get api_v1_orders_path + '/show/volunteers',
+            params: { order_id: order.id },
+            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      end
+
+      it 'returns all volunteers associated to the order' do
+        json = JSON.parse(response.body)
+        expect(json.size).to eq(1)
+      end
+    end
   end
 end

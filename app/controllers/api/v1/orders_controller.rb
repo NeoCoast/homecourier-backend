@@ -93,6 +93,8 @@ class Api::V1::OrdersController < ApplicationController
       @order.finish!
       @volunteer.notifications.create!(title: 'Pedido finalizado',
                                        body: "El usuario #{@helpee.username} ha recibido el pedido #{@title}")
+      ActionCable.server.broadcast "pending_rating_#{@volunteer.id}", order_id: @order.id
+      
     when 'cancelled'
       @order.cancel!
       @helpee.notifications.create!(title: 'Pedido cancelado',
