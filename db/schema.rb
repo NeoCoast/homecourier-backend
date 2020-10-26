@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_11_184705) do
+ActiveRecord::Schema.define(version: 2020_10_15_215012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,10 +55,10 @@ ActiveRecord::Schema.define(version: 2020_10_11_184705) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "helpee_ratings", primary_key: ["order_id", "qualifier_id", "qualified_id"], force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "qualifier_id", null: false
-    t.integer "qualified_id", null: false
+  create_table "helpee_ratings", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "qualifier_id"
+    t.integer "qualified_id"
     t.integer "score"
     t.string "comment"
     t.datetime "created_at", null: false
@@ -123,10 +123,10 @@ ActiveRecord::Schema.define(version: 2020_10_11_184705) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  create_table "volunteer_ratings", primary_key: ["order_id", "qualifier_id", "qualified_id"], force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "qualifier_id", null: false
-    t.integer "qualified_id", null: false
+  create_table "volunteer_ratings", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "qualifier_id"
+    t.integer "qualified_id"
     t.integer "score"
     t.string "comment"
     t.datetime "created_at", null: false
