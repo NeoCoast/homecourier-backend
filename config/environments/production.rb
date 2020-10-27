@@ -85,7 +85,11 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Devise
-  config.action_mailer.default_url_options = { host: ENV.fetch("SMTP_HOST") }
+  if ENV['SMTP_HOST'].present?
+    config.action_mailer.default_url_options = { host: ENV.fetch("SMTP_HOST") }
+  else
+    config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  end
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
