@@ -1,5 +1,4 @@
 class NotificationMailer < ApplicationMailer
-    include InlineStylesMailer
     default from: "homecourierfing@gmail.com"
 
     def order_new_postulations_email
