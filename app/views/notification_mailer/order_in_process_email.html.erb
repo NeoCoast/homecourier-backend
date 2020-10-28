@@ -59,11 +59,11 @@
                       <th class="small-12 large-6 columns first"><table><tbody><tr><th>
                         <p>
                           <strong>Usuario</strong><br>
-                          <%= @user.name %> <%= @user.lastname %>
+                          <%= @user.username %>
                         </p>
                         <p>
-                          <strong>Documento</strong><br>
-                          <%= @user.document_number %>
+                          <strong>Nombre</strong><br>
+                          <%= @user.name %> <%= @user.lastname %>
                         </p>
                         <p>
                           <strong>Correo electrónico</strong><br>
@@ -73,7 +73,11 @@
                       <th class="small-12 large-6 columns last"><table><tbody><tr><th>
                         <p>
                           <strong>Pedido</strong><br>
-                          <%= @order.title %> <%= @order.id %>
+                          <%= @order.title %>
+                        </p>
+                        <p>
+                          <strong>ID Pedido</strong><br>
+                          <%= @order.id %>
                         </p>
                         <p>
                           <strong>Dirección de entrega</strong><br>
@@ -84,23 +88,24 @@
                   </th><th class="expander"></th></tr></tbody></table>
 
                   <h4>Detalle del pedido</h4>
-                  <p style="white-space: pre-line">
-                    <%= @order.description %>
-                  </p>
+                  <p style="white-space: pre-line"><%= @order.description %></p>
                   <hr>
                 </th></tr></tbody></table></th>
               </tr></tbody></table>
               <table class="row footer text-center"><tbody><tr>
                 <th class="small-12 large-6 columns"><table><tbody><tr><th>
                   <p>
-                    Contactanos al +59899123456<br>
-                    ó envíanos un email a homecourierfing@gmail.com
+                    <strong>Homecourier SA</strong><br>
+                    Av. Brasil 1234<br>
+                    Montevideo, Uruguay
+                    
                   </p>
                 </th></tr></tbody></table></th>
                 <th class="small-12 large-6 columns last"><table><tbody><tr><th>
                   <p>
-                    Av. Brasil 1234<br>
-                    Montevideo, Uruguay
+                    <u>Contacto</u><br>
+                    Tel: +59899123456<br>
+                    Mail: homecourierfing@gmail.com
                   </p>
                 </th></tr></tbody></table></th>
               </tr></tbody></table>
