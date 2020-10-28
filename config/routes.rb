@@ -1,9 +1,7 @@
 Rails.application.routes.draw do
-
-  devise_for :admins
   devise_for :users, skip: %i[registrations sessions passwords confirmations]
   devise_for :helpee, :volunteer, skip: %i[registrations sessions passwords confirmations]
- 
+
   defaults formats: :json do
     namespace :api do
       namespace :v1 do
