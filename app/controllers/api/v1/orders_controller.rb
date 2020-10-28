@@ -64,6 +64,7 @@ class Api::V1::OrdersController < ApplicationController
     volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
                                     body: "Ya puedes iniciar el pedido #{order.title}")
     head :ok
+    NotificationMailer.with(user:volunteer, order:order).order_accepted_email.deliver_now
   end
 
   def take_order
@@ -74,6 +75,7 @@ class Api::V1::OrdersController < ApplicationController
       order.helpee.notifications.create!(title: 'Se han postulado a tu pedido',
                                          body: "Tu pedido #{order.title} tiene una nueva postulación")
       head :ok
+      NotificationMailer.with(user:order.helpee, order:order).order_volunteer_email.deliver_now
     else
       head :not_acceptable
     end
