@@ -64,3 +64,5 @@ group :production do
 end
 
 gem 'aws-sdk-s3'
+
+gem 'foundation_emails'
