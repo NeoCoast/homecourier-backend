@@ -37,26 +37,22 @@
                     <table class="row"><tbody><tr>
                       <th class="small-12 large-6 columns first"><table><tbody><tr><th>
                         <p>
-                          <strong>Usuario</strong><br>
-                          <%= @order.helpee.username %>
+                          <strong>Pedido</strong><br>
+                          <%= @order.title %>
                         </p>
                         <p>
                           <strong>Nombre</strong><br>
                           <%= @order.helpee.name %> <%= @order.helpee.lastname %>
                         </p>
-                        <p>
-                          <strong>Correo electrónico</strong><br>
-                          <%= @order.helpee.email %>
-                        </p>
                       </th></tr></tbody></table></th>
                       <th class="small-12 large-6 columns last"><table><tbody><tr><th>
                         <p>
-                          <strong>Pedido</strong><br>
-                          <%= @order.title %>
+                          <strong>Usuario</strong><br>
+                          <%= @order.helpee.username %>
                         </p>
                         <p>
-                          <strong>Dirección de entrega</strong><br>
-                          <%= @order.helpee.address %>
+                          <strong>Correo electrónico</strong><br>
+                          <%= @order.helpee.email %>
                         </p>
                       </th></tr></tbody></table></th>
                     </tr></tbody></table>
