@@ -60,5 +60,5 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # ActionCable
-  config.action_cable.allowed_request_origins = ['chrome-extension://fgponpodhbmadfljofbimhhlengambbn','http://localhost:8080']
+  config.action_cable.allowed_request_origins = ['chrome-extension://fgponpodhbmadfljofbimhhlengambbn','http://http://localhost:8080']
 end

@@ -85,24 +85,30 @@ class Api::V1::OrdersController < ApplicationController
       @order.accept!
       @volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
                                        body: "Ya puedes iniciar el pedido #{order.title}")
+      NotificationMailer.with(user:@volunteer, title:@title).order_accepted_email.deliver_now
     when 'in_process'
       @order.start!
       @helpee.notifications.create!(title: 'Ha iniciado tu pedido',
                                     body: "Tu pedido #{@title} ya se encuentra en camino")
+      NotificationMailer.with(user:@helpee, title:@title).order_in_process_email.deliver_now
     when 'finished'
       @order.finish!
       @helpee.notifications.create!(title: 'Pedido finalizado',
                                     body: "Has finalizado el pedido #{@title}")
+      NotificationMailer.with(user:@helpee, title:@title).order_finished_email.deliver_now
       @volunteer.notifications.create!(title: 'Pedido finalizado',
                                        body: "El usuario #{@helpee.username} ha recibido el pedido #{@title}")
+      NotificationMailer.with(user:@volunteer, title:@title).order_finished_email.deliver_now                                 
       ActionCable.server.broadcast "pending_rating_#{@volunteer.id}", order_id: @order.id
 
     when 'cancelled'
       @order.cancel!
       @helpee.notifications.create!(title: 'Pedido cancelado',
                                     body: "El pedido #{@title} ha sido cancelado")
+      NotificationMailer.with(user:@helpee, title:@title).order_cancelled_email.deliver_now
       @volunteer.notifications.create!(title: 'Pedido cancelado',
                                        body: "El pedido #{@title} ha sido cancelado")
+      NotificationMailer.with(user:@volunteer, title:@title).order_cancelled_email.deliver_now
     end
   end
 
