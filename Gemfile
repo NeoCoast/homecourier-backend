@@ -66,4 +66,3 @@ end
 gem 'aws-sdk-s3'
 
 gem 'premailer-rails'
-gem 'foundation_emails'

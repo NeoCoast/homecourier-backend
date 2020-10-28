@@ -2,8 +2,103 @@
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/foundation-emails/2.2.1/foundation-emails.min.css" rel="stylesheet">
   </head>
   <body>
-    <h1>Test, <%= @user.name %></h1>
+      <span class="preheader"></span>
+
+  <table class="body">
+    <tbody>
+      <tr>
+        <td class="center" align="center" valign="top">
+          <center data-parsed="">
+            <style type="text/css" align="center" class="float-center">
+              body,
+              html,
+              .body {
+                background: #f3f3f3 !important;
+              }
+            </style>
+            <!-- move the above styles into your custom stylesheet -->
+
+            <table class="spacer float-center"><tbody><tr><td height="16px" style="font-size:16px;line-height:16px;">&nbsp;</td></tr></tbody></table>
+
+            <table align="center" class="container float-center"><tbody><tr><td>
+
+              <table class="spacer"><tbody><tr><td height="16px" style="font-size:16px;line-height:16px;">&nbsp;</td></tr></tbody></table>
+
+              <table class="row"><tbody><tr>
+                <th class="small-12 large-12 columns first last"><table><tbody><tr><th>
+                  <h1>Tu pedido tiene una nueva postulación</h1>
+
+                  <table class="spacer"><tbody><tr><td height="16px" style="font-size:16px;line-height:16px;">&nbsp;</td></tr></tbody></table>
+
+                  <table class="callout"><tbody><tr><th class="callout-inner secondary">
+                    <table class="row"><tbody><tr>
+                      <th class="small-12 large-6 columns first"><table><tbody><tr><th>
+                        <p>
+                          <strong>Usuario</strong><br>
+                          <%= @order.helpee.username %>
+                        </p>
+                        <p>
+                          <strong>Nombre</strong><br>
+                          <%= @order.helpee.name %> <%= @order.helpee.lastname %>
+                        </p>
+                        <p>
+                          <strong>Correo electrónico</strong><br>
+                          <%= @order.helpee.email %>
+                        </p>
+                      </th></tr></tbody></table></th>
+                      <th class="small-12 large-6 columns last"><table><tbody><tr><th>
+                        <p>
+                          <strong>Pedido</strong><br>
+                          <%= @order.title %>
+                        </p>
+                        <p>
+                          <strong>ID Pedido</strong><br>
+                          <%= @order.id %>
+                        </p>
+                        <p>
+                          <strong>Dirección de entrega</strong><br>
+                          <%= @order.helpee.address %>
+                        </p>
+                      </th></tr></tbody></table></th>
+                    </tr></tbody></table>
+                  </th><th class="expander"></th></tr></tbody></table>
+
+                  <h4>Detalle del pedido</h4>
+                  <p style="white-space: pre-line"><%= @order.description %></p>
+                  <hr>
+                </th></tr></tbody></table></th>
+              </tr></tbody></table>
+              <table class="row footer text-center"><tbody><tr>
+                <th class="small-12 large-6 columns" style="padding-left:16px;"><table><tbody><tr><th>
+                  <p>
+                    <strong>Homecourier SA</strong><br>
+                    Av. Brasil 1234<br>
+                    Montevideo, Uruguay
+                    
+                  </p>
+                </th></tr></tbody></table></th>
+                <th class="small-12 large-6 columns last" style="padding-right:16px;"><table><tbody><tr><th>
+                  <p>
+                    <u>Contacto</u><br>
+                    Tel: +59899123456<br>
+                    Mail: homecourierfing@gmail.com
+                  </p>
+                </th></tr></tbody></table></th>
+              </tr></tbody></table>
+            </td></tr></tbody></table>
+
+          </center>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+      <!-- prevent Gmail on iOS font size manipulation -->
+      <div style="display:none; white-space:nowrap; font:15px courier; line-height:0;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </div>
+    
+
   </body>
 </html>
