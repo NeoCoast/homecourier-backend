@@ -63,8 +63,8 @@ class Api::V1::OrdersController < ApplicationController
     volunteer = Volunteer.find(params[:volunteer_id])
     volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
                                     body: "Ya puedes iniciar el pedido #{order.title}")
-    head :ok
     NotificationMailer.with(user:volunteer, order:order).order_accepted_email.deliver_now
+    head :ok
   end
 
   def take_order
@@ -74,8 +74,8 @@ class Api::V1::OrdersController < ApplicationController
       order.volunteers << volunteer
       order.helpee.notifications.create!(title: 'Se han postulado a tu pedido',
                                          body: "Tu pedido #{order.title} tiene una nueva postulación")
-      head :ok
       NotificationMailer.with(user:order.helpee, order:order).order_new_postulations_email.deliver_now
+      head :ok
     else
       head :not_acceptable
     end
@@ -86,7 +86,7 @@ class Api::V1::OrdersController < ApplicationController
     when 'accepted'
       @order.accept!
       @volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
-                                       body: "Ya puedes iniciar el pedido #{order.title}")
+                                       body: "Ya puedes iniciar el pedido #{@title}")
       NotificationMailer.with(user:@volunteer, order:@order).order_accepted_email.deliver_now
     when 'in_process'
       @order.start!
