@@ -75,7 +75,7 @@ class Api::V1::OrdersController < ApplicationController
       order.helpee.notifications.create!(title: 'Se han postulado a tu pedido',
                                          body: "Tu pedido #{order.title} tiene una nueva postulación")
       head :ok
-      NotificationMailer.with(user:order.helpee, order:order).order_volunteer_email.deliver_now
+      NotificationMailer.with(user:order.helpee, order:order).order_new_postulations_email.deliver_now
     else
       head :not_acceptable
     end

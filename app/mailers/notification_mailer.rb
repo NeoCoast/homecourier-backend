@@ -1,7 +1,7 @@
 class NotificationMailer < ApplicationMailer
     default from: "homecourierfing@gmail.com"
 
-    def order_volunteer_email
+    def order_new_postulations_email
         @user = params[:user]
         @order = params[:order]
         mail(to: @user.email, subject: "Se han postulado al pedido '#{@order.title}'")
