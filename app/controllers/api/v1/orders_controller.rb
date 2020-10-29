@@ -84,7 +84,7 @@ class Api::V1::OrdersController < ApplicationController
     when 'accepted'
       @order.accept!
       @volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
-                                       body: "Ya puedes iniciar el pedido #{order.title}")
+                                       body: "Ya puedes iniciar el pedido #{@order.title}")
     when 'in_process'
       @order.start!
       @helpee.notifications.create!(title: 'Ha iniciado tu pedido',
