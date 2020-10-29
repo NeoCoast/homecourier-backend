@@ -10,7 +10,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     if ENV['ORIGIN'].present?
       origins ENV.fetch("ORIGIN")
     else
-      origins 'localhost:8080'
+      origins 'http://localhost:8080'
     end
 
     resource '*',
