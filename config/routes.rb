@@ -48,4 +48,7 @@ Rails.application.routes.draw do
   end
 
   mount ActionCable.server => '/cable'
+  
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 end

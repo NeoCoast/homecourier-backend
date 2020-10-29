@@ -198,3 +198,5 @@ order_requests.each_with_index do |ord_req, index|
   print "saving ratings " + (index + 1).to_s + "/" + order_requests.length.to_s + "\r"
 end
 puts
+
+AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?

@@ -66,3 +66,7 @@ end
 gem 'aws-sdk-s3'
 
 gem 'premailer-rails'
+
+gem 'sprockets', '~> 3.0'
+
+gem 'activeadmin', '~> 2.8.1'
