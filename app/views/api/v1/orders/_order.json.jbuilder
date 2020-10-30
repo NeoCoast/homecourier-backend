@@ -14,6 +14,7 @@ json.helpee do
   json.address order.helpee.address
   json.created_at order.helpee.created_at
   json.updated_at order.helpee.updated_at
+  json.avatar url_for(order.helpee.avatar) if order.helpee.avatar.attached?
   json.rating VolunteerRating.where(qualified_id: order.helpee.id).average(:score)
 end
 
@@ -27,5 +28,6 @@ json.updated_at order.updated_at
 json.volunteers order.volunteers do |volunteer|
   json.call(volunteer, :id, :email, :created_at, :updated_at, :jti, :username, :name, :lastname, :birth_date, :address,
             :document_number, :document_type_id)
+  json.avatar url_for(volunteer.avatar) if volunteer.avatar.attached?
   json.rating HelpeeRating.where(qualified_id: volunteer.id).average(:score)
 end
