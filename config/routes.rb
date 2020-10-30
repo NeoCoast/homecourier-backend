@@ -39,6 +39,7 @@ Rails.application.routes.draw do
         post '/orders/status', to: 'orders#update_status'
         resources :notifications, only: %i[index]
         post '/notifications/seen', to: 'notifications#seen'
+        get '/notifications/index_not_seen', to: 'notifications#index_not_seen'
         post '/helpees/ratingPending', to: 'helpees#rating_pending'
         post '/helpees/rating', to: 'helpees#rating'
         post '/volunteers/ratingPending', to: 'volunteers#rating_pending'
