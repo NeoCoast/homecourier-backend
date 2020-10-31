@@ -2,11 +2,17 @@ class Api::V1::NotificationsController < ApplicationController
   PAGE_SIZE = 50
 
   before_action :authenticate_user!
-  before_action :index_settings, only: [:index]
+  before_action :index_settings, only: %i[index index_not_seen]
   before_action :load_notification, only: [:seen]
 
   def index
     @notifications = Notification.where(user_id: @user_id).order(id: :desc)
+                                 .limit(@page_size).offset(@offset)
+  end
+
+  def index_not_seen
+    @notifications = Notification.where(user_id: @user_id, status: :not_seen)
+                                 .order(id: :desc)
                                  .limit(@page_size).offset(@offset)
   end
 
