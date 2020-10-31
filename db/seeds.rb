@@ -2,8 +2,8 @@ require 'csv'
 
 # to run use rake db:seed
 
-VOLUNTEER_LIMIT = 10  # number of volunteers to create
-HELPEE_LIMIT = 10     # number of helpees to create
+VOLUNTEER_LIMIT = 100  # number of volunteers to create
+HELPEE_LIMIT = 100     # number of helpees to create
 rng = Random.new(333) # random seed
 
 # DOCUMENT TYPES
@@ -158,17 +158,18 @@ csv_order_request.each do |order_request_row|
 end
 
 # NOTIFICATIONS
-
-csv = File.read(Rails.root.join('lib', 'seeds', 'notification.csv'))
-notifications = CSV.parse(csv, :headers => true, :encoding => 'ISO-8859-1')
-notifications.each_with_index do |notification_row, index|
-  notification = Notification.new
-  notification.title = notification_row['title']
-  notification.body = notification_row['body']
-  notification.status = notification_row['status'].to_i
-  notification.user = helpee_list[notification_row['user'].to_i]
-  notification.save!
-  print "saving notifications " + (index + 1).to_s + "/" + notifications.length.to_s + "\r"
+notification_users_emails = ['notificaciones1@gmail.com', 'notificaciones2@gmail.com', 'notificaciones3@gmail.com', 'notificaciones4@gmail.com']
+notifications_per_user = 400
+notification_users_emails.each_with_index do |n_user, index_user|
+  (1..notifications_per_user).each do |index|
+    notification = Notification.new
+    notification.title = 'Aceptado'
+    notification.body = 'Su pedido pedido ' + index.to_s + ' ha sido aceptado'
+    notification.status = 0
+    notification.user = User.where(:email => n_user).first
+    notification.save!
+  end
+  print "saving notifications for user " + (index_user + 1).to_s + "/" + notification_users_emails.length.to_s + "\r"
 end
 puts
 
