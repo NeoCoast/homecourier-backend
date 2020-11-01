@@ -35,8 +35,9 @@ Rails.application.configure do
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
   # config.action_cable.url = 'wss://example.com/cable'
-  config.action_cable.allowed_request_origins = ['https://test-homecourier.herokuapp.com',
-                                                 'https://demo-homecourier.herokuapp.com']
+  if ENV['ORIGIN'].present?
+    config.action_cable.allowed_request_origins = [ ENV.fetch("ORIGIN") ]
+  end
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
@@ -85,7 +86,11 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Devise
-  config.action_mailer.default_url_options = { host: 'test-homecourier-backend.herokuapp.com' }
+  if ENV['SMTP_HOST'].present?
+    config.action_mailer.default_url_options = { host: ENV.fetch("SMTP_HOST") }
+  else
+    config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  end
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',

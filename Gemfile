@@ -62,3 +62,7 @@ gem 'aasm', '~> 4.12'
 group :production do
   gem 'redis'
 end
+
+gem 'aws-sdk-s3'
+
+gem 'premailer-rails'

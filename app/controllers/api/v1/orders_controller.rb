@@ -63,6 +63,7 @@ class Api::V1::OrdersController < ApplicationController
     volunteer = Volunteer.find(params[:volunteer_id])
     volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
                                     body: "Ya puedes iniciar el pedido #{order.title}")
+    NotificationMailer.with(user: volunteer, order: order).order_accepted_email.deliver_now
     head :ok
   end
 
@@ -73,6 +74,7 @@ class Api::V1::OrdersController < ApplicationController
       order.volunteers << volunteer
       order.helpee.notifications.create!(title: 'Se han postulado a tu pedido',
                                          body: "Tu pedido #{order.title} tiene una nueva postulación")
+      NotificationMailer.with(user: order.helpee, order: order).order_new_postulations_email.deliver_now
       head :ok
     else
       head :not_acceptable
@@ -84,26 +86,34 @@ class Api::V1::OrdersController < ApplicationController
     when 'accepted'
       @order.accept!
       @volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
-                                       body: "Ya puedes iniciar el pedido #{order.title}")
+                                       body: "Ya puedes iniciar el pedido #{@title}")
+      NotificationMailer.with(user: @volunteer, order: @order).order_accepted_email.deliver_now
     when 'in_process'
       @order.start!
       @helpee.notifications.create!(title: 'Ha iniciado tu pedido',
                                     body: "Tu pedido #{@title} ya se encuentra en camino")
+      NotificationMailer.with(user: @helpee, order: @order).order_in_process_email.deliver_now
     when 'finished'
       @order.finish!
       @helpee.notifications.create!(title: 'Pedido finalizado',
                                     body: "Has finalizado el pedido #{@title}")
+      NotificationMailer.with(user: @helpee, order: @order).order_finished_email.deliver_now
       @volunteer.notifications.create!(title: 'Pedido finalizado',
                                        body: "El usuario #{@helpee.username} ha recibido el pedido #{@title}")
-      ActionCable.server.broadcast "pending_rating_#{@volunteer.id}", order_id: @order.id
-
+      NotificationMailer.with(user: @volunteer, order: @order).order_finished_email.deliver_now
+      ActionCable.server.broadcast("pending_rating_#{@volunteer.id}",
+                                   order_id: @order.id,
+                                   user_id: @order.helpee.id, 
+                                   user_name: @order.helpee.name + ' ' + @order.helpee.lastname)
     when 'cancelled'
       @order.cancel!
       @helpee.notifications.create!(title: 'Pedido cancelado',
                                     body: "El pedido #{@title} ha sido cancelado")
-      if @order.status == 'created'
+      NotificationMailer.with(user: @helpee, order: @order).order_cancelled_email.deliver_now
+      if @order.status != 'created'
         @volunteer.notifications.create!(title: 'Pedido cancelado',
                                          body: "El pedido #{@title} ha sido cancelado")
+        NotificationMailer.with(user: @volunteer, order: @order).order_cancelled_email.deliver_now
       end
     end
   end

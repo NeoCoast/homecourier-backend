@@ -125,6 +125,53 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
         end
       end
 
+      context 'birth date < 18' do
+        context 'year validation' do
+          before(:each) do
+            subject['birth_date'] = (Date.today - 16.year).strftime('%d/%m/%Y')
+            post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
+          end
+
+          it 'returns http bad_request' do
+            expect(response).to have_http_status(:bad_request)
+          end
+
+          it 'is not created' do
+            expect(User.count).to_not eq 1
+          end
+        end
+
+        context 'month validation' do
+          before(:each) do
+            subject['birth_date'] = (Date.today - 18.year + 1.month).strftime('%d/%m/%Y')
+            post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
+          end
+
+          it 'returns http bad_request' do
+            expect(response).to have_http_status(:bad_request)
+          end
+
+          it 'is not created' do
+            expect(User.count).to_not eq 1
+          end
+        end
+
+        context 'day validation' do
+          before(:each) do
+            subject['birth_date'] = (Date.today - 18.year + 1.day).strftime('%d/%m/%Y')
+            post api_v1_helpees_path + '/signup', params: { helpee: subject }, headers: headers
+          end
+
+          it 'returns http bad_request' do
+            expect(response).to have_http_status(:bad_request)
+          end
+
+          it 'is not created' do
+            expect(User.count).to_not eq 1
+          end
+        end
+      end
+
       context 'address is empty' do
         before do
           subject['address'] = nil

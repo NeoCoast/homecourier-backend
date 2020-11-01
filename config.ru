@@ -8,7 +8,12 @@ require 'rack/cors'
 use Rack::Cors do
 
   allow do
-    origins 'localhost:8080', 'https://test-homecourier.herokuapp.com', 'https://demo-homecourier.herokuapp.com'
+    if ENV['ORIGIN'].present?
+      origins ENV.fetch("ORIGIN")
+    else
+      origins 'http://localhost:8080'
+    end
+    
     resource '*',
              headers: :any,
              expose: ['Authorization'],

@@ -23,11 +23,22 @@ class Api::V1::HelpeesController < ApplicationController
 
   def rating_pending
     helpee_id = params[:helpee_id]
-    @order = Order.where('helpee_id = ? AND status = ?', helpee_id, Order.statuses[:finished]).order('updated_at').first
-    if !@order.nil?
-      @order_request = OrderRequest.find_by('order_id = ? AND order_request_status = ?', @order.id, OrderRequest.order_request_statuses[:accepted])
-      if !@order_request.nil?
-        @rating = HelpeeRating.where('order_id = ? and qualifier_id = ?', @order.id, helpee_id).first
+
+    orders = Order.joins(:order_requests).where(
+      'orders.status' => Order.statuses[:finished],
+      'orders.helpee_id' => helpee_id,
+      'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]
+    ).order('orders.updated_at')
+    
+    @pendings = []
+    orders.each do |order|
+      rating = HelpeeRating.where(
+        'order_id = ? and qualifier_id = ?',
+        order.id,
+        helpee_id
+      )
+      if rating.blank?
+        @pendings.push order
       end
     end
   end
