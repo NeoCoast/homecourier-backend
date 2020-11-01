@@ -101,18 +101,20 @@ class Api::V1::OrdersController < ApplicationController
       @volunteer.notifications.create!(title: 'Pedido finalizado',
                                        body: "El usuario #{@helpee.username} ha recibido el pedido #{@title}")
       NotificationMailer.with(user: @volunteer, order: @order).order_finished_email.deliver_now
-      ActionCable.server.broadcast("pending_rating_#{@volunteer.id}", 
-                                   order_id: @order.id, 
+      ActionCable.server.broadcast("pending_rating_#{@volunteer.id}",
+                                   order_id: @order.id,
                                    user_id: @order.helpee.id, 
-                                   user_name: @order.helpee.name + " " + @order.helpee.lastname)
+                                   user_name: @order.helpee.name + ' ' + @order.helpee.lastname)
     when 'cancelled'
       @order.cancel!
       @helpee.notifications.create!(title: 'Pedido cancelado',
                                     body: "El pedido #{@title} ha sido cancelado")
       NotificationMailer.with(user: @helpee, order: @order).order_cancelled_email.deliver_now
-      @volunteer.notifications.create!(title: 'Pedido cancelado',
-                                       body: "El pedido #{@title} ha sido cancelado")
-      NotificationMailer.with(user: @volunteer, order: @order).order_cancelled_email.deliver_now
+      if @order.status != 'created'
+        @volunteer.notifications.create!(title: 'Pedido cancelado',
+                                         body: "El pedido #{@title} ha sido cancelado")
+        NotificationMailer.with(user: @volunteer, order: @order).order_cancelled_email.deliver_now
+      end
     end
   end
 
@@ -129,7 +131,9 @@ class Api::V1::OrdersController < ApplicationController
   def load_params
     @order = Order.find(params[:order_id])
     @helpee = Helpee.find(Order.find(params[:order_id]).helpee.id)
-    @volunteer = Volunteer.find(OrderRequest.find_by!(order_id: params[:order_id]).volunteer.id)
+    if @order.status != 'created'
+      @volunteer = Volunteer.find(OrderRequest.find_by!(order_id: params[:order_id]).volunteer.id)
+    end
     @title = @order.title
   end
 end
