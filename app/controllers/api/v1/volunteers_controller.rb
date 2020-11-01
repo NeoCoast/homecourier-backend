@@ -38,17 +38,22 @@ class Api::V1::VolunteersController < ApplicationController
 
   def rating_pending
     volunteer_id = params[:volunteer_id]
-    @order = Order.joins(:order_requests).where(
+    orders = Order.joins(:order_requests).where(
       'orders.status' => Order.statuses[:finished],
       'order_requests.volunteer_id' => volunteer_id,
       'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]
-    ).order('orders.updated_at').first
-    unless @order.nil?
-      @rating = VolunteerRating.where(
+    ).order('orders.updated_at')
+
+    @pendings = []
+    orders.each do |order|
+      rating = VolunteerRating.where(
         'order_id = ? and qualifier_id = ?',
-        @order.id,
+        order.id,
         volunteer_id
-      ).first
+      )
+      if rating.blank?
+        @pendings.push order 
+      end
     end
   end
 
