@@ -81,10 +81,10 @@ ActiveRecord::Schema.define(version: 2020_10_30_213423) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "helpee_ratings", primary_key: ["order_id", "qualifier_id", "qualified_id"], force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "qualifier_id", null: false
-    t.integer "qualified_id", null: false
+  create_table "helpee_ratings", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "qualifier_id"
+    t.integer "qualified_id"
     t.integer "score"
     t.string "comment"
     t.datetime "created_at", null: false
@@ -142,7 +142,7 @@ ActiveRecord::Schema.define(version: 2020_10_30_213423) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.boolean "enabled"
+    t.boolean "enabled", default: false
     t.index ["document_type_id"], name: "index_users_on_document_type_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
@@ -150,10 +150,10 @@ ActiveRecord::Schema.define(version: 2020_10_30_213423) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  create_table "volunteer_ratings", primary_key: ["order_id", "qualifier_id", "qualified_id"], force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "qualifier_id", null: false
-    t.integer "qualified_id", null: false
+  create_table "volunteer_ratings", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "qualifier_id"
+    t.integer "qualified_id"
     t.integer "score"
     t.string "comment"
     t.datetime "created_at", null: false

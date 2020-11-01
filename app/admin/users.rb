@@ -82,7 +82,7 @@ ActiveAdmin.register User, as: "Usuarios" do
         end
       end
       row :document_face_pic do
-        if user.document_face_pic.attached?
+        if user.type == "Volunteer" and user.document_face_pic.attached?
           link_to 'Download', url_for(user.document_face_pic), download: "Usuario_#{user.username}_ci_frente.png"
         end 
       end
@@ -107,7 +107,7 @@ ActiveAdmin.register User, as: "Usuarios" do
   scope :all, default: false
   scope("Helpees") { |scope| scope.where(type: "Helpee") }
   scope("Volunteers") { |scope| scope.where(type: "Volunteer") }
-  scope("Pendings") { |scope| scope.where(type: "Volunteer", enabled: nil) }
+  scope("Pendings") { |scope| scope.where(type: "Volunteer", enabled: false) }
 
 
 end
