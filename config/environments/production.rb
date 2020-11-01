@@ -35,9 +35,7 @@ Rails.application.configure do
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
   # config.action_cable.url = 'wss://example.com/cable'
-  if ENV['ORIGIN'].present?
-    config.action_cable.allowed_request_origins = [ ENV.fetch("ORIGIN") ]
-  end
+  config.action_cable.allowed_request_origins = [ENV.fetch('ORIGIN')] if ENV['ORIGIN'].present?
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
@@ -86,11 +84,11 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Devise
-  if ENV['SMTP_HOST'].present?
-    config.action_mailer.default_url_options = { host: ENV.fetch("SMTP_HOST") }
-  else
-    config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
-  end
+  config.action_mailer.default_url_options = if ENV['SMTP_HOST'].present?
+                                               { host: ENV.fetch('SMTP_HOST') }
+                                             else
+                                               { host: 'localhost', port: 3000 }
+                                             end
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
@@ -103,5 +101,5 @@ Rails.application.configure do
   }
 
   # Active Storage
-  config.active_storage.service = :amazon
+  config.active_storage.service = :local
 end
