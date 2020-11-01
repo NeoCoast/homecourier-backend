@@ -106,11 +106,12 @@ class Api::V1::OrdersController < ApplicationController
                                    user_id: @order.helpee.id, 
                                    user_name: @order.helpee.name + ' ' + @order.helpee.lastname)
     when 'cancelled'
+      status = @order.status
       @order.cancel!
       @helpee.notifications.create!(title: 'Pedido cancelado',
                                     body: "El pedido #{@title} ha sido cancelado")
       NotificationMailer.with(user: @helpee, order: @order).order_cancelled_email.deliver_now
-      if @order.status != 'created'
+      if status != 'created'
         @volunteer.notifications.create!(title: 'Pedido cancelado',
                                          body: "El pedido #{@title} ha sido cancelado")
         NotificationMailer.with(user: @volunteer, order: @order).order_cancelled_email.deliver_now
