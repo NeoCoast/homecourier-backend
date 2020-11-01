@@ -101,8 +101,10 @@ class Api::V1::OrdersController < ApplicationController
       @order.cancel!
       @helpee.notifications.create!(title: 'Pedido cancelado',
                                     body: "El pedido #{@title} ha sido cancelado")
-      @volunteer.notifications.create!(title: 'Pedido cancelado',
-                                       body: "El pedido #{@title} ha sido cancelado")
+      if @order.status == 'created'
+        @volunteer.notifications.create!(title: 'Pedido cancelado',
+                                         body: "El pedido #{@title} ha sido cancelado")
+      end
     end
   end
 
@@ -119,7 +121,9 @@ class Api::V1::OrdersController < ApplicationController
   def load_params
     @order = Order.find(params[:order_id])
     @helpee = Helpee.find(Order.find(params[:order_id]).helpee.id)
-    @volunteer = Volunteer.find(OrderRequest.find_by!(order_id: params[:order_id]).volunteer.id)
+    if @order.status != 'created'
+      @volunteer = Volunteer.find(OrderRequest.find_by!(order_id: params[:order_id]).volunteer.id)
+    end
     @title = @order.title
   end
 end
