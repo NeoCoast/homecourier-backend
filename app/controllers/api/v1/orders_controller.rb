@@ -42,7 +42,12 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def order_volunteers
-    @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id]).order('users.name ASC')
+    @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id])
+    @volunteers =
+      @volunteers.select('users.*, avg(helpee_ratings.score) as score, count(helpee_ratings.score) as reviews')
+                 .joins('INNER JOIN helpee_ratings ON helpee_ratings.qualified_id = users.id')
+                 .group('users.id')
+                 .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC')
   end
 
   def volunteer_orders
@@ -74,7 +79,8 @@ class Api::V1::OrdersController < ApplicationController
       order.volunteers << volunteer
       order.helpee.notifications.create!(title: 'Se han postulado a tu pedido',
                                          body: "Tu pedido #{order.title} tiene una nueva postulación")
-      NotificationMailer.with(user: order.helpee, volunteer: volunteer, order: order).order_new_postulations_email.deliver_now
+      NotificationMailer.with(user: order.helpee, volunteer: volunteer, order: order)
+                        .order_new_postulations_email.deliver_now
       head :ok
     else
       head :not_acceptable
@@ -101,9 +107,9 @@ class Api::V1::OrdersController < ApplicationController
       @volunteer.notifications.create!(title: 'Pedido finalizado',
                                        body: "El usuario #{@helpee.username} ha recibido el pedido #{@title}")
       NotificationMailer.with(user: @volunteer, order: @order).order_finished_email_volunteer.deliver_now
-      ActionCable.server.broadcast("pending_rating_#{@volunteer.id}", 
-                                   order_id: @order.id, 
-                                   user_id: @order.helpee.id, 
+      ActionCable.server.broadcast("pending_rating_#{@volunteer.id}",
+                                   order_id: @order.id,
+                                   user_id: @order.helpee.id,
                                    user_name: @order.helpee.name + ' ' + @order.helpee.lastname)
     when 'cancelled'
       status = @order.status
