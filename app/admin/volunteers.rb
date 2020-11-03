@@ -2,7 +2,7 @@ ActiveAdmin.register Volunteer do
   permit_params :enabled
   # permit_params :enabled, :avatar, :document_face_pic, :document_back_pic
 
-  actions :index, :show, :accept, :reject
+  actions :index, :show
 
   scope :all
   scope("Pendings", default: true) { |scope| scope.where(enabled: false) }  
@@ -18,19 +18,21 @@ ActiveAdmin.register Volunteer do
   member_action :accept, method: :put do
     volunteer = Volunteer.find(params[:id])
     volunteer.update(enabled: true)
-    redirect_to admin_volunteer_path(volunteer)
+    redirect_to admin_volunteer_path(volunteer), alert: "Volunteer has been accepted"
   end
 
   member_action :reject, method: :put do
     volunteer = Volunteer.destroy(params[:id])
+    redirect_to collection_path, alert: "Volunteer has been rejected"
   end
-  
-  # batch_action :flag do |ids|
-  #   batch_action_collection.find(ids).each do |user|
-  #     user.flag! :hot
-  #   end
-  #   redirect_to collection_path, alert: "The posts have been flagged."
-  # end
+
+  batch_action :accept do |ids|
+    batch_action_collection.find(ids).each do |volunteer|
+      volunteer.update(enabled: true)
+    end
+    redirect_to collection_path, alert: "Volunteers have been enabled."
+  end
+
 
   index do
     selectable_column
