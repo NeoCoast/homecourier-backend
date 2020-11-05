@@ -16,6 +16,7 @@ class User < ApplicationRecord
 
   validates_with LatitudeValidator
   validates_with LongitudeValidator
+  validates_with AgeValidator
 
   geocoded_by :address
 
