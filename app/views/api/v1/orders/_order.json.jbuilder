@@ -11,7 +11,9 @@ json.helpee do
   json.name order.helpee.name
   json.lastname order.helpee.lastname
   json.email order.helpee.email
-  json.address order.helpee.address
+  json.address order.helpee.address if order.accepted? || order.in_process? || order.finished?
+  json.longitude order.helpee.longitude
+  json.latitude order.helpee.latitude
   json.created_at order.helpee.created_at
   json.updated_at order.helpee.updated_at
   json.avatar url_for(order.helpee.avatar) if order.helpee.avatar.attached?
