@@ -19,6 +19,20 @@ RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
   end
   let!(:unregistered_user) { build(:user, type: 'Helpee') }
 
+  Geocoder.configure(lookup: :test, ip_lookup: :test)
+  Geocoder::Lookup::Test.set_default_stub(
+    [
+      {
+        'coordinates' => [40.7143528, -74.0059731],
+        'address' => 'New York, NY, USA',
+        'state' => 'New York',
+        'state_code' => 'NY',
+        'country' => 'United States',
+        'country_code' => 'US'
+      }
+    ]
+  )
+
   describe 'POST /api/v1/users/login' do
     let!(:headers) { { 'ACCEPT' => 'application/json' } }
 

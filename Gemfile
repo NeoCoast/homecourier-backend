@@ -50,19 +50,16 @@ group :test do
   gem 'action-cable-testing', '~> 0.6.1'
 end
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-# Manage users  
-gem 'devise', '~> 4.7.3'
-gem 'devise-jwt', '~> 0.8.0'
-
-gem 'aasm', '~> 4.12'
-
 group :production do
   gem 'redis'
 end
 
-gem 'aws-sdk-s3'
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
+gem 'devise', '~> 4.7.3'
+gem 'devise-jwt', '~> 0.8.0'
+gem 'aasm', '~> 4.12'
+gem 'aws-sdk-s3'
 gem 'premailer-rails'
+gem 'geocoder', '~> 1.6.4'
