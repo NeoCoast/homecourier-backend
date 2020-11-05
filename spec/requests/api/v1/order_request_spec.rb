@@ -415,8 +415,8 @@ RSpec.describe 'Api::V1::Orders', type: :request do
 
     context 'created > accepted' do
       before(:each) do
-        post api_v1_orders_path + '/status',
-             params: { order_id: order.id, status: 'accepted' },
+        post api_v1_orders_path + '/accept',
+             params: { order_id: order.id, volunteer_id: volunteer.id },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
       end
       it 'returns http success' do
