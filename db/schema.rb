@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_11_184705) do
+ActiveRecord::Schema.define(version: 2020_11_05_144920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,6 +116,8 @@ ActiveRecord::Schema.define(version: 2020_10_11_184705) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
+    t.float "latitude"
+    t.float "longitude"
     t.index ["document_type_id"], name: "index_users_on_document_type_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true

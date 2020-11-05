@@ -15,11 +15,25 @@ RSpec.describe Volunteer, type: :model do
       name: user.name,
       lastname: user.lastname,
       birth_date: user.birth_date,
-      address: user.address,
+      address: 'New York, NY',
       document_type: document_type,
       document_number: document_number
     )
   end
+
+  Geocoder.configure(lookup: :test, ip_lookup: :test)
+  Geocoder::Lookup::Test.set_default_stub(
+    [
+      {
+        'coordinates' => [40.7143528, -74.0059731],
+        'address' => 'New York, NY, USA',
+        'state' => 'New York',
+        'state_code' => 'NY',
+        'country' => 'United States',
+        'country_code' => 'US'
+      }
+    ]
+  )
 
   describe 'Volunteer creation' do
     context 'succeeds' do

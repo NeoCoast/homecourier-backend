@@ -7,6 +7,20 @@ RSpec.describe 'Api::V1::Devise::Volunteers::RegistrationsController', type: :re
   let(:document_type) { create :document_type }
   let(:document_number) { Faker::Number.number(digits: 8) }
 
+  Geocoder.configure(lookup: :test, ip_lookup: :test)
+  Geocoder::Lookup::Test.set_default_stub(
+    [
+      {
+        'coordinates' => [40.7143528, -74.0059731],
+        'address' => 'New York, NY, USA',
+        'state' => 'New York',
+        'state_code' => 'NY',
+        'country' => 'United States',
+        'country_code' => 'US'
+      }
+    ]
+  )
+
   describe 'POST /api/v1/volunteers/signup' do
     let!(:headers) { { 'ACCEPT' => 'application/json' } }
 
