@@ -5,6 +5,20 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :request do
   let!(:user) { build :user }
 
+  Geocoder.configure(lookup: :test, ip_lookup: :test)
+  Geocoder::Lookup::Test.set_default_stub(
+    [
+      {
+        'coordinates' => [40.7143528, -74.0059731],
+        'address' => 'New York, NY, USA',
+        'state' => 'New York',
+        'state_code' => 'NY',
+        'country' => 'United States',
+        'country_code' => 'US'
+      }
+    ]
+  )
+
   describe 'POST /api/v1/helpees/signup' do
     let!(:headers) { { 'ACCEPT' => 'application/json' } }
 

@@ -3,12 +3,14 @@
 # Age validator
 class AgeValidator < ActiveModel::Validator
   def validate(record)
-    record.errors.add(:age, 'User must have 18 years old.') unless adult(record.birth_date)
+    record.errors.add(:birth_date, 'User must have 18 years old.') unless adult(record.birth_date)
   end
 
   private
 
   def adult(date)
+    return true if date.nil?
+
     date_of_birth = Date.strptime(date, '%d/%m/%Y')
 
     return true if Date.today.year - date_of_birth.year > 18
