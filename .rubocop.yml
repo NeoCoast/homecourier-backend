@@ -2,7 +2,7 @@ Layout/LineLength:
   Max: 120
 Metrics/MethodLength:
   CountComments: false
-  Max: 35
+  Max: 50
 Metrics/BlockLength:
   Max: 30
   Exclude:
