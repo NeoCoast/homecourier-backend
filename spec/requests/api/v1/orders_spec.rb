@@ -27,20 +27,6 @@ RSpec.describe 'Api::V1::Orders', type: :request do
   let!(:order_finished) { create(:order, helpee_id: helpee.id, categories: categories, status: :finished) }
   let!(:order_cancelled) { create(:order, helpee_id: helpee.id, categories: categories, status: :cancelled) }
 
-  Geocoder.configure(lookup: :test, ip_lookup: :test)
-  Geocoder::Lookup::Test.set_default_stub(
-    [
-      {
-        'coordinates' => [40.7143528, -74.0059731],
-        'address' => 'New York, NY, USA',
-        'state' => 'New York',
-        'state_code' => 'NY',
-        'country' => 'United States',
-        'country_code' => 'US'
-      }
-    ]
-  )
-
   describe 'GET /api/v1/orders' do
     before(:each) do
       post api_v1_users_path + '/login', params: { user: {

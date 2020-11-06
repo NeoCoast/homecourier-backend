@@ -6,20 +6,6 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::Categories', type: :request do
   let!(:headers) { { 'ACCEPT' => 'application/json' } }
 
-  Geocoder.configure(lookup: :test, ip_lookup: :test)
-  Geocoder::Lookup::Test.set_default_stub(
-    [
-      {
-        'coordinates' => [40.7143528, -74.0059731],
-        'address' => 'New York, NY, USA',
-        'state' => 'New York',
-        'state_code' => 'NY',
-        'country' => 'United States',
-        'country_code' => 'US'
-      }
-    ]
-  )
-
   describe 'GET /api/v1/categories' do
     let!(:helpee) { create(:user, type: 'Helpee') }
     let!(:categories) { create_list(:category, 10) }
