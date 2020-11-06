@@ -40,13 +40,8 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def destroy
-    @order = Order.find(params[:id])
-    @order.destroy
-    return unless @order.accepted? || @order.in_process? || @order.finished?
-
-    offset_coordinates(@order)
-    @order.helpee.longitude = @coordinates[0]
-    @order.helpee.latitude = @coordinates[1]
+    order = Order.find(params[:id])
+    order.destroy
     head :ok
   end
 
@@ -76,7 +71,7 @@ class Api::V1::OrdersController < ApplicationController
     @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id])
     @volunteers =
       @volunteers.select('users.*, avg(helpee_ratings.score) as score, count(helpee_ratings.score) as reviews')
-                 .joins('INNER JOIN helpee_ratings ON helpee_ratings.qualified_id = users.id')
+                 .joins('LEFT JOIN helpee_ratings ON helpee_ratings.qualified_id = users.id')
                  .group('users.id')
                  .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC')
   end
