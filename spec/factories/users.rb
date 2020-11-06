@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require './spec/support/geocoder_stub'
+
 FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
@@ -10,5 +12,7 @@ FactoryBot.define do
     birth_date { Faker::Date.birthday(min_age: 19, max_age: 100).strftime('%d/%m/%Y') }
     address { Faker::Address.street_address }
     confirmation_token { Faker::Internet.password(min_length: 20) }
+
+    after(:build) { GeocoderStub.stub_with }
   end
 end

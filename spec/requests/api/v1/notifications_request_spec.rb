@@ -12,20 +12,6 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
     )
   end
 
-  Geocoder.configure(lookup: :test, ip_lookup: :test)
-  Geocoder::Lookup::Test.set_default_stub(
-    [
-      {
-        'coordinates' => [40.7143528, -74.0059731],
-        'address' => 'New York, NY, USA',
-        'state' => 'New York',
-        'state_code' => 'NY',
-        'country' => 'United States',
-        'country_code' => 'US'
-      }
-    ]
-  )
-
   let!(:notifications) do
     create_list(
       :notification,
