@@ -21,13 +21,7 @@ class Api::V1::OrdersController < ApplicationController
 
   def index
     @orders = Order.all
-    @orders.each do |order|
-      next if order.accepted? || order.in_process? || order.finished?
-
-      offset_coordinates(order)
-      order.helpee.longitude = @coordinates[0]
-      order.helpee.latitude = @coordinates[1]
-    end
+    offset_orders
   end
 
   def show
@@ -47,24 +41,12 @@ class Api::V1::OrdersController < ApplicationController
 
   def show_status
     @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC')
-    @orders.each do |order|
-      next if order.accepted? || order.in_process? || order.finished?
-
-      offset_coordinates(order)
-      order.helpee.longitude = @coordinates[0]
-      order.helpee.latitude = @coordinates[1]
-    end
+    offset_orders
   end
 
   def orders_helpee
     @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC')
-    @orders.each do |order|
-      next if order.accepted? || order.in_process? || order.finished?
-
-      offset_coordinates(order)
-      order.helpee.longitude = @coordinates[0]
-      order.helpee.latitude = @coordinates[1]
-    end
+    offset_orders
   end
 
   def order_volunteers
@@ -79,13 +61,7 @@ class Api::V1::OrdersController < ApplicationController
   def volunteer_orders
     @volunteer = Volunteer.find(params[:volunteer_id])
     @orders = @volunteer.orders.order('created_at DESC')
-    @orders.each do |order|
-      next if order.accepted? || order.in_process? || order.finished?
-
-      offset_coordinates(order)
-      order.helpee.longitude = @coordinates[0]
-      order.helpee.latitude = @coordinates[1]
-    end
+    offset_orders
   end
 
   def accept_volunteer
@@ -211,5 +187,15 @@ class Api::V1::OrdersController < ApplicationController
     lon = helpee.longitude.nil? ? 1 : helpee.longitude
     max_radius = 300
     @coordinates = random_location(lon, lat, max_radius)
+  end
+
+  def offset_orders
+    @orders.each do |order|
+      next if order.accepted? || order.in_process? || order.finished?
+
+      offset_coordinates(order)
+      order.helpee.longitude = @coordinates[0]
+      order.helpee.latitude = @coordinates[1]
+    end
   end
 end
