@@ -1,6 +1,5 @@
 ActiveAdmin.register Volunteer do
   permit_params :enabled
-  # permit_params :enabled, :avatar, :document_face_pic, :document_back_pic
 
   actions :index, :show
 
@@ -18,21 +17,32 @@ ActiveAdmin.register Volunteer do
   member_action :accept, method: :put do
     volunteer = Volunteer.find(params[:id])
     volunteer.update(enabled: true)
+    NotificationMailer.with(volunteer:volunteer).accepted_volunteer_email.deliver_now
     redirect_to admin_volunteer_path(volunteer), alert: "Volunteer has been accepted"
   end
 
   member_action :reject, method: :put do
-    volunteer = Volunteer.destroy(params[:id])
+    volunteer = Volunteer.find(params[:id])
+    NotificationMailer.with(volunteer:volunteer).rejected_volunteer_email.deliver_now
+    Volunteer.destroy(params[:id])
     redirect_to collection_path, alert: "Volunteer has been rejected"
   end
 
   batch_action :accept do |ids|
     batch_action_collection.find(ids).each do |volunteer|
       volunteer.update(enabled: true)
+      NotificationMailer.with(volunteer:volunteer).accepted_volunteer_email.deliver_now
     end
     redirect_to collection_path, alert: "Volunteers have been enabled."
   end
 
+  batch_action :reject do |ids|
+    batch_action_collection.find(ids).each do |volunteer|
+      NotificationMailer.with(volunteer:volunteer).rejected_volunteer_email.deliver_now
+      Volunteer.destroy(volunteer.id)
+    end
+    redirect_to collection_path, alert: "Volunteers have been rejected."
+  end
 
   index do
     selectable_column
@@ -89,15 +99,5 @@ ActiveAdmin.register Volunteer do
       row :enabled
     end
   end
-
-  # form do |f|
-  #   f.inputs do
-  #     f.input :enabled
-  #     f.input :avatar, as: :file
-  #     f.input :document_face_pic, as: :file
-  #     f.input :document_back_pic, as: :file
-  #   end
-  #   f.actions
-  # end
 
 end
