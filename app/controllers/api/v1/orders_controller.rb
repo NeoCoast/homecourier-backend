@@ -21,33 +21,47 @@ class Api::V1::OrdersController < ApplicationController
 
   def index
     @orders = Order.all
+    offset_orders
   end
 
   def show
     @order = Order.find(params[:id])
+    return unless @order.accepted? || @order.in_process? || @order.finished?
+
+    offset_coordinates(@order)
+    @order.helpee.longitude = @coordinates[0]
+    @order.helpee.latitude = @coordinates[1]
   end
 
   def destroy
-    @order = Order.find(params[:id])
-    @order.destroy
+    order = Order.find(params[:id])
+    order.destroy
     head :ok
   end
 
   def show_status
     @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC')
+    offset_orders
   end
 
   def orders_helpee
     @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC')
+    offset_orders
   end
 
   def order_volunteers
-    @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id]).order('users.name ASC')
+    @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id])
+    @volunteers =
+      @volunteers.select('users.*, avg(helpee_ratings.score) as score, count(helpee_ratings.score) as reviews')
+                 .joins('LEFT JOIN helpee_ratings ON helpee_ratings.qualified_id = users.id')
+                 .group('users.id')
+                 .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC')
   end
 
   def volunteer_orders
     @volunteer = Volunteer.find(params[:volunteer_id])
     @orders = @volunteer.orders.order('created_at DESC')
+    offset_orders
   end
 
   def accept_volunteer
@@ -87,11 +101,6 @@ class Api::V1::OrdersController < ApplicationController
 
   def update_status
     case params[:status]
-    when 'accepted'
-      @order.accept!
-      @volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
-                                       body: "Ya puedes iniciar el pedido #{@title}")
-      NotificationMailer.with(user: @volunteer, order: @order).order_accepted_email.deliver_now
     when 'in_process'
       @order.start!
       @helpee.notifications.create!(title: 'Ha iniciado tu pedido',
@@ -131,6 +140,11 @@ class Api::V1::OrdersController < ApplicationController
         NotificationMailer.with(user: @volunteer, order: @order).order_cancelled_email.deliver_now
       end
     end
+    return unless @order.accepted? || @order.in_process? || @order.finished?
+
+    offset_coordinates(@order)
+    @order.helpee.longitude = @coordinates[0]
+    @order.helpee.latitude = @coordinates[1]
   end
 
   private
@@ -150,5 +164,38 @@ class Api::V1::OrdersController < ApplicationController
       @volunteer = Volunteer.find(OrderRequest.find_by!(order_id: params[:order_id]).volunteer.id)
     end
     @title = @order.title
+  end
+
+  def random_point_in_disk(max_radius)
+    r = max_radius * rand**0.5
+    theta = rand * 2 * Math::PI
+    [r * Math.cos(theta), r * Math.sin(theta)]
+  end
+
+  def random_location(lon, lat, max_radius)
+    dx, dy = random_point_in_disk(max_radius)
+    earth_radius = 6371 # km
+    one_degree = earth_radius * 2 * Math::PI / 360 * 1000 # 1 degree latitude in meters
+    random_lat = lat + dy / one_degree
+    random_lon = lon + dx / (one_degree * Math.cos(lat * Math::PI / 180))
+    [random_lon, random_lat]
+  end
+
+  def offset_coordinates(order)
+    helpee = Helpee.find(order.helpee.id)
+    lat = helpee.latitude.nil? ? 1 : helpee.latitude
+    lon = helpee.longitude.nil? ? 1 : helpee.longitude
+    max_radius = 300
+    @coordinates = random_location(lon, lat, max_radius)
+  end
+
+  def offset_orders
+    @orders.each do |order|
+      next if order.accepted? || order.in_process? || order.finished?
+
+      offset_coordinates(order)
+      order.helpee.longitude = @coordinates[0]
+      order.helpee.latitude = @coordinates[1]
+    end
   end
 end
