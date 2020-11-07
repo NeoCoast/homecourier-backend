@@ -12,6 +12,13 @@ RSpec.describe 'Api::V1::Orders', type: :request do
       confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
     )
   end
+  let!(:volunteer2) do
+    create(
+      :user,
+      type: 'Volunteer',
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+    )
+  end
   let!(:helpee) do
     create(
       :user,
@@ -19,7 +26,17 @@ RSpec.describe 'Api::V1::Orders', type: :request do
       confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
     )
   end
+  let!(:helpee2) do
+    create(
+      :user,
+      type: 'Helpee',
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+    )
+  end
   let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
+  let!(:order2) { create(:order, helpee_id: helpee.id, categories: categories) }
+  let!(:order3) { create(:order, helpee_id: helpee2.id, categories: categories) }
+  let!(:order4) { create(:order, helpee_id: helpee2.id, categories: categories) }
   let!(:order_delete) { create(:order, helpee_id: helpee.id, categories: categories) }
   let!(:order_created) { create(:order, helpee_id: helpee.id, categories: categories, status: :created) }
   let!(:order_accepted) { create(:order, helpee_id: helpee.id, categories: categories, status: :accepted) }
@@ -43,7 +60,7 @@ RSpec.describe 'Api::V1::Orders', type: :request do
 
     it 'returns all orders' do
       body = JSON.parse(response.body)
-      expect(body.size).to eq(7)
+      expect(body.size).to eq(10)
     end
   end
 
@@ -141,7 +158,7 @@ RSpec.describe 'Api::V1::Orders', type: :request do
 
     it 'returns all orders associated to the helpee' do
       body = JSON.parse(response.body)
-      expect(body.size).to eq(7)
+      expect(body.size).to eq(8)
     end
   end
 
@@ -225,19 +242,87 @@ RSpec.describe 'Api::V1::Orders', type: :request do
   describe 'GET /api/v1/orders/show/volunteers' do
     describe 'success' do
       before(:each) do
+        # Login volunteer
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer.email, password: volunteer.password
+        } }, headers: headers
+        @token_volunteer = response.headers['Authorization']
+        # Login volunteer2
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer2.email, password: volunteer2.password
+        } }, headers: headers
+        @token_volunteer2 = response.headers['Authorization']
+        # Login helpee
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee2.email, password: helpee2.password
+        } }, headers: headers
+        @token_helpee = response.headers['Authorization']
+
+        # Rating1
+        post api_v1_orders_path + '/take',
+             params: { order_id: order3.id, volunteer_id: volunteer.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+        post api_v1_orders_path + '/accept',
+             params: { order_id: order3.id, volunteer_id: volunteer.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        post api_v1_orders_path + '/status',
+             params: { order_id: order3.id, status: 'in_process' },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+        post api_v1_orders_path + '/status',
+             params: { order_id: order3.id, status: 'finished' },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        post api_v1_helpees_path + '/rating',
+             params: { order_id: order3.id, score: '2', comment: Faker::Lorem.sentence },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        get api_v1_volunteers_path + '/' + volunteer.id.to_s,
+            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+        # Rating2
+        post api_v1_orders_path + '/take',
+             params: { order_id: order4.id, volunteer_id: volunteer2.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer2 }
+        post api_v1_orders_path + '/accept',
+             params: { order_id: order4.id, volunteer_id: volunteer2.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        post api_v1_orders_path + '/status',
+             params: { order_id: order4.id, status: 'in_process' },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer2 }
+        post api_v1_orders_path + '/status',
+             params: { order_id: order4.id, status: 'finished' },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        post api_v1_helpees_path + '/rating',
+             params: { order_id: order4.id, score: '4', comment: Faker::Lorem.sentence },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        get api_v1_volunteers_path + '/' + volunteer2.id.to_s,
+            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer2 }
+        # Volunteer
         post api_v1_users_path + '/login', params: { user: {
           email: volunteer.email, password: volunteer.password
         } }, headers: headers
         @token = response.headers['Authorization']
         post api_v1_orders_path + '/take',
-             params: { order_id: order.id, volunteer_id: volunteer.id },
+             params: { order_id: order2.id, volunteer_id: volunteer.id },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        get api_v1_orders_path + '/show/volunteer',
+            params: { volunteer_id: volunteer.id },
+            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+        # Volunteer2
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer2.email, password: volunteer2.password
+        } }, headers: headers
+        @token = response.headers['Authorization']
+        post api_v1_orders_path + '/take',
+             params: { order_id: order2.id, volunteer_id: volunteer2.id },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
         post api_v1_users_path + '/login', params: { user: {
           email: helpee.email, password: helpee.password
         } }, headers: headers
         @token = response.headers['Authorization']
         get api_v1_orders_path + '/show/volunteers',
-            params: { order_id: order.id },
+            params: { order_id: order2.id },
             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       end
 
@@ -245,16 +330,17 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'the answer has correct volunteer' do
+      it 'the answer has correct order of volunteers' do
         json = JSON.parse(response.body)
-        expect(json.first['id']).to eq(volunteer.id)
-        expect(json.first['username']).to eq(volunteer.username)
-        expect(json.first['email']).to eq(volunteer.email)
+        expect(json.first['id']).to eq(volunteer2.id)
+        expect(json.first['username']).to eq(volunteer2.username)
+        expect(json.first['email']).to eq(volunteer2.email)
+        expect(json.first['name']).to eq(volunteer2.name)
       end
 
       it 'returns all volunteers associated to the order' do
         json = JSON.parse(response.body)
-        expect(json.size).to eq(1)
+        expect(json.size).to eq(2)
       end
     end
 

@@ -47,6 +47,9 @@ RSpec.describe 'Api::V1::Helpees', type: :request do
           helpee_tmp['lastname'] = helpee.attributes['lastname']
           helpee_tmp['birth_date'] = helpee.attributes['birth_date']
           helpee_tmp['address'] = helpee.attributes['address']
+          helpee_tmp['avatar'] = helpee.attributes['avatar'] if helpee.attributes.key?('avatar')
+          helpee_tmp['latitude'] = helpee.attributes['latitude']
+          helpee_tmp['longitude'] = helpee.attributes['longitude']
           helpee_tmp['rating'] = helpee.attributes['volunteer_ratings']
           helpees_array.push(helpee_tmp)
         end
