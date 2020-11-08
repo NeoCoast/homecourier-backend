@@ -8,3 +8,5 @@ json.lastname user.lastname
 json.birth_date user.birth_date
 json.address user.address
 json.avatar url_for(user.avatar) if user.avatar.attached?
+json.latitude user.latitude
+json.longitude user.longitude

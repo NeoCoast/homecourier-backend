@@ -10,10 +10,11 @@ json.helpee do
   json.username order.helpee.username
   json.name order.helpee.name
   json.lastname order.helpee.lastname
-  json.email order.helpee.email
-  json.address order.helpee.address
-  json.created_at order.helpee.created_at
-  json.updated_at order.helpee.updated_at
+  json.email order.helpee.email if order.accepted? || order.in_process? || order.finished?
+  json.address order.helpee.address if order.accepted? || order.in_process? || order.finished?
+  json.longitude order.helpee.longitude
+  json.latitude order.helpee.latitude
+  json.avatar url_for(order.helpee.avatar) if order.helpee.avatar.attached?
   json.rating VolunteerRating.where(qualified_id: order.helpee.id).average(:score)
 end
 
@@ -25,7 +26,7 @@ json.created_at order.created_at
 json.updated_at order.updated_at
 
 json.volunteers order.volunteers do |volunteer|
-  json.call(volunteer, :id, :email, :created_at, :updated_at, :jti, :username, :name, :lastname, :birth_date, :address,
-            :document_number, :document_type_id)
+  json.call(volunteer, :id, :email, :username, :name, :lastname)
+  json.avatar url_for(volunteer.avatar) if volunteer.avatar.attached?
   json.rating HelpeeRating.where(qualified_id: volunteer.id).average(:score)
 end

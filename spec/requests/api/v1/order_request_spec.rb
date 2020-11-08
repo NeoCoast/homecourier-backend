@@ -369,7 +369,13 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     end
     let!(:categories) { create_list(:category, 3) }
     let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
-    let!(:volunteer) { create(:user, type: 'Volunteer') }
+    let!(:volunteer) do
+      create(
+        :user,
+        type: 'Volunteer',
+        confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      )
+    end
 
     subject do
       {
@@ -377,44 +383,131 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         status: 'accepted'
       }
     end
+    before(:each) do
+      # Login volunteer
+      post api_v1_users_path + '/login', params: { user: {
+        email: volunteer.email, password: volunteer.password
+      } }, headers: headers
+      @token_volunteer = response.headers['Authorization']
+      # Login helpee1
+      post api_v1_users_path + '/login', params: { user: {
+        email: helpee.email, password: helpee.password
+      } }, headers: headers
+      @token_helpee = response.headers['Authorization']
+      post api_v1_orders_path + '/take',
+           params: { order_id: order.id, volunteer_id: volunteer.id },
+           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+    end
 
-    context 'succeeds' do
+    context 'created > accepted' do
       before(:each) do
-        post api_v1_users_path + '/login', params: { user: {
-          email: helpee.email, password: helpee.password
-        } }, headers: headers
-        @token = response.headers['Authorization']
-        post api_v1_orders_path + '/take',
+        post api_v1_orders_path + '/accept',
              params: { order_id: order.id, volunteer_id: volunteer.id },
-             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
-        post api_v1_orders_path + '/status',
-             params: subject,
-             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
       end
-
       it 'returns http success' do
         expect(response).to have_http_status(:ok)
       end
-
-      it 'update status' do
+      it 'updated status' do
         expect(Order.find(order.id).status).to eq 'accepted'
+      end
+
+      context 'accepted > in_process' do
+        before(:each) do
+          post api_v1_orders_path + '/status',
+               params: { order_id: order.id, status: 'in_process' },
+               headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+        end
+        it 'returns http success' do
+          expect(response).to have_http_status(:ok)
+        end
+        it 'updated status' do
+          expect(Order.find(order.id).status).to eq 'in_process'
+        end
+
+        context 'in_process > finished' do
+          before(:each) do
+            post api_v1_orders_path + '/status',
+                 params: { order_id: order.id, status: 'finished' },
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+          end
+          it 'returns http success' do
+            expect(response).to have_http_status(:ok)
+          end
+          it 'updated status' do
+            expect(Order.find(order.id).status).to eq 'finished'
+          end
+        end
+        context 'in_process > cancelled' do
+          context 'helpee cancel' do
+            before(:each) do
+              post api_v1_orders_path + '/status',
+                   params: { order_id: order.id, status: 'cancelled' },
+                   headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+            end
+            it 'returns http success' do
+              expect(response).to have_http_status(:ok)
+            end
+            it 'updated status' do
+              expect(Order.find(order.id).status).to eq 'cancelled'
+            end
+          end
+          context 'volunteer cancel' do
+            before(:each) do
+              post api_v1_orders_path + '/status',
+                   params: { order_id: order.id, status: 'cancelled' },
+                   headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+            end
+            it 'returns http success' do
+              expect(response).to have_http_status(:ok)
+            end
+            it 'updated status' do
+              expect(Order.find(order.id).status).to eq 'cancelled'
+            end
+          end
+        end
+      end
+      context 'accepted > cancelled' do
+        context 'helpee cancel' do
+          before(:each) do
+            post api_v1_orders_path + '/status',
+                 params: { order_id: order.id, status: 'cancelled' },
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+          end
+          it 'returns http success' do
+            expect(response).to have_http_status(:ok)
+          end
+          it 'updated status' do
+            expect(Order.find(order.id).status).to eq 'cancelled'
+          end
+        end
+        context 'volunteer cancel' do
+          before(:each) do
+            post api_v1_orders_path + '/status',
+                 params: { order_id: order.id, status: 'cancelled' },
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+          end
+          it 'returns http success' do
+            expect(response).to have_http_status(:ok)
+          end
+          it 'updated status' do
+            expect(Order.find(order.id).status).to eq 'cancelled'
+          end
+        end
       end
     end
 
-    context 'fails' do
+    context 'created > cancelled' do
       before(:each) do
-        post api_v1_users_path + '/login', params: { user: {
-          email: volunteer.email, password: volunteer.password
-        } }, headers: headers
-        @token = response.headers['Authorization']
-        subject['status'] = 'finish'
         post api_v1_orders_path + '/status',
-             params: subject,
-             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+             params: { order_id: order.id, status: 'cancelled' },
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
       end
-
-      it 'invalid transition' do
-        expect(Order.find(order.id).status).to eq 'created'
+      it 'returns http success' do
+        expect(response).to have_http_status(:ok)
+      end
+      it 'updated status' do
+        expect(Order.find(order.id).status).to eq 'cancelled'
       end
     end
   end

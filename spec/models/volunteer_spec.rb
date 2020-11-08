@@ -15,7 +15,7 @@ RSpec.describe Volunteer, type: :model do
       name: user.name,
       lastname: user.lastname,
       birth_date: user.birth_date,
-      address: user.address,
+      address: 'New York, NY',
       document_type: document_type,
       document_number: document_number
     )

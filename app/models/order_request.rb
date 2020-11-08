@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# OrderRequest
 class OrderRequest < ApplicationRecord
   include AASM
   enum order_request_status: %i[waiting rejected accepted]

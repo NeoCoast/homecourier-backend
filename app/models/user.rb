@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
 
+  before_validation :geocode, if: :address_changed?
+
   devise :database_authenticatable, :registerable, :recoverable,
          :rememberable, :validatable, :confirmable,
          :jwt_authenticatable, jwt_revocation_strategy: self
@@ -12,7 +14,12 @@ class User < ApplicationRecord
   validates :address, presence: true
   validates :type, presence: true
 
-  has_one_attached :avatar
+  validates_with LatitudeValidator
+  validates_with LongitudeValidator
+  validates_with AgeValidator
 
+  geocoded_by :address
+
+  has_one_attached :avatar
   has_many :notifications
 end

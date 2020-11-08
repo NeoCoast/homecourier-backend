@@ -30,26 +30,24 @@
               <table class="row"><tbody><tr>
                 <th class="small-12 large-12 columns first last"><table><tbody><tr><th>
                   <h1>Tu pedido tiene una nueva postulación</h1>
-
+                  <p><strong><%= @volunteer.name %> <%= @volunteer.lastname %></strong> se ha postulado a tu pedido.</p>
                   <table class="spacer"><tbody><tr><td height="16px" style="font-size:16px;line-height:16px;">&nbsp;</td></tr></tbody></table>
 
                   <table class="callout"><tbody><tr><th class="callout-inner secondary">
                     <table class="row"><tbody><tr>
+                      <p>
+                        <strong>Pedido</strong><br>
+                        <%= @order.title %>
+                      </p>
+                    </tr></tbody></table>
+                    <table class="row"><tbody><tr>
                       <th class="small-12 large-6 columns first"><table><tbody><tr><th>
-                        <p>
-                          <strong>Pedido</strong><br>
-                          <%= @order.title %>
-                        </p>
                         <p>
                           <strong>Nombre</strong><br>
                           <%= @order.helpee.name %> <%= @order.helpee.lastname %>
                         </p>
                       </th></tr></tbody></table></th>
                       <th class="small-12 large-6 columns last"><table><tbody><tr><th>
-                        <p>
-                          <strong>Usuario</strong><br>
-                          <%= @order.helpee.username %>
-                        </p>
                         <p>
                           <strong>Correo electrónico</strong><br>
                           <%= @order.helpee.email %>

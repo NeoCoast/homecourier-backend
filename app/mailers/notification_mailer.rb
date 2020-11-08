@@ -3,6 +3,7 @@ class NotificationMailer < ApplicationMailer
 
     def order_new_postulations_email
         @user = params[:user]
+        @volunteer = params[:volunteer]
         @order = params[:order]
         mail(to: @user.email, subject: "Se han postulado a tu pedido '#{@order.title}'")
     end
@@ -13,10 +14,17 @@ class NotificationMailer < ApplicationMailer
     end
     def order_in_process_email
         @user = params[:user]
+        @volunteer = params[:volunteer]
         @order = params[:order]
         mail(to: @user.email, subject: "El pedido '#{@order.title}' está en proceso")
     end
     def order_finished_email
+        @user = params[:user]
+        @volunteer = params[:volunteer]
+        @order = params[:order]
+        mail(to: @user.email, subject: "El pedido '#{@order.title}' ha terminado")
+    end
+    def order_finished_email_volunteer
         @user = params[:user]
         @order = params[:order]
         mail(to: @user.email, subject: "El pedido '#{@order.title}' ha terminado")
