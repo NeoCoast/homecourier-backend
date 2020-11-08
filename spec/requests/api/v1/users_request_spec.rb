@@ -51,7 +51,10 @@ RSpec.describe 'Api::V1::Users', type: :request do
             'name',
             'lastname',
             'birth_date',
-            'address'
+            'address',
+            'avatar',
+            'latitude',
+            'longitude'
           )
         end
         helpee_users.each do |helpee_user|
@@ -62,7 +65,10 @@ RSpec.describe 'Api::V1::Users', type: :request do
             'name',
             'lastname',
             'birth_date',
-            'address'
+            'address',
+            'avatar',
+            'latitude',
+            'longitude'
           )
         end
         expect(@body).to match_array(users)
