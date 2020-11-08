@@ -52,7 +52,8 @@ class Api::V1::OrdersController < ApplicationController
   def order_volunteers
     @volunteers = Volunteer.joins(:orders).where('orders.id = ?', params[:order_id])
     @volunteers =
-      @volunteers.select('users.*, avg(helpee_ratings.score) as score, count(helpee_ratings.score) as reviews')
+      @volunteers.select('users.*, avg(coalesce(helpee_ratings.score,0)) as score,
+                         count(coalesce(helpee_ratings.score,0)) as reviews')
                  .joins('LEFT JOIN helpee_ratings ON helpee_ratings.qualified_id = users.id')
                  .group('users.id')
                  .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC')
