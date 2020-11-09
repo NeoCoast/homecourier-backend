@@ -25,7 +25,7 @@ Rails.application.routes.draw do
         end
 
         resources :users, only: %i[index]
-        resources :volunteers, only: %i[index show]
+        resources :volunteers, only: %i[index show accept reject]
         get '/volunteers/orders', to: 'volunteers#orders_volunteers'
         resources :helpees, only: %i[index show]
         resources :document_types, only: %i[index]
@@ -51,4 +51,7 @@ Rails.application.routes.draw do
   end
 
   mount ActionCable.server => '/cable'
+  
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 end

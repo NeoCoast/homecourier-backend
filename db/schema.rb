@@ -15,6 +15,20 @@ ActiveRecord::Schema.define(version: 2020_11_05_144920) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string "namespace"
+    t.text "body"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.string "author_type"
+    t.bigint "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
+    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
+  end
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -36,6 +50,18 @@ ActiveRecord::Schema.define(version: 2020_11_05_144920) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "admin_users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_admin_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
   create_table "categories", force: :cascade do |t|
     t.string "description"
     t.datetime "created_at", null: false
@@ -55,10 +81,10 @@ ActiveRecord::Schema.define(version: 2020_11_05_144920) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "helpee_ratings", primary_key: ["order_id", "qualifier_id", "qualified_id"], force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "qualifier_id", null: false
-    t.integer "qualified_id", null: false
+  create_table "helpee_ratings", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "qualifier_id"
+    t.integer "qualified_id"
     t.integer "score"
     t.string "comment"
     t.datetime "created_at", null: false
@@ -116,6 +142,7 @@ ActiveRecord::Schema.define(version: 2020_11_05_144920) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
+    t.boolean "enabled", default: false
     t.float "latitude"
     t.float "longitude"
     t.index ["document_type_id"], name: "index_users_on_document_type_id"
@@ -125,10 +152,10 @@ ActiveRecord::Schema.define(version: 2020_11_05_144920) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  create_table "volunteer_ratings", primary_key: ["order_id", "qualifier_id", "qualified_id"], force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "qualifier_id", null: false
-    t.integer "qualified_id", null: false
+  create_table "volunteer_ratings", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "qualifier_id"
+    t.integer "qualified_id"
     t.integer "score"
     t.string "comment"
     t.datetime "created_at", null: false

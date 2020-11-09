@@ -34,4 +34,12 @@ class NotificationMailer < ApplicationMailer
         @order = params[:order]
         mail(to: @user.email, subject: "El pedido '#{@order.title}' fue cancelado")
     end
-end
+    def accepted_volunteer_email
+        @volunteer = params[:volunteer]
+        mail(to: @volunteer.email, subject: "Tu registro como voluntario '#{@volunteer.username}' fue aceptado")
+    end
+    def rejected_volunteer_email
+        @volunteer = params[:volunteer]
+        mail(to: @volunteer.email, subject: "Tu registro como voluntario '#{@volunteer.username}' fue rechazado")
+    end
+end 
