@@ -43,9 +43,9 @@ csv_volunteer.each_with_index do |volunteer_row, index|
     volunteer.lastname = volunteer_row['lastname']
     volunteer.birth_date = volunteer_row['birth_date']
     volunteer.address = volunteer_row['address']
-    puts volunteer.address
     volunteer.document_number = volunteer_row['document_number']
     volunteer.document_type_id = '1'
+    volunteer.enabled = true
     volunteer.save!
     volunteer_list << volunteer
     Volunteer.confirm_by_token(volunteer.confirmation_token)
