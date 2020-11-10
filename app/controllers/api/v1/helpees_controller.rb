@@ -29,7 +29,7 @@ class Api::V1::HelpeesController < ApplicationController
       'orders.helpee_id' => helpee_id,
       'order_requests.order_request_status' => OrderRequest.order_request_statuses[:accepted]
     ).order('orders.updated_at')
-    
+
     @pendings = []
     orders.each do |order|
       rating = HelpeeRating.where(
@@ -37,14 +37,16 @@ class Api::V1::HelpeesController < ApplicationController
         order.id,
         helpee_id
       )
-      if rating.blank?
-        @pendings.push order
-      end
+      @pendings.push order if rating.blank?
     end
   end
 
   def show
     @helpee = Helpee.find(params[:id])
+  end
+
+  def profile
+    @helpee = Helpee.find_by(username: params[:username])
   end
 
   private

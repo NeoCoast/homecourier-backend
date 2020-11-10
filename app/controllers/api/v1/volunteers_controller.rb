@@ -9,6 +9,10 @@ class Api::V1::VolunteersController < ApplicationController
     @volunteer = Volunteer.find(params[:id])
   end
 
+  def profile
+    @volunteer = Volunteer.find_by(username: params[:username])
+  end
+
   def orders_volunteers
     @orders = Volunteer.find(params[:id]).orders
   end
@@ -51,9 +55,7 @@ class Api::V1::VolunteersController < ApplicationController
         order.id,
         volunteer_id
       )
-      if rating.blank?
-        @pendings.push order 
-      end
+      @pendings.push order if rating.blank?
     end
   end
 
