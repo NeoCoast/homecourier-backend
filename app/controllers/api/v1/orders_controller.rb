@@ -8,7 +8,7 @@ class Api::V1::OrdersController < ApplicationController
   before_action :authenticate_user!
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
-  before_action :index_settings, only: %i[show_status orders_helpee volunteer_orders]
+  before_action :index_settings, only: %i[show_status helpee_orders volunteer_orders]
   before_action :order_volunteers_index_settings, only: [:order_volunteers]
 
   def create
@@ -42,7 +42,7 @@ class Api::V1::OrdersController < ApplicationController
     @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC').limit(@page_size).offset(@offset)
   end
 
-  def orders_helpee
+  def helpee_orders
     @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC').limit(@page_size).offset(@offset)
   end
 

@@ -34,7 +34,7 @@ Rails.application.routes.draw do
         resources :ratings, only: %i[create]
         get '/orders/show/all', to: 'orders#show_status'
         get '/orders/show/map', to: 'orders#orders_on_map'
-        get '/orders/show/helpee', to: 'orders#orders_helpee'
+        get '/orders/show/helpee', to: 'orders#helpee_orders'
         get '/orders/show/volunteers', to: 'orders#order_volunteers'
         get '/orders/show/volunteer', to: 'orders#volunteer_orders'
         post '/orders/accept', to: 'orders#accept_volunteer'
