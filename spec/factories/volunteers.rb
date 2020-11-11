@@ -5,5 +5,6 @@ FactoryBot.define do
     type { 'Volunteer' }
     :document_type
     document_number { Faker::Number.number(digits: 8) }
+    enabled { true }
   end
 end
