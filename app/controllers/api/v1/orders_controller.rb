@@ -2,9 +2,14 @@
 
 # OrdersController
 class Api::V1::OrdersController < ApplicationController
+  PAGE_SIZE = 10
+  ORDER_VOLUNTEERS_PAGE_SIZE = 5
+
   before_action :authenticate_user!
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
+  before_action :index_settings, only: %i[show_status orders_helpee volunteer_orders]
+  before_action :order_volunteers_index_settings, only: [:order_volunteers]
 
   def create
     @category_ids = []
@@ -34,11 +39,11 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def show_status
-    @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC')
+    @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC').limit(@page_size).offset(@offset)
   end
 
   def orders_helpee
-    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC')
+    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC').limit(@page_size).offset(@offset)
   end
 
   def order_volunteers
@@ -48,12 +53,12 @@ class Api::V1::OrdersController < ApplicationController
                          count(coalesce(helpee_ratings.score,0)) as reviews')
                  .joins('LEFT JOIN helpee_ratings ON helpee_ratings.qualified_id = users.id')
                  .group('users.id')
-                 .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC')
+                 .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC').limit(@page_size).offset(@offset)
   end
 
   def volunteer_orders
     @volunteer = Volunteer.find(params[:volunteer_id])
-    @orders = @volunteer.orders.order('created_at DESC')
+    @orders = @volunteer.orders.order('created_at DESC').limit(@page_size).offset(@offset)
   end
 
   def accept_volunteer
@@ -179,4 +184,17 @@ class Api::V1::OrdersController < ApplicationController
     end
     @title = @order.title
   end
+
+  def index_settings
+    @page_size = PAGE_SIZE
+    @page = params[:page].to_i || 0
+    @offset = @page * @page_size
+  end
+
+  def order_volunteers_index_settings
+    @page_size = ORDER_VOLUNTEERS_PAGE_SIZE
+    @page = params[:page].to_i || 0
+    @offset = @page * @page_size
+  end
+
 end
