@@ -10,7 +10,7 @@ class Api::V1::VolunteersController < ApplicationController
   end
 
   def profile
-    @volunteer = Volunteer.find_by(username: params[:username])
+    @profile = Volunteer.find_by(username: params[:username])
   end
 
   def orders_volunteers

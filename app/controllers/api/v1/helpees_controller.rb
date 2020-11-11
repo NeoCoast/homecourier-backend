@@ -46,7 +46,7 @@ class Api::V1::HelpeesController < ApplicationController
   end
 
   def profile
-    @helpee = Helpee.find_by(username: params[:username])
+    @profile = Helpee.find_by(username: params[:username])
   end
 
   private
