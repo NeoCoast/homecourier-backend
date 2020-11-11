@@ -158,6 +158,11 @@ RSpec.describe 'Api::V1::Orders', type: :request do
             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       end
 
+      after(:each) do
+        delete api_v1_users_path + '/logout',
+               headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      end
+
       it 'returns http success' do
         expect(response).to have_http_status(:ok)
       end
@@ -170,12 +175,8 @@ RSpec.describe 'Api::V1::Orders', type: :request do
 
     context 'fails' do
       before(:each) do
-        post api_v1_users_path + '/login', params: { user: {
-          email: helpee.email, password: helpee.password
-        } }, headers: headers
-        @token = response.headers['Authorization']
         get api_v1_orders_path '/' + Faker::Number.number(digits: 55).to_s,
-                               headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+                               headers: { 'ACCEPT' => 'application/json' }
       end
 
       it 'returns http unauthorized' do
@@ -302,7 +303,13 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     end
     let!(:categories) { create_list(:category, 3) }
     let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
-    let!(:volunteer) { create(:user, type: 'Volunteer') }
+    let!(:volunteer) do
+      create(
+        :user,
+        type: 'Volunteer',
+        confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      )
+    end
 
     subject do
       {
@@ -314,7 +321,7 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     context 'succeeds' do
       before(:each) do
         post api_v1_users_path + '/login', params: { user: {
-          email: helpee.email, password: helpee.password
+          email: volunteer.email, password: volunteer.password
         } }, headers: headers
         @token = response.headers['Authorization']
         post api_v1_orders_path + '/take',
@@ -334,7 +341,7 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     context 'fails' do
       before(:each) do
         post api_v1_users_path + '/login', params: { user: {
-          email: helpee.email, password: helpee.password
+          email: volunteer.email, password: volunteer.password
         } }, headers: headers
         @token = response.headers['Authorization']
       end

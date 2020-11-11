@@ -69,7 +69,7 @@ class Api::V1::OrdersController < ApplicationController
     order.accept!
     order_request = OrderRequest.find_by!(order_id: params[:order_id], volunteer_id: params[:volunteer_id])
     order_request.accept!
-    OrderRequest.delete(OrderRequest.where('order_id = ? AND Volunteer_id <> ?',
+    OrderRequest.delete(OrderRequest.where('order_id = ? AND volunteer_id <> ?',
                                            params[:order_id], params[:volunteer_id]))
     volunteer = Volunteer.find(params[:volunteer_id])
     volunteer.notifications.create!(title: 'Has sido aceptado para un pedido',
