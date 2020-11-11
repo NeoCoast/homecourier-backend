@@ -25,11 +25,10 @@ Rails.application.routes.draw do
         end
 
         resources :users, only: %i[index]
+        get '/users/profile/view', to: 'users#profile'
         resources :volunteers, only: %i[index show accept reject]
         get '/volunteers/orders', to: 'volunteers#orders_volunteers'
-        get '/volunteers/profile/view', to: 'volunteers#profile'
         resources :helpees, only: %i[index show]
-        get '/helpees/profile/view', to: 'helpees#profile'
         resources :document_types, only: %i[index]
         resources :categories, only: %i[create index show destroy]
         resources :orders, only: %i[create index show destroy]

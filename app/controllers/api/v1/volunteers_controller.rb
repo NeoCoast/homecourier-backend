@@ -9,10 +9,6 @@ class Api::V1::VolunteersController < ApplicationController
     @volunteer = Volunteer.find(params[:id])
   end
 
-  def profile
-    @profile = Volunteer.find_by(username: params[:username])
-  end
-
   def orders_volunteers
     @orders = Volunteer.find(params[:id]).orders
   end
