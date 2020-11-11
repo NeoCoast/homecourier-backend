@@ -33,6 +33,7 @@ Rails.application.routes.draw do
         resources :orders, only: %i[create index show destroy]
         resources :ratings, only: %i[create]
         get '/orders/show/all', to: 'orders#show_status'
+        get '/orders/show/map', to: 'orders#orders_on_map'
         get '/orders/show/helpee', to: 'orders#orders_helpee'
         get '/orders/show/volunteers', to: 'orders#order_volunteers'
         get '/orders/show/volunteer', to: 'orders#volunteer_orders'

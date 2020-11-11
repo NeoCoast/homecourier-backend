@@ -134,6 +134,33 @@ class Api::V1::OrdersController < ApplicationController
     end
   end
 
+  def orders_on_map
+    upper_corner = params[:upper_corner]
+    lower_corner = params[:lower_corner]
+
+    # north coordinate
+    north_coordinate = upper_corner['latitude']
+
+    # south coordinate
+    south_coordinate = lower_corner['latitude']
+
+    # east coordinate
+    east_coordinate = upper_corner['longitude']
+
+    # west coordinate
+    west_coordinate = lower_corner['longitude']
+
+    @orders = Order.joins(:helpee)
+                   .where(
+                     'orders.status = ? and
+                     users.offsetlatitude <= ? and
+                     users.offsetlatitude >= ? and
+                     users.offsetlongitude <= ? and
+                     users.offsetlongitude >= ?', 0, north_coordinate,
+                     south_coordinate, east_coordinate, west_coordinate
+                   ).order('created_at DESC')
+  end
+
   private
 
   def order_params
