@@ -7,6 +7,6 @@ class Api::V1::UsersController < ApplicationController
 
   def profile
     @profile = User.find_by(username: params[:username])
-    head :no_content if @profile.nil?
+    head :not_found if @profile.nil?
   end
 end
