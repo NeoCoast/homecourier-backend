@@ -140,20 +140,10 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def orders_on_map
-    upper_corner = params[:upper_corner]
-    lower_corner = params[:lower_corner]
-
-    # north coordinate
-    north_coordinate = upper_corner['latitude']
-
-    # south coordinate
-    south_coordinate = lower_corner['latitude']
-
-    # east coordinate
-    east_coordinate = upper_corner['longitude']
-
-    # west coordinate
-    west_coordinate = lower_corner['longitude']
+    north_coordinate = params[:lat_top_right]
+    east_coordinate = params[:lng_top_right]
+    south_coordinate = params[:lat_down_left]
+    west_coordinate = params[:lng_down_left]
 
     @orders = Order.joins(:helpee)
                    .where(
