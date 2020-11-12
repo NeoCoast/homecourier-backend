@@ -9,14 +9,16 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     create(
       :user,
       type: 'Volunteer',
-      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today),
+      enabled: true
     )
   end
   let!(:volunteer2) do
     create(
       :user,
       type: 'Volunteer',
-      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today),
+      enabled: true
     )
   end
   let!(:helpee) do
