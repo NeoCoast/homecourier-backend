@@ -1,4 +1,7 @@
-ActiveAdmin.register AdminUser, as: "Admins" do
+# frozen_string_literal: true
+
+# ActiveAdmin
+ActiveAdmin.register AdminUser, as: 'Admins' do
   permit_params :email, :password, :password_confirmation
 
   index do
@@ -24,5 +27,4 @@ ActiveAdmin.register AdminUser, as: "Admins" do
     end
     f.actions
   end
-
 end

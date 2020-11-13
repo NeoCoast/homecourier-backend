@@ -1,47 +1,50 @@
+# frozen_string_literal: true
+
+# ActiveAdmin - Volunteer
 ActiveAdmin.register Volunteer do
   permit_params :enabled
 
   actions :index, :show
 
   scope :all
-  scope("Pendings", default: true) { |scope| scope.where(enabled: false) }  
+  scope('Pendings', default: true) { |scope| scope.where(enabled: false) }
 
   action_item :accept, only: :show do
-    link_to 'Accept', accept_admin_volunteer_path(volunteer), method: :put if !volunteer.enabled?
+    link_to 'Accept', accept_admin_volunteer_path(volunteer), method: :put unless volunteer.enabled?
   end
 
   action_item :reject, only: :show do
-    link_to 'Reject', reject_admin_volunteer_path(volunteer), method: :put if !volunteer.enabled?
+    link_to 'Reject', reject_admin_volunteer_path(volunteer), method: :put unless volunteer.enabled?
   end
 
   member_action :accept, method: :put do
     volunteer = Volunteer.find(params[:id])
     volunteer.update(enabled: true)
-    NotificationMailer.with(volunteer:volunteer).accepted_volunteer_email.deliver_now
-    redirect_to admin_volunteer_path(volunteer), alert: "Volunteer has been accepted"
+    NotificationMailer.with(volunteer: volunteer).accepted_volunteer_email.deliver_now
+    redirect_to admin_volunteer_path(volunteer), alert: 'Volunteer has been accepted'
   end
 
   member_action :reject, method: :put do
     volunteer = Volunteer.find(params[:id])
-    NotificationMailer.with(volunteer:volunteer).rejected_volunteer_email.deliver_now
+    NotificationMailer.with(volunteer: volunteer).rejected_volunteer_email.deliver_now
     Volunteer.destroy(params[:id])
-    redirect_to collection_path, alert: "Volunteer has been rejected"
+    redirect_to collection_path, alert: 'Volunteer has been rejected'
   end
 
   batch_action :accept do |ids|
     batch_action_collection.find(ids).each do |volunteer|
       volunteer.update(enabled: true)
-      NotificationMailer.with(volunteer:volunteer).accepted_volunteer_email.deliver_now
+      NotificationMailer.with(volunteer: volunteer).accepted_volunteer_email.deliver_now
     end
-    redirect_to collection_path, alert: "Volunteers have been enabled."
+    redirect_to collection_path, alert: 'Volunteers have been enabled.'
   end
 
   batch_action :reject do |ids|
     batch_action_collection.find(ids).each do |volunteer|
-      NotificationMailer.with(volunteer:volunteer).rejected_volunteer_email.deliver_now
+      NotificationMailer.with(volunteer: volunteer).rejected_volunteer_email.deliver_now
       Volunteer.destroy(volunteer.id)
     end
-    redirect_to collection_path, alert: "Volunteers have been rejected."
+    redirect_to collection_path, alert: 'Volunteers have been rejected.'
   end
 
   index do
@@ -87,7 +90,7 @@ ActiveAdmin.register Volunteer do
       row :document_face_pic do
         if volunteer.document_face_pic.attached?
           link_to 'Download', url_for(volunteer.document_face_pic), download: "Usuario_#{volunteer.username}_ci_frente.png"
-        end 
+        end
       end
       row :document_back_pic do
         if volunteer.document_back_pic.attached?
@@ -95,9 +98,8 @@ ActiveAdmin.register Volunteer do
         end
       end
       row :created_at
-      row :updated_at     
+      row :updated_at
       row :enabled
     end
   end
-
 end
