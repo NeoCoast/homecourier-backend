@@ -36,6 +36,7 @@ group :development, :test do
   gem 'simplecov', '~> 0.19.0'
   gem 'simplecov-html', '~> 0.12.3'
   gem 'factory_bot_rails', '~> 6.1.0'
+  gem 'premailer-rails', '~> 1.11.1'
 end
 
 group :development do
@@ -43,7 +44,6 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'premailer-rails', '~> 1.11.1'
 end
 
 group :test do
@@ -51,7 +51,6 @@ group :test do
   gem 'capybara', '~> 3.32.2'
   gem 'capybara_active_admin', '~> 0.3.3'
   gem 'action-cable-testing', '~> 0.6.1'
-  gem 'premailer-rails', '~> 1.11.1'
 end
 
 group :production do
