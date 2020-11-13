@@ -7,7 +7,8 @@ RSpec.describe 'Api::V1::Devise::SessionsController', type: :request do
     create(
       :user,
       type: 'Volunteer',
-      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today),
+      enabled: true
     )
   end
   let!(:user_helpee) do

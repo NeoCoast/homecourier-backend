@@ -2,9 +2,14 @@
 
 # OrdersController
 class Api::V1::OrdersController < ApplicationController
+  PAGE_SIZE = 10
+  ORDER_VOLUNTEERS_PAGE_SIZE = 5
+
   before_action :authenticate_user!
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
+  before_action :index_settings, only: %i[show_status helpee_orders volunteer_orders]
+  before_action :order_volunteers_index_settings, only: [:order_volunteers]
 
   def create
     @category_ids = []
@@ -21,16 +26,10 @@ class Api::V1::OrdersController < ApplicationController
 
   def index
     @orders = Order.all
-    offset_orders
   end
 
   def show
     @order = Order.find(params[:id])
-    return unless @order.accepted? || @order.in_process? || @order.finished?
-
-    offset_coordinates(@order)
-    @order.helpee.longitude = @coordinates[0]
-    @order.helpee.latitude = @coordinates[1]
   end
 
   def destroy
@@ -40,13 +39,11 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def show_status
-    @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC')
-    offset_orders
+    @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC').limit(@page_size).offset(@offset)
   end
 
-  def orders_helpee
-    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC')
-    offset_orders
+  def helpee_orders
+    @orders = Order.where(helpee_id: params[:helpee_id]).order('created_at DESC').limit(@page_size).offset(@offset)
   end
 
   def order_volunteers
@@ -56,13 +53,12 @@ class Api::V1::OrdersController < ApplicationController
                          count(coalesce(helpee_ratings.score,0)) as reviews')
                  .joins('LEFT JOIN helpee_ratings ON helpee_ratings.qualified_id = users.id')
                  .group('users.id')
-                 .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC')
+                 .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC').limit(@page_size).offset(@offset)
   end
 
   def volunteer_orders
     @volunteer = Volunteer.find(params[:volunteer_id])
-    @orders = @volunteer.orders.order('created_at DESC')
-    offset_orders
+    @orders = @volunteer.orders.order('created_at DESC').limit(@page_size).offset(@offset)
   end
 
   def accept_volunteer
@@ -141,11 +137,23 @@ class Api::V1::OrdersController < ApplicationController
         NotificationMailer.with(user: @volunteer, order: @order).order_cancelled_email.deliver_now
       end
     end
-    return unless @order.accepted? || @order.in_process? || @order.finished?
+  end
 
-    offset_coordinates(@order)
-    @order.helpee.longitude = @coordinates[0]
-    @order.helpee.latitude = @coordinates[1]
+  def orders_on_map
+    north_coordinate = params[:lat_top_right]
+    east_coordinate = params[:lng_top_right]
+    south_coordinate = params[:lat_down_left]
+    west_coordinate = params[:lng_down_left]
+
+    @orders = Order.joins(:helpee)
+                   .where(
+                     'orders.status = ? and
+                     users.offsetlatitude <= ? and
+                     users.offsetlatitude >= ? and
+                     users.offsetlongitude <= ? and
+                     users.offsetlongitude >= ?', 0, north_coordinate,
+                     south_coordinate, east_coordinate, west_coordinate
+                   ).order('created_at DESC')
   end
 
   private
@@ -167,36 +175,16 @@ class Api::V1::OrdersController < ApplicationController
     @title = @order.title
   end
 
-  def random_point_in_disk(max_radius)
-    r = max_radius * rand**0.5
-    theta = rand * 2 * Math::PI
-    [r * Math.cos(theta), r * Math.sin(theta)]
+  def index_settings
+    @page_size = PAGE_SIZE
+    @page = params[:page].to_i || 0
+    @offset = @page * @page_size
   end
 
-  def random_location(lon, lat, max_radius)
-    dx, dy = random_point_in_disk(max_radius)
-    earth_radius = 6371 # km
-    one_degree = earth_radius * 2 * Math::PI / 360 * 1000 # 1 degree latitude in meters
-    random_lat = lat + dy / one_degree
-    random_lon = lon + dx / (one_degree * Math.cos(lat * Math::PI / 180))
-    [random_lon, random_lat]
+  def order_volunteers_index_settings
+    @page_size = ORDER_VOLUNTEERS_PAGE_SIZE
+    @page = params[:page].to_i || 0
+    @offset = @page * @page_size
   end
 
-  def offset_coordinates(order)
-    helpee = Helpee.find(order.helpee.id)
-    lat = helpee.latitude.nil? ? 1 : helpee.latitude
-    lon = helpee.longitude.nil? ? 1 : helpee.longitude
-    max_radius = 300
-    @coordinates = random_location(lon, lat, max_radius)
-  end
-
-  def offset_orders
-    @orders.each do |order|
-      next if order.accepted? || order.in_process? || order.finished?
-
-      offset_coordinates(order)
-      order.helpee.longitude = @coordinates[0]
-      order.helpee.latitude = @coordinates[1]
-    end
-  end
 end
