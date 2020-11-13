@@ -36,7 +36,6 @@ group :development, :test do
   gem 'simplecov', '~> 0.19.0'
   gem 'simplecov-html', '~> 0.12.3'
   gem 'factory_bot_rails', '~> 6.1.0'
-  gem 'premailer-rails', '~> 1.11.1'
 end
 
 group :development do
@@ -70,3 +69,5 @@ gem 'sprockets', '~> 3.0'
 gem 'activeadmin', '~> 2.8.1'
 
 gem 'geocoder', '~> 1.6.4'
+
+gem 'premailer-rails', '~> 1.11.1'
