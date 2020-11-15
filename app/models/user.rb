@@ -26,7 +26,7 @@ class User < ApplicationRecord
   has_many :notifications
 
   def set_offset_coordinates
-    max_radius = 300
+    max_radius = 150
     coordinates = random_location(longitude, latitude, max_radius)
     self.offsetlatitude = coordinates[1]
     self.offsetlongitude = coordinates[0]
