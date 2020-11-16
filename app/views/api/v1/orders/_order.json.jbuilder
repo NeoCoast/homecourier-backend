@@ -12,8 +12,10 @@ json.helpee do
   json.lastname order.helpee.lastname
   json.email order.helpee.email if order.accepted? || order.in_process? || order.finished?
   json.address order.helpee.address if order.accepted? || order.in_process? || order.finished?
-  json.longitude order.helpee.longitude
-  json.latitude order.helpee.latitude
+  json.longitude order.helpee.longitude if order.accepted? || order.in_process? || order.finished?
+  json.longitude order.helpee.offsetlongitude if order.created? || order.cancelled?
+  json.latitude order.helpee.latitude if order.accepted? || order.in_process? || order.finished?
+  json.latitude order.helpee.offsetlatitude if order.created? || order.cancelled?
   json.avatar url_for(order.helpee.avatar) if order.helpee.avatar.attached?
   json.rating VolunteerRating.where(qualified_id: order.helpee.id).average(:score)
 end

@@ -114,37 +114,71 @@ RSpec.describe 'Api::V1::Helpees', type: :request do
     let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
     let!(:order2) { create(:order, helpee_id: helpee.id, categories: categories) }
 
-    before(:each) do
-      # Login volunteer
-      post api_v1_users_path + '/login', params: { user: {
-        email: volunteer.email, password: volunteer.password
-      } }, headers: headers
-      @token_volunteer = response.headers['Authorization']
-      # Login helpee1
-      post api_v1_users_path + '/login', params: { user: {
-        email: helpee.email, password: helpee.password
-      } }, headers: headers
-      @token_helpee = response.headers['Authorization']
-    end
-
     context 'succeeds' do
       before(:each) do
         # Order1
+        # Login volunteer
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer.email, password: volunteer.password
+        } }, headers: headers
+        @token_volunteer = response.headers['Authorization']
+        # Take
         post api_v1_orders_path + '/take',
              params: { order_id: order.id, volunteer_id: volunteer.id },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+        # Logout
+        delete api_v1_users_path + '/logout',
+               headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+
+        # Login helpee
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token_helpee = response.headers['Authorization']
+        # Accept
         post api_v1_orders_path + '/accept',
              params: { order_id: order.id, volunteer_id: volunteer.id },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        # Logout
+        delete api_v1_users_path + '/logout',
+               headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+
+        # Login volunteer
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer.email, password: volunteer.password
+        } }, headers: headers
+        @token_volunteer = response.headers['Authorization']
+        # In process
         post api_v1_orders_path + '/status',
              params: { order_id: order.id, status: 'in_process' },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+        # Logout
+        delete api_v1_users_path + '/logout',
+               headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+
+        # Login helpee
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token_helpee = response.headers['Authorization']
+        # Finished
         post api_v1_orders_path + '/status',
              params: { order_id: order.id, status: 'finished' },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        # Rating
         post api_v1_helpees_path + '/rating',
              params: { order_id: order.id, score: '4', comment: Faker::Lorem.sentence },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+        # Logout
+        delete api_v1_users_path + '/logout',
+               headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+
+        # Login volunteer
+        post api_v1_users_path + '/login', params: { user: {
+          email: volunteer.email, password: volunteer.password
+        } }, headers: headers
+        @token_volunteer = response.headers['Authorization']
+        # volunteers/:id
         get api_v1_volunteers_path + '/' + volunteer.id.to_s,
             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
       end
@@ -161,21 +195,68 @@ RSpec.describe 'Api::V1::Helpees', type: :request do
       context 'rating avg' do
         before(:each) do
           # Order2
+          # Login volunteer
+          post api_v1_users_path + '/login', params: { user: {
+            email: volunteer.email, password: volunteer.password
+          } }, headers: headers
+          # Take
+          @token_volunteer = response.headers['Authorization']
           post api_v1_orders_path + '/take',
                params: { order_id: order2.id, volunteer_id: volunteer.id },
                headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+          # Logout
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+
+          # Login helpee
+          post api_v1_users_path + '/login', params: { user: {
+            email: helpee.email, password: helpee.password
+          } }, headers: headers
+          @token_helpee = response.headers['Authorization']
+          # Accept
           post api_v1_orders_path + '/accept',
                params: { order_id: order2.id, volunteer_id: volunteer.id },
                headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+          # Logout
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+
+          # Login volunteer
+          post api_v1_users_path + '/login', params: { user: {
+            email: volunteer.email, password: volunteer.password
+          } }, headers: headers
+          @token_volunteer = response.headers['Authorization']
+          # In process
           post api_v1_orders_path + '/status',
                params: { order_id: order2.id, status: 'in_process' },
                headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+          # Logout
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+
+          # Login helpee
+          post api_v1_users_path + '/login', params: { user: {
+            email: helpee.email, password: helpee.password
+          } }, headers: headers
+          @token_helpee = response.headers['Authorization']
+          # Finished
           post api_v1_orders_path + '/status',
                params: { order_id: order2.id, status: 'finished' },
                headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+          # Rating
           post api_v1_helpees_path + '/rating',
                params: { order_id: order2.id, score: '2', comment: Faker::Lorem.sentence },
                headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+          # Logout
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+
+          # Login volunteer
+          post api_v1_users_path + '/login', params: { user: {
+            email: volunteer.email, password: volunteer.password
+          } }, headers: headers
+          @token_volunteer = response.headers['Authorization']
+          # volunteers/:id
           get api_v1_volunteers_path + '/' + volunteer.id.to_s,
               headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
         end
@@ -189,6 +270,12 @@ RSpec.describe 'Api::V1::Helpees', type: :request do
 
     context 'fails' do
       before(:each) do
+        # Login helpee
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token_helpee = response.headers['Authorization']
+        # Rating
         post api_v1_helpees_path + '/rating',
              params: { order_id: order.id, score: '10', comment: Faker::Lorem.sentence },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
@@ -220,30 +307,56 @@ RSpec.describe 'Api::V1::Helpees', type: :request do
     let!(:order2) { create(:order, helpee_id: helpee.id, categories: categories) }
 
     before(:each) do
+      # Order
       # Login volunteer
       post api_v1_users_path + '/login', params: { user: {
         email: volunteer.email, password: volunteer.password
       } }, headers: headers
       @token_volunteer = response.headers['Authorization']
+      # Take
+      post api_v1_orders_path + '/take',
+           params: { order_id: order.id, volunteer_id: volunteer.id },
+           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+      # Logout
+      delete api_v1_users_path + '/logout',
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+
+      # Login volunteer
+      post api_v1_users_path + '/login', params: { user: {
+        email: helpee.email, password: helpee.password
+      } }, headers: headers
+      @token_helpee = response.headers['Authorization']
+      # Accept
+      post api_v1_orders_path + '/accept',
+           params: { order_id: order.id, volunteer_id: volunteer.id },
+           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+      # Logout
+      delete api_v1_users_path + '/logout',
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+
+      # Login volunteer
+      post api_v1_users_path + '/login', params: { user: {
+        email: volunteer.email, password: volunteer.password
+      } }, headers: headers
+      @token_volunteer = response.headers['Authorization']
+      # In process
+      post api_v1_orders_path + '/status',
+           params: { order_id: order.id, status: 'in_process' },
+           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+      # Logout
+      delete api_v1_users_path + '/logout',
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+
       # Login helpee
       post api_v1_users_path + '/login', params: { user: {
         email: helpee.email, password: helpee.password
       } }, headers: headers
       @token_helpee = response.headers['Authorization']
-
-      # Order
-      post api_v1_orders_path + '/take',
-           params: { order_id: order.id, volunteer_id: volunteer.id },
-           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
-      post api_v1_orders_path + '/accept',
-           params: { order_id: order.id, volunteer_id: volunteer.id },
-           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
-      post api_v1_orders_path + '/status',
-           params: { order_id: order.id, status: 'in_process' },
-           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+      # Finished
       post api_v1_orders_path + '/status',
            params: { order_id: order.id, status: 'finished' },
            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+      # Rating pending
       post api_v1_helpees_path + '/ratingPending',
            params: { helpee_id: helpee.id },
            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }

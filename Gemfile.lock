@@ -85,6 +85,17 @@ GEM
       msgpack (~> 1.0)
     builder (3.2.4)
     byebug (11.1.3)
+    capybara (3.32.2)
+      addressable
+      mini_mime (>= 0.1.3)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (~> 1.5)
+      xpath (~> 3.2)
+    capybara_active_admin (0.3.3)
+      activeadmin
+      rspec (~> 3.0)
     concurrent-ruby (1.1.7)
     crass (1.0.6)
     css_parser (1.7.1)
@@ -239,6 +250,10 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.4)
+    rspec (3.9.0)
+      rspec-core (~> 3.9.0)
+      rspec-expectations (~> 3.9.0)
+      rspec-mocks (~> 3.9.0)
     rspec-core (3.9.3)
       rspec-support (~> 3.9.3)
     rspec-expectations (3.9.4)
@@ -309,6 +324,8 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    xpath (3.2.0)
+      nokogiri (~> 1.8)
 
 PLATFORMS
   ruby
@@ -320,6 +337,8 @@ DEPENDENCIES
   aws-sdk-s3
   bootsnap (>= 1.1.0)
   byebug
+  capybara (~> 3.32.2)
+  capybara_active_admin (~> 0.3.3)
   devise (~> 4.7.3)
   devise-jwt (~> 0.8.0)
   factory_bot_rails (~> 6.1.0)
