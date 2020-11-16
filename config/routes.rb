@@ -25,6 +25,7 @@ Rails.application.routes.draw do
         end
 
         resources :users, only: %i[index]
+        get '/users/profile/view', to: 'users#profile'
         resources :volunteers, only: %i[index show accept reject]
         get '/volunteers/orders', to: 'volunteers#orders_volunteers'
         resources :helpees, only: %i[index show]
@@ -52,7 +53,7 @@ Rails.application.routes.draw do
   end
 
   mount ActionCable.server => '/cable'
-  
+
   devise_for :admin_users, ActiveAdmin::Devise.config
   get '/admin', to: redirect('/admin/login')
   ActiveAdmin.routes(self)

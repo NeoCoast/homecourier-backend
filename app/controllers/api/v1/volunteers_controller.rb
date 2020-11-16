@@ -51,9 +51,7 @@ class Api::V1::VolunteersController < ApplicationController
         order.id,
         volunteer_id
       )
-      if rating.blank?
-        @pendings.push order 
-      end
+      @pendings.push order if rating.blank?
     end
   end
 
