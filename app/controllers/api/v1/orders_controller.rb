@@ -45,10 +45,10 @@ class Api::V1::OrdersController < ApplicationController
   def orders_by_distance
     user = User.find(params[:user_id])
     @user_coordinates = [user.latitude, user.longitude]
-    formula = "6371.0 * 2 * ASIN(SQRT(POWER(SIN((#{@user_coordinates[0]} - latitude) * PI() / 180 / 2), 2) +
+    form = "6371.0 * 2 * ASIN(SQRT(POWER(SIN((#{@user_coordinates[0]} - latitude) * PI() / 180 / 2), 2) +
                COS(#{@user_coordinates[0]} * PI() / 180) * COS(latitude * PI() / 180) *
                POWER(SIN((#{@user_coordinates[1]} - longitude) * PI() / 180 / 2), 2))) AS distance"
-    @orders = Order.select("orders.*, users.latitude as latitude, users.longitude as longitude, #{formula}")
+    @orders = Order.select("orders.*, users.latitude as latitude, users.longitude as longitude, #{form}")
                    .joins(:helpee)
                    .where(status: Order.statuses['created'])
                    .order('distance ASC')
