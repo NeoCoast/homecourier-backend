@@ -5,7 +5,7 @@ class Api::V1::OrdersController < ApplicationController
   PAGE_SIZE = 10
   ORDER_VOLUNTEERS_PAGE_SIZE = 5
 
-  before_action :authenticate_user!
+  #before_action :authenticate_user!  
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
   before_action :index_settings, only: %i[show_status helpee_orders volunteer_orders]
@@ -40,6 +40,18 @@ class Api::V1::OrdersController < ApplicationController
 
   def show_status
     @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC').limit(@page_size).offset(@offset)
+  end
+
+  def orders_by_distance
+    user = User.find(params[:user_id])
+    @user_coordinates = [user.latitude, user.longitude]
+    formula = "6371.0 * 2 * ASIN(SQRT(POWER(SIN((#{@user_coordinates[0]} - latitude) * PI() / 180 / 2), 2) +
+               COS(#{@user_coordinates[0]} * PI() / 180) * COS(latitude * PI() / 180) *
+               POWER(SIN((#{@user_coordinates[1]} - longitude) * PI() / 180 / 2), 2))) AS distance"
+    @orders = Order.select("orders.*, users.latitude as latitude, users.longitude as longitude, #{formula}")
+                   .joins(:helpee)
+                   .where(status: Order.statuses['created'])
+                   .order('distance ASC')
   end
 
   def helpee_orders
