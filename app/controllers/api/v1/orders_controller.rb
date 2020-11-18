@@ -5,7 +5,7 @@ class Api::V1::OrdersController < ApplicationController
   PAGE_SIZE = 10
   ORDER_VOLUNTEERS_PAGE_SIZE = 5
 
-  # before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
   before_action :index_settings, only: %i[show_status helpee_orders volunteer_orders]
