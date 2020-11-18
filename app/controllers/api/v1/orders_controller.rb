@@ -5,7 +5,7 @@ class Api::V1::OrdersController < ApplicationController
   PAGE_SIZE = 10
   ORDER_VOLUNTEERS_PAGE_SIZE = 5
 
-  before_action :authenticate_user!  
+  # before_action :authenticate_user!
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
   before_action :index_settings, only: %i[show_status helpee_orders volunteer_orders]
@@ -39,11 +39,16 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   def show_status
-    @orders = Order.where(status: Order.statuses[params[:status]]).order('created_at DESC').limit(@page_size).offset(@offset)
+    asc_desc = !params[:asc_desc].nil? ? params[:asc_desc] : 'DESC'
+    @orders = Order.where(status: Order.statuses[params[:status]])
+                   .order("created_at #{asc_desc}")
+                   .limit(@page_size)
+                   .offset(@offset)
   end
 
   def orders_by_distance
     user = User.find(params[:user_id])
+    asc_desc = !params[:asc_desc].nil? ? params[:asc_desc] : 'ASC'
     @user_coordinates = [user.latitude, user.longitude]
     form = "6371.0 * 2 * ASIN(SQRT(POWER(SIN((#{@user_coordinates[0]} - latitude) * PI() / 180 / 2), 2) +
                COS(#{@user_coordinates[0]} * PI() / 180) * COS(latitude * PI() / 180) *
@@ -51,7 +56,7 @@ class Api::V1::OrdersController < ApplicationController
     @orders = Order.select("orders.*, users.latitude as latitude, users.longitude as longitude, #{form}")
                    .joins(:helpee)
                    .where(status: Order.statuses['created'])
-                   .order('distance ASC')
+                   .order("distance #{asc_desc}")
   end
 
   def helpee_orders
@@ -65,7 +70,9 @@ class Api::V1::OrdersController < ApplicationController
                          count(coalesce(helpee_ratings.score,0)) as reviews')
                  .joins('LEFT JOIN helpee_ratings ON helpee_ratings.qualified_id = users.id')
                  .group('users.id')
-                 .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC').limit(@page_size).offset(@offset)
+                 .order('score DESC, reviews DESC, users.name ASC, users.lastname ASC')
+                 .limit(@page_size)
+                 .offset(@offset)
   end
 
   def volunteer_orders
@@ -198,5 +205,4 @@ class Api::V1::OrdersController < ApplicationController
     @page = params[:page].to_i || 0
     @offset = @page * @page_size
   end
-
 end
