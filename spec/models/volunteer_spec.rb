@@ -17,7 +17,8 @@ RSpec.describe Volunteer, type: :model do
       birth_date: user.birth_date,
       address: 'New York, NY',
       document_type: document_type,
-      document_number: document_number
+      document_number: document_number,
+      phone_number: user.phone_number
     )
   end
 
@@ -99,6 +100,13 @@ RSpec.describe Volunteer, type: :model do
 
       context 'document number is empty' do
         before(:each) { subject.document_number = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'phone number is empty' do
+        before(:each) { subject.phone_number = nil }
 
         it { is_expected.to_not be_valid }
         it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }

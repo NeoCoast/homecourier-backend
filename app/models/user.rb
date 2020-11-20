@@ -15,10 +15,12 @@ class User < ApplicationRecord
   validates :birth_date, presence: true
   validates :address, presence: true
   validates :type, presence: true
+  validates :phone_number, presence: true
 
   validates_with LatitudeValidator
   validates_with LongitudeValidator
   validates_with AgeValidator
+  validates_with PhoneValidator
 
   geocoded_by :address
 
