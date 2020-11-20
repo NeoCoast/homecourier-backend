@@ -50,6 +50,7 @@ RSpec.describe 'Api::V1::Helpees', type: :request do
           helpee_tmp['avatar'] = helpee.attributes['avatar'] if helpee.attributes.key?('avatar')
           helpee_tmp['latitude'] = helpee.attributes['latitude']
           helpee_tmp['longitude'] = helpee.attributes['longitude']
+          helpee_tmp['orders_completed'] = 0
           helpee_tmp['rating'] = helpee.attributes['volunteer_ratings']
           helpees_array.push(helpee_tmp)
         end
