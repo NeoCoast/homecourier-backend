@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_10_193706) do
+ActiveRecord::Schema.define(version: 2020_11_20_024114) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -147,6 +147,7 @@ ActiveRecord::Schema.define(version: 2020_11_10_193706) do
     t.float "longitude"
     t.float "offsetlatitude"
     t.float "offsetlongitude"
+    t.string "phone_number"
     t.index ["document_type_id"], name: "index_users_on_document_type_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true

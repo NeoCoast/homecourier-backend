@@ -10,3 +10,4 @@ json.address user.address
 json.avatar url_for(user.avatar) if user.avatar.attached?
 json.latitude user.latitude
 json.longitude user.longitude
+json.phone_number user.phone_number

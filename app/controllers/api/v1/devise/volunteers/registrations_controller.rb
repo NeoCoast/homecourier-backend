@@ -10,6 +10,6 @@ class Api::V1::Devise::Volunteers::RegistrationsController < Api::V1::Devise::Re
   def configure_sign_up_params
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[email password username name lastname birth_date
                                                          address type document_number document_type_id
-                                                         avatar document_face_pic document_back_pic])
+                                                         avatar document_face_pic document_back_pic phone_number])
   end
 end
