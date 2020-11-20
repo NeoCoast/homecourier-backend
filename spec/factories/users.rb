@@ -13,6 +13,7 @@ FactoryBot.define do
     address { Faker::Address.street_address }
     confirmation_token { Faker::Internet.password(min_length: 20) }
     enabled { true }
+    phone_number { '09' + Faker::Number.number(digits: 7).to_s }
 
     after(:build) { GeocoderStub.stub_with }
   end
