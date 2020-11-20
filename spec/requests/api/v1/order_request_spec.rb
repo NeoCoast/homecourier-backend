@@ -569,4 +569,121 @@ RSpec.describe 'Api::V1::Orders', type: :request do
       end
     end
   end
+
+  describe 'GET /api/v1/orders/show/distance' do
+    let!(:helpee) do
+      create(
+        :user,
+        type: 'Helpee',
+        confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      )
+    end
+    let!(:categories) { create_list(:category, 3) }
+    let!(:orders) do
+      create_list(
+        :order,
+        10,
+        helpee_id: helpee.id,
+        status: 0,
+        categories: categories
+      )
+    end
+
+    before(:each) do
+      post api_v1_users_path + '/login', params: { user: {
+        email: helpee.email, password: helpee.password
+      } }, headers: headers
+      @token = response.headers['Authorization']
+      get api_v1_orders_path + "/show/distance?user_id=#{helpee.id}", headers: {
+        'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token
+      }
+    end
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:ok)
+    end
+
+    context 'the answer matches db' do
+      before(:each) { @body = JSON.parse(response.body) }
+
+      it 'number of records' do
+        expect(@body.length).to eq orders.length
+      end
+
+      it 'content of records' do
+        orders_body = []
+        @body.each do |order_body|
+          order_response_body = order_body.slice('id', 'title', 'description', 'status')
+          orders_body << order_response_body
+        end
+        orders_array = []
+        orders.each do |order|
+          order_response = order.attributes.slice('id', 'title', 'description', 'status')
+          orders_array << order_response
+        end
+        expect(orders_body).to match_array(orders_array)
+      end
+    end
+  end
+
+  describe 'GET /api/v1/orders/show/map' do
+    let!(:helpee) do
+      create(
+        :user,
+        type: 'Helpee',
+        confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
+      )
+    end
+    let!(:categories) { create_list(:category, 3) }
+    let!(:orders) do
+      create_list(
+        :order,
+        10,
+        helpee_id: helpee.id,
+        status: 0,
+        categories: categories
+      )
+    end
+
+    before(:each) do
+      post api_v1_users_path + '/login', params: { user: {
+        email: helpee.email, password: helpee.password
+      } }, headers: headers
+      @token = response.headers['Authorization']
+      lat_top_right = 42
+      lng_top_right = -72
+      lat_down_left = 38
+      lng_down_left = -76
+      get api_v1_orders_path + "/show/map?lat_top_right=#{lat_top_right}
+      &lng_top_right=#{lng_top_right}&lat_down_left=#{lat_down_left}&lng_down_left=#{lng_down_left}", headers: {
+        'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token
+      }
+    end
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:ok)
+    end
+
+    context 'the answer matches db' do
+      before(:each) { @body = JSON.parse(response.body) }
+
+      it 'number of records' do
+        expect(@body.length).to eq orders.length
+      end
+
+      it 'content of records' do
+        orders_body = []
+        @body.each do |order_body|
+          order_response_body = order_body.slice('id', 'title', 'description', 'status')
+          orders_body << order_response_body
+        end
+        orders_array = []
+        orders.each do |order|
+          order_response = order.attributes.slice('id', 'title', 'description', 'status')
+          orders_array << order_response
+        end
+        expect(orders_body).to match_array(orders_array)
+      end
+    end
+  end
 end
