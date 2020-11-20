@@ -4,13 +4,16 @@ require 'rails_helper'
 
 RSpec.describe Notification, type: :model do
   let!(:helpee) { create(:user, type: 'Helpee') }
+  let!(:categories) { create_list(:category, 3) }
+  let!(:order) { create(:order, helpee_id: helpee.id, categories: categories) }
   let(:notification) { build :notification }
 
   subject do
     described_class.new(
       user_id: helpee.id,
       title: notification.title,
-      body: notification.body
+      body: notification.body,
+      order_id: order.id
     )
   end
 
