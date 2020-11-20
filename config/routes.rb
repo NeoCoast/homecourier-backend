@@ -34,6 +34,7 @@ Rails.application.routes.draw do
         resources :categories, only: %i[create index show destroy]
         resources :orders, only: %i[create index show destroy]
         get '/orders/show/all', to: 'orders#show_status'
+        get '/orders/show/distance', to: 'orders#orders_by_distance'
         get '/orders/show/map', to: 'orders#orders_on_map'
         get '/orders/show/helpee', to: 'orders#helpee_orders'
         get '/orders/show/volunteers', to: 'orders#order_volunteers'
