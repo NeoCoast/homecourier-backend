@@ -51,6 +51,7 @@ RSpec.describe 'Api::V1::Volunteers', type: :request do
           volunteer_tmp['longitude'] = volunteer.attributes['longitude']
           volunteer_tmp['document_type_id'] = volunteer.attributes['document_type_id']
           volunteer_tmp['document_number'] = volunteer.attributes['document_number']
+          volunteer_tmp['orders_completed'] = 0
           volunteer_tmp['rating'] = volunteer.attributes['helpee_ratings']
           if volunteer.attributes.key?('document_face_pic')
             volunteer_tmp['document_face_pic'] = volunteer.attributes['document_face_pic']
