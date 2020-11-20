@@ -53,6 +53,7 @@ RSpec.describe 'Api::V1::Volunteers', type: :request do
           volunteer_tmp['document_number'] = volunteer.attributes['document_number']
           volunteer_tmp['orders_completed'] = 0
           volunteer_tmp['rating'] = volunteer.attributes['helpee_ratings']
+          volunteer_tmp['phone_number'] = volunteer.attributes['phone_number']
           if volunteer.attributes.key?('document_face_pic')
             volunteer_tmp['document_face_pic'] = volunteer.attributes['document_face_pic']
           end
@@ -212,6 +213,9 @@ RSpec.describe 'Api::V1::Volunteers', type: :request do
       context 'rating avg' do
         before(:each) do
           # Order2
+          # Logout helpee
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
           # Login volunteer
           post api_v1_users_path + '/login', params: { user: {
             email: volunteer.email, password: volunteer.password

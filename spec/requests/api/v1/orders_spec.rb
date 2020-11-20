@@ -224,6 +224,14 @@ RSpec.describe 'Api::V1::Orders', type: :request do
       post api_v1_orders_path + '/take',
            params: { order_id: order.id, volunteer_id: volunteer.id },
            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      # Logout volunteer
+      delete api_v1_users_path + '/logout',
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
+      # Login helpee
+      post api_v1_users_path + '/login', params: { user: {
+        email: helpee.email, password: helpee.password
+      } }, headers: headers
+      @token = response.headers['Authorization']
       post api_v1_orders_path + '/accept',
            params: { order_id: order.id, volunteer_id: volunteer.id },
            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }

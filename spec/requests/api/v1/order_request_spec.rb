@@ -341,7 +341,7 @@ RSpec.describe 'Api::V1::Orders', type: :request do
     context 'fails' do
       before(:each) do
         post api_v1_users_path + '/login', params: { user: {
-          email: volunteer.email, password: volunteer.password
+          email: helpee.email, password: helpee.password
         } }, headers: headers
         @token = response.headers['Authorization']
       end
@@ -396,18 +396,23 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         email: volunteer.email, password: volunteer.password
       } }, headers: headers
       @token_volunteer = response.headers['Authorization']
-      # Login helpee1
-      post api_v1_users_path + '/login', params: { user: {
-        email: helpee.email, password: helpee.password
-      } }, headers: headers
-      @token_helpee = response.headers['Authorization']
       post api_v1_orders_path + '/take',
            params: { order_id: order.id, volunteer_id: volunteer.id },
            headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+      # Logout volunteer
+      delete api_v1_users_path + '/logout',
+             headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
     end
 
     context 'created > accepted' do
       before(:each) do
+        # Login helpee1
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token_helpee = response.headers['Authorization']
+
+        # Accept volunteer
         post api_v1_orders_path + '/accept',
              params: { order_id: order.id, volunteer_id: volunteer.id },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
@@ -421,6 +426,16 @@ RSpec.describe 'Api::V1::Orders', type: :request do
 
       context 'accepted > in_process' do
         before(:each) do
+          # Logout helpee1
+          delete api_v1_users_path + '/logout',
+                 headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+
+          # Login volunteer
+          post api_v1_users_path + '/login', params: { user: {
+            email: volunteer.email, password: volunteer.password
+          } }, headers: headers
+          @token_volunteer = response.headers['Authorization']
+
           post api_v1_orders_path + '/status',
                params: { order_id: order.id, status: 'in_process' },
                headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
@@ -434,6 +449,16 @@ RSpec.describe 'Api::V1::Orders', type: :request do
 
         context 'in_process > finished' do
           before(:each) do
+            # Logout volunteer
+            delete api_v1_users_path + '/logout',
+                   headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+
+            # Login helpee1
+            post api_v1_users_path + '/login', params: { user: {
+              email: helpee.email, password: helpee.password
+            } }, headers: headers
+            @token_helpee = response.headers['Authorization']
+
             post api_v1_orders_path + '/status',
                  params: { order_id: order.id, status: 'finished' },
                  headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
@@ -448,6 +473,16 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         context 'in_process > cancelled' do
           context 'helpee cancel' do
             before(:each) do
+              # Logout volunteer
+              delete api_v1_users_path + '/logout',
+                     headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
+
+              # Login helpee1
+              post api_v1_users_path + '/login', params: { user: {
+                email: helpee.email, password: helpee.password
+              } }, headers: headers
+              @token_helpee = response.headers['Authorization']
+
               post api_v1_orders_path + '/status',
                    params: { order_id: order.id, status: 'cancelled' },
                    headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
@@ -490,6 +525,16 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         end
         context 'volunteer cancel' do
           before(:each) do
+            # Logout helpee1
+            delete api_v1_users_path + '/logout',
+                   headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
+
+            # Login volunteer
+            post api_v1_users_path + '/login', params: { user: {
+              email: volunteer.email, password: volunteer.password
+            } }, headers: headers
+            @token_volunteer = response.headers['Authorization']
+
             post api_v1_orders_path + '/status',
                  params: { order_id: order.id, status: 'cancelled' },
                  headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_volunteer }
@@ -506,6 +551,12 @@ RSpec.describe 'Api::V1::Orders', type: :request do
 
     context 'created > cancelled' do
       before(:each) do
+        # Login helpee1
+        post api_v1_users_path + '/login', params: { user: {
+          email: helpee.email, password: helpee.password
+        } }, headers: headers
+        @token_helpee = response.headers['Authorization']
+
         post api_v1_orders_path + '/status',
              params: { order_id: order.id, status: 'cancelled' },
              headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token_helpee }
