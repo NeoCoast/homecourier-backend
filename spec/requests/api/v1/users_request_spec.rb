@@ -51,6 +51,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
           volunteer_tmp['name'] = volunteer_user.attributes['name']
           volunteer_tmp['lastname'] = volunteer_user.attributes['lastname']
           volunteer_tmp['birth_date'] = volunteer_user.attributes['birth_date']
+          volunteer_tmp['phone_number'] = volunteer_user.attributes['phone_number']
           volunteer_tmp['address'] = volunteer_user.attributes['address']
           volunteer_tmp['avatar'] = volunteer_user.attributes['avatar'] if volunteer_user.attributes.key?('avatar')
           volunteer_tmp['latitude'] = volunteer_user.attributes['latitude']
@@ -66,6 +67,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
           helpee_tmp['name'] = helpee_user.attributes['name']
           helpee_tmp['lastname'] = helpee_user.attributes['lastname']
           helpee_tmp['birth_date'] = helpee_user.attributes['birth_date']
+          helpee_tmp['phone_number'] = helpee_user.attributes['phone_number']
           helpee_tmp['address'] = helpee_user.attributes['address']
           helpee_tmp['avatar'] = helpee_user.attributes['avatar'] if helpee_user.attributes.key?('avatar')
           helpee_tmp['latitude'] = helpee_user.attributes['latitude']

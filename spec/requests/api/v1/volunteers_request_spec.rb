@@ -45,6 +45,7 @@ RSpec.describe 'Api::V1::Volunteers', type: :request do
           volunteer_tmp['name'] = volunteer.attributes['name']
           volunteer_tmp['lastname'] = volunteer.attributes['lastname']
           volunteer_tmp['birth_date'] = volunteer.attributes['birth_date']
+          volunteer_tmp['phone_number'] = volunteer.attributes['phone_number']
           volunteer_tmp['address'] = volunteer.attributes['address']
           volunteer_tmp['avatar'] = volunteer.attributes['avatar'] if volunteer.attributes.key?('avatar')
           volunteer_tmp['latitude'] = volunteer.attributes['latitude']

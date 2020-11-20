@@ -18,6 +18,7 @@ RSpec.describe 'Api::V1::Devise::Volunteers::RegistrationsController', type: :re
         name: user.name,
         lastname: user.lastname,
         birth_date: user.birth_date,
+        phone_number: user.phone_number,
         address: user.address,
         document_type_id: document_type.id,
         document_number: document_number
