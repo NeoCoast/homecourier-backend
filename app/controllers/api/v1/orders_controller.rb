@@ -6,6 +6,7 @@ class Api::V1::OrdersController < ApplicationController
   ORDER_VOLUNTEERS_PAGE_SIZE = 5
 
   before_action :authenticate_user!
+  before_action :helpee?
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
   before_action :index_settings, only: %i[show_status helpee_orders volunteer_orders]
@@ -204,5 +205,13 @@ class Api::V1::OrdersController < ApplicationController
     @page_size = ORDER_VOLUNTEERS_PAGE_SIZE
     @page = params[:page].to_i || 0
     @offset = @page * @page_size
+  end
+
+  def volunteer?
+    head :unauthorized unless current_user.type == 'Volunteer'
+  end
+
+  def helpee?
+    head :unauthorized unless current_user.type == 'Helpee'
   end
 end
