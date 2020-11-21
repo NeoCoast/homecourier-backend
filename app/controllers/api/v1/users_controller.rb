@@ -14,23 +14,17 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def ratings
-    # if current_user.type == 'Volunteer's
     ratings1 = HelpeeRating.where(qualified_id: @user_id)
                            .order(created_at: :desc)
                            .limit(@page_size)
                            .offset(@offset)
-    # elsif current_user.type == 'Helpee'
+
     ratings2 = VolunteerRating.where(qualified_id: @user_id)
                               .order(created_at: :desc)
                               .limit(@page_size)
                               .offset(@offset)
-    # end
+
     @ratings = ratings1 + ratings2
-    # @ratings = HelpeeRating.joins('JOIN volunteer_ratings')
-    #                        .where(qualified_id: @user_id)
-    #                        .order(created_at: :desc)
-    #                        .limit(@page_size)
-    #                        .offset(@offset)
   end
 
   private
