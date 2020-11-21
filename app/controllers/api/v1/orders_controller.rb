@@ -6,6 +6,8 @@ class Api::V1::OrdersController < ApplicationController
   ORDER_VOLUNTEERS_PAGE_SIZE = 5
 
   before_action :authenticate_user!
+  before_action :helpee?, only: %i[create helpee_orders order_volunteers accept_volunteer]
+  before_action :volunteer?, only: %i[take_order]
   before_action :load_helpee, only: [:create]
   before_action :load_params, only: [:update_status]
   before_action :index_settings, only: %i[show_status helpee_orders volunteer_orders]
@@ -118,6 +120,7 @@ class Api::V1::OrdersController < ApplicationController
   def update_status
     case params[:status]
     when 'in_process'
+      volunteer?
       @order.start!
       @helpee.notifications.create!(title: 'Ha iniciado tu pedido',
                                     body: "Tu pedido #{@title} ya se encuentra en camino", order_id: @order.id)
@@ -125,6 +128,7 @@ class Api::V1::OrdersController < ApplicationController
         user: @helpee, volunteer: @volunteer, order: @order
       ).order_in_process_email.deliver_now
     when 'finished'
+      helpee?
       @order.finish!
       @helpee.notifications.create!(
         title: 'Pedido finalizado', body: "Has finalizado el pedido #{@title}", order_id: @order.id
@@ -204,5 +208,13 @@ class Api::V1::OrdersController < ApplicationController
     @page_size = ORDER_VOLUNTEERS_PAGE_SIZE
     @page = params[:page].to_i || 0
     @offset = @page * @page_size
+  end
+
+  def volunteer?
+    head :unauthorized unless current_user.type == 'Volunteer'
+  end
+
+  def helpee?
+    head :unauthorized unless current_user.type == 'Helpee'
   end
 end
