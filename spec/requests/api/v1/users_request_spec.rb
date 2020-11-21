@@ -57,7 +57,6 @@ RSpec.describe 'Api::V1::Users', type: :request do
           volunteer_tmp['latitude'] = volunteer_user.attributes['latitude']
           volunteer_tmp['longitude'] = volunteer_user.attributes['longitude']
           volunteer_tmp['orders_completed'] = 0
-          volunteer_tmp['phone_number'] = volunteer_user.attributes['phone_number']
           users.push(volunteer_tmp)
         end
         helpee_users.each do |helpee_user|
@@ -74,7 +73,6 @@ RSpec.describe 'Api::V1::Users', type: :request do
           helpee_tmp['latitude'] = helpee_user.attributes['latitude']
           helpee_tmp['longitude'] = helpee_user.attributes['longitude']
           helpee_tmp['orders_completed'] = 0
-          helpee_tmp['phone_number'] = helpee_user.attributes['phone_number']
           users.push(helpee_tmp)
         end
         expect(@body).to match_array(users)

@@ -54,7 +54,6 @@ RSpec.describe 'Api::V1::Volunteers', type: :request do
           volunteer_tmp['document_number'] = volunteer.attributes['document_number']
           volunteer_tmp['orders_completed'] = 0
           volunteer_tmp['rating'] = volunteer.attributes['helpee_ratings']
-          volunteer_tmp['phone_number'] = volunteer.attributes['phone_number']
           if volunteer.attributes.key?('document_face_pic')
             volunteer_tmp['document_face_pic'] = volunteer.attributes['document_face_pic']
           end

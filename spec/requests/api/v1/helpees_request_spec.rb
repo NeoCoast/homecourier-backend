@@ -53,7 +53,6 @@ RSpec.describe 'Api::V1::Helpees', type: :request do
           helpee_tmp['longitude'] = helpee.attributes['longitude']
           helpee_tmp['orders_completed'] = 0
           helpee_tmp['rating'] = helpee.attributes['volunteer_ratings']
-          helpee_tmp['phone_number'] = helpee.attributes['phone_number']
           helpees_array.push(helpee_tmp)
         end
         expect(@body).to match_array(helpees_array)

@@ -21,8 +21,7 @@ RSpec.describe 'Api::V1::Devise::Volunteers::RegistrationsController', type: :re
         phone_number: user.phone_number,
         address: user.address,
         document_type_id: document_type.id,
-        document_number: document_number,
-        phone_number: user.phone_number
+        document_number: document_number
       }
     end
 
