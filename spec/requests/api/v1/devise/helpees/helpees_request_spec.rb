@@ -16,6 +16,7 @@ RSpec.describe 'Api::V1::Devise::Helpees::RegistrationsController', type: :reque
         name: user.name,
         lastname: user.lastname,
         birth_date: user.birth_date,
+        phone_number: user.phone_number,
         address: user.address
       }
     end
