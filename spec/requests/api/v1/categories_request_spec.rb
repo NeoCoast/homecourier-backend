@@ -39,34 +39,6 @@ RSpec.describe 'Api::V1::Categories', type: :request do
     end
   end
 
-  describe 'POST /api/v1/categories' do
-    let!(:category) { build(:category) }
-
-    context 'succeeds' do
-      before(:each) do
-        post api_v1_categories_path, params: { description: category.description }, headers: headers
-      end
-
-      it 'returns http success' do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'creates a category' do
-        expect(Category.count).to eq 1
-      end
-    end
-
-    context 'fails' do
-      it {
-        expect do
-          post api_v1_categories_path, params: {
-            description: nil
-          }, headers: headers
-        end .to raise_error(ActiveRecord::RecordInvalid)
-      }
-    end
-  end
-
   describe 'GET /api/v1/categories/:id' do
     context 'succeeds' do
       let!(:category) { create(:category) }
@@ -98,32 +70,6 @@ RSpec.describe 'Api::V1::Categories', type: :request do
         body = JSON.parse(response.body)
         expect(body).to eq []
       end
-    end
-  end
-
-  describe 'DELETE /api/v1/categories/:id' do
-    context 'succeeds' do
-      let!(:category) { create(:category) }
-
-      before(:each) do
-        delete api_v1_categories_path + '/' + category.id.to_s, headers: headers
-      end
-
-      it 'returns http success' do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'category is deleted' do
-        expect(Category.exists?(category.id)).to eq false
-      end
-    end
-
-    context 'fails' do
-      it {
-        expect do
-          delete api_v1_categories_path + '/' + Faker::Number.number(digits: 10).to_s, headers: headers
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      }
     end
   end
 end

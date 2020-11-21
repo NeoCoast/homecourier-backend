@@ -30,7 +30,7 @@ Rails.application.routes.draw do
         get '/volunteers/orders', to: 'volunteers#orders_volunteers'
         resources :helpees, only: %i[index show]
         resources :document_types, only: %i[index]
-        resources :categories, only: %i[create index show destroy]
+        resources :categories, only: %i[index show]
         resources :orders, only: %i[create index show destroy]
         resources :ratings, only: %i[create]
         get '/orders/show/all', to: 'orders#show_status'
