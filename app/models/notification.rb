@@ -8,10 +8,11 @@ class Notification < ApplicationRecord
   validates :status, inclusion: { in: statuses.keys }
 
   belongs_to :user
+  belongs_to :order
 
   private
 
   def send_notification
-    ActionCable.server.broadcast "notifications_#{user.id}", id: id, title: title, body: body, status: status, createdAt: created_at
+    ActionCable.server.broadcast "notifications_#{user.id}", id: id, title: title, body: body, status: status, createdAt: created_at, orderId: order.id
   end
 end

@@ -10,6 +10,7 @@ class Order < ApplicationRecord
 
   belongs_to :helpee
   has_and_belongs_to_many :categories
+  has_many :notifications
 
   # states management
   aasm column: 'status' do

@@ -10,15 +10,23 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
       type: 'Helpee',
       confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
     )
+  end 
+  let!(:categories) { create_list(:category, 3) }
+  let!(:order) do
+    create(
+      :order,
+      helpee_id: helpee.id,
+      categories: categories
+    )
   end
-
   let!(:notifications) do
     create_list(
       :notification,
       5,
       user_id: helpee.id,
       title: Faker::Lorem.sentence,
-      body: Faker::Lorem.paragraph
+      body: Faker::Lorem.paragraph,
+      order_id: order.id
     )
   end
 

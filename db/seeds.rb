@@ -6,6 +6,14 @@ VOLUNTEER_LIMIT = 100  # number of volunteers to create
 HELPEE_LIMIT = 100     # number of helpees to create
 rng = Random.new(333) # random seed
 
+# ADMIN
+admin_user = AdminUser.new
+admin_user.email = 'admin@example.com'
+admin_user.password = 'password'
+admin_user.password_confirmation = 'password'
+admin_user.save!
+puts "created admin user: " + admin_user.email + " and password: " + admin_user.password 
+
 # DOCUMENT TYPES
 
 ci_doc_type = DocumentType.new
@@ -101,6 +109,7 @@ csv_order.each do |order_row|
       notification.body = "Su pedido #{order.title} ya se encuentra en camino"
       notification.status = 0
       notification.user = order.helpee
+      notification.order = order
       notification.save!
   when 4
     notification = Notification.new
@@ -108,6 +117,7 @@ csv_order.each do |order_row|
       notification.body = "El pedido #{order.title} ha sido cancelado"
       notification.status = 0
       notification.user = order.helpee
+      notification.order = order
       notification.save!
   end
   puts "created order " + order.title
@@ -133,6 +143,7 @@ csv_order_request.each do |order_request_row|
       notification.body = "El pedido #{order_request.order.title} ha sido aceptado"
       notification.status = 0
       notification.user = order_request.volunteer
+      notification.order = order_request.order
       notification.save!
   when 'finished'
     notification = Notification.new
@@ -140,12 +151,14 @@ csv_order_request.each do |order_request_row|
       notification.body = "El pedido #{order_request.order.title} ha sido aceptado"
       notification.status = 0
       notification.user = order_request.volunteer
+      notification.order = order_request.order
       notification.save!
     notification = Notification.new
       notification.title = "Finalizado"
       notification.body = "El pedido #{order_request.order.title} ha sido finalizado"
       notification.status = 0
       notification.user = order_request.volunteer
+      notification.order = order_request.order
       notification.save!
   when 'cancelled'
     notification = Notification.new
@@ -153,32 +166,34 @@ csv_order_request.each do |order_request_row|
       notification.body = "El pedido #{order_request.order.title} ha sido cancelado"
       notification.status = 0
       notification.user = order_request.volunteer
+      notification.order = order_request.order
       notification.save!
   end
   puts "created order request " + order_request.volunteer.username + " -> " + order_request.order.title
 end
 
-# NOTIFICATIONS
-notification_users_emails = [
-  'notificaciones1@gmail.com',
-  'notificaciones2@gmail.com',
-  'notificaciones3@gmail.com',
-  'notificaciones4@gmail.com',
-  'notificaciones5@gmail.com',
-  'notificaciones6@gmail.com']
-notifications_per_user = 400
-notification_users_emails.each_with_index do |n_user, index_user|
-  (1..notifications_per_user).each do |index|
-    notification = Notification.new
-    notification.title = 'Aceptado'
-    notification.body = 'Su pedido pedido ' + index.to_s + ' ha sido aceptado'
-    notification.status = 0
-    notification.user = User.where(:email => n_user).first
-    notification.save!
-  end
-  print "saving notifications for user " + (index_user + 1).to_s + "/" + notification_users_emails.length.to_s + "\r"
-end
-puts
+#NOTIFICATIONS
+# notification_users_emails = [
+#   'notificaciones1@gmail.com',
+#   'notificaciones2@gmail.com',
+#   'notificaciones3@gmail.com',
+#   'notificaciones4@gmail.com',
+#   'notificaciones5@gmail.com',
+#   'notificaciones6@gmail.com']
+# notifications_per_user = 400
+# notification_users_emails.each_with_index do |n_user, index_user|
+#   (1..notifications_per_user).each do |index|
+#     notification = Notification.new
+#     notification.title = 'Aceptado'
+#     notification.body = 'Su pedido pedido ' + index.to_s + ' ha sido aceptado'
+#     notification.status = 0
+#     notification.user = User.where(:email => n_user).first
+#     # notification.order = order
+#     notification.save!
+#   end
+#   print "saving notifications for user " + (index_user + 1).to_s + "/" + notification_users_emails.length.to_s + "\r"
+# end
+# puts
 
 # RATINGS
 
