@@ -45,12 +45,14 @@ RSpec.describe 'Api::V1::Volunteers', type: :request do
           volunteer_tmp['name'] = volunteer.attributes['name']
           volunteer_tmp['lastname'] = volunteer.attributes['lastname']
           volunteer_tmp['birth_date'] = volunteer.attributes['birth_date']
+          volunteer_tmp['phone_number'] = volunteer.attributes['phone_number']
           volunteer_tmp['address'] = volunteer.attributes['address']
           volunteer_tmp['avatar'] = volunteer.attributes['avatar'] if volunteer.attributes.key?('avatar')
           volunteer_tmp['latitude'] = volunteer.attributes['latitude']
           volunteer_tmp['longitude'] = volunteer.attributes['longitude']
           volunteer_tmp['document_type_id'] = volunteer.attributes['document_type_id']
           volunteer_tmp['document_number'] = volunteer.attributes['document_number']
+          volunteer_tmp['orders_completed'] = 0
           volunteer_tmp['rating'] = volunteer.attributes['helpee_ratings']
           if volunteer.attributes.key?('document_face_pic')
             volunteer_tmp['document_face_pic'] = volunteer.attributes['document_face_pic']

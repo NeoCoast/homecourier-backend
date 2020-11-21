@@ -26,14 +26,15 @@ Rails.application.routes.draw do
 
         resources :users, only: %i[index]
         get '/users/profile/view', to: 'users#profile'
+        get '/users/ratings/view', to: 'users#ratings'
         resources :volunteers, only: %i[index show accept reject]
         get '/volunteers/orders', to: 'volunteers#orders_volunteers'
         resources :helpees, only: %i[index show]
         resources :document_types, only: %i[index]
         resources :categories, only: %i[index show]
         resources :orders, only: %i[create index show destroy]
-        resources :ratings, only: %i[create]
         get '/orders/show/all', to: 'orders#show_status'
+        get '/orders/show/distance', to: 'orders#orders_by_distance'
         get '/orders/show/map', to: 'orders#orders_on_map'
         get '/orders/show/helpee', to: 'orders#helpee_orders'
         get '/orders/show/volunteers', to: 'orders#order_volunteers'

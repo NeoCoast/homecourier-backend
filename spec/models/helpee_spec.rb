@@ -13,7 +13,8 @@ RSpec.describe Helpee, type: :model do
       name: user.name,
       lastname: user.lastname,
       birth_date: user.birth_date,
-      address: user.address
+      address: user.address,
+      phone_number: user.phone_number
     )
   end
 
@@ -81,6 +82,13 @@ RSpec.describe Helpee, type: :model do
 
       context 'address is empty' do
         before(:each) { subject.address = nil }
+
+        it { is_expected.to_not be_valid }
+        it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
+      end
+
+      context 'phone number is empty' do
+        before(:each) { subject.phone_number = nil }
 
         it { is_expected.to_not be_valid }
         it { expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid) }
