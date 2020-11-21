@@ -10,7 +10,7 @@ json.helpee do
   json.username order.helpee.username
   json.name order.helpee.name
   json.lastname order.helpee.lastname
-  json.phone_number order.helpee.phone_number if order.accepted? || order.in_process? || order.finished?
+  json.phone_number order.helpee.phone_number unless order.created?
   json.email order.helpee.email if order.accepted? || order.in_process? || order.finished?
   json.address order.helpee.address if order.accepted? || order.in_process? || order.finished?
   json.longitude order.helpee.longitude if order.accepted? || order.in_process? || order.finished?
@@ -35,7 +35,7 @@ json.updated_at order.updated_at
 
 json.volunteers order.volunteers do |volunteer|
   json.call(volunteer, :id, :email, :username, :name, :lastname)
-  json.phone_number volunteer.phone_number if order.accepted? || order.in_process? || order.finished?
+  json.phone_number volunteer.phone_number unless order.created?
   json.avatar url_for(volunteer.avatar) if volunteer.avatar.attached?
   json.rating HelpeeRating.where(qualified_id: volunteer.id).average(:score)
 end
