@@ -13,6 +13,6 @@ class Notification < ApplicationRecord
   private
 
   def send_notification
-    ActionCable.server.broadcast "notifications_#{user.id}", id: id, title: title, body: body, status: status, createdAt: created_at, order_id: order.id
+    ActionCable.server.broadcast "notifications_#{user.id}", id: id, title: title, body: body, status: status, createdAt: created_at, orderId: order.id
   end
 end
