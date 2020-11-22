@@ -42,6 +42,8 @@ class Api::V1::OrdersController < ApplicationController
 
   def show_status
     asc_desc = !params[:asc_desc].nil? ? params[:asc_desc] : 'DESC'
+    user = User.find(params[:user_id])
+    @user_coordinates = [user.latitude, user.longitude]
     @orders = Order.where(status: Order.statuses[params[:status]])
                    .order("created_at #{asc_desc}")
                    .limit(@page_size)
