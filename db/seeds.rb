@@ -2,8 +2,8 @@ require 'csv'
 
 # to run use rake db:seed
 
-VOLUNTEER_LIMIT = 15  # number of volunteers to create
-HELPEE_LIMIT = 15     # number of helpees to create
+VOLUNTEER_LIMIT = 100  # number of volunteers to create
+HELPEE_LIMIT = 100     # number of helpees to create
 rng = Random.new(333) # random seed
 
 # ADMIN
