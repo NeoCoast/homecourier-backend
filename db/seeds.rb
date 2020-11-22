@@ -2,8 +2,8 @@ require 'csv'
 
 # to run use rake db:seed
 
-VOLUNTEER_LIMIT = 100  # number of volunteers to create
-HELPEE_LIMIT = 100     # number of helpees to create
+VOLUNTEER_LIMIT = 15  # number of volunteers to create
+HELPEE_LIMIT = 15     # number of helpees to create
 rng = Random.new(333) # random seed
 
 # ADMIN
@@ -53,6 +53,7 @@ csv_volunteer.each_with_index do |volunteer_row, index|
     volunteer.address = volunteer_row['address']
     volunteer.document_number = volunteer_row['document_number']
     volunteer.document_type_id = '1'
+    volunteer.phone_number= volunteer_row['phone_number']
     volunteer.enabled = true
     volunteer.save!
     volunteer_list << volunteer
@@ -77,6 +78,7 @@ csv_helpee.each_with_index do |helpee_row, index|
     helpee.lastname = helpee_row['lastname']
     helpee.birth_date = helpee_row['birth_date']
     helpee.address = helpee_row['address']
+    helpee.phone_number= helpee_row['phone_number']
     helpee.save!
     helpee_list << helpee
     Helpee.confirm_by_token(helpee.confirmation_token)
