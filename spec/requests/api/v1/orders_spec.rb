@@ -128,7 +128,7 @@ RSpec.describe 'Api::V1::Orders', type: :request do
 
     it 'returns all orders with the status accepted' do
       get api_v1_orders_path + '/show/all',
-          params: { status: 'accepted' },
+          params: { status: 'accepted', user_id: volunteer.id.to_s },
           headers: { 'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token }
       orders = JSON.parse(response.body)
       orders.each do |order_aux|
