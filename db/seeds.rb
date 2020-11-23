@@ -1,4 +1,5 @@
 require 'csv'
+require 'faker'
 
 # to run use rake db:seed
 
@@ -222,4 +223,24 @@ order_requests.each_with_index do |ord_req, index|
 
   print "saving ratings " + (index + 1).to_s + "/" + order_requests.length.to_s + "\r"
 end
+
+
+# MANY RATINGS USER
+
+  order_request_for_ratings = OrderRequest.new
+  order_request_for_ratings.volunteer = User.where(:email => 'ratingsvolunteer@gmail.com').first
+  order_request_for_ratings.order = Order.where(:title => 'order ratings test').first
+  order_request_for_ratings.order_request_status = 2
+  order_request_for_ratings.save!
+
+  (1..500).each do |index|
+    rating = HelpeeRating.new
+    rating.order_id = order_request_for_ratings.order.id
+    rating.qualifier_id = order_request_for_ratings.order.helpee.id
+    rating.qualified_id = order_request_for_ratings.volunteer.id
+    rating.score = rng.rand(1..5)
+    rating.comment = Faker::Lorem.sentence + index.to_s
+    rating.save!
+  end
+
 puts
