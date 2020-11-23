@@ -261,7 +261,7 @@ RSpec.describe 'Api::V1::Orders', type: :request do
         email: helpee.email, password: helpee.password
       } }, headers: headers
       @token = response.headers['Authorization']
-      get api_v1_orders_path + '/show/all?status=created', headers: {
+      get api_v1_orders_path + '/show/all?status=created&user_id=' + helpee.id.to_s, headers: {
         'ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => @token
       }
     end
