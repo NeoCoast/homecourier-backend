@@ -81,7 +81,7 @@ class Api::V1::OrdersController < ApplicationController
 
   def volunteer_orders
     @volunteer = Volunteer.find(params[:volunteer_id])
-    @user_coordinates = [@volunteer.latitude, volunteer.longitude]
+    @user_coordinates = [@volunteer.latitude, @volunteer.longitude]
     @orders = @volunteer.orders.order('created_at DESC').limit(@page_size).offset(@offset)
   end
 
