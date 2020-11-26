@@ -1,19 +1,20 @@
+# frozen_string_literal: true
+
 class Api::V1::Devise::SessionsController < Devise::SessionsController
   respond_to :json
 
   def create
     self.resource = warden.authenticate!(auth_options)
-    if self.resource.type == 'Volunteer'
-      if self.resource.enabled?
+    if resource.type == 'Volunteer'
+      if resource.enabled?
         authenticate
-      else 
+      else
         head :unauthorized
       end
     else
       authenticate
     end
   end
-
 
   private
 

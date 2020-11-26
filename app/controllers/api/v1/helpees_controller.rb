@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V1::HelpeesController < ApplicationController
   before_action :authenticate_user!, :helpee?
 

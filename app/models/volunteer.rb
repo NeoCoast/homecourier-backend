@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Volunteer < User
   validates :document_number, presence: true, uniqueness: { scope: [:document_type] }
   validates :document_type, presence: true
