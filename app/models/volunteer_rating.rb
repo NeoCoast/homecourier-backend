@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VolunteerRating < ApplicationRecord
   belongs_to :order, foreign_key: 'order_id'
   belongs_to :volunteer, foreign_key: 'qualifier_id', class_name: 'Volunteer'

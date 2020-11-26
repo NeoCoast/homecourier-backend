@@ -10,7 +10,7 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
       type: 'Helpee',
       confirmed_at: Faker::Date.between(from: 30.days.ago, to: Date.today)
     )
-  end 
+  end
   let!(:categories) { create_list(:category, 3) }
   let!(:order) do
     create(

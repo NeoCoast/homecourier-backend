@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V1::HelpeesController < ApplicationController
   before_action :authenticate_user!, :helpee?
 
@@ -6,7 +8,9 @@ class Api::V1::HelpeesController < ApplicationController
   end
 
   def rating
-    order_request = OrderRequest.find_by('order_id = ? AND order_request_status = ?', params[:order_id], OrderRequest.order_request_statuses[:accepted])
+    order_request = OrderRequest.find_by(
+      'order_id = ? AND order_request_status = ?', params[:order_id], OrderRequest.order_request_statuses[:accepted]
+    )
     if !order_request.nil?
       rating = HelpeeRating.new
       rating.order_id = order_request.order.id
