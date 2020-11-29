@@ -67,6 +67,7 @@ gem 'aws-sdk-s3'
 gem 'sprockets', '~> 3.0'
 
 gem 'activeadmin', '~> 2.8.1'
+gem 'sassc', '~> 2.1.0'
 
 gem 'geocoder', '~> 1.6.4'
 
